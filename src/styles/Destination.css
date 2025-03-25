@@ -1,0 +1,52 @@
+/* src/pages/Destination.css */
+.destination-container {
+    position: relative;
+    width: 100%;
+    height: 100vh; /* Full viewport height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: black;
+  }
+  
+  /* Door Panels */
+  .door {
+    position: absolute;
+    width: 50%; /* Each door takes half of the screen */
+    height: 100%;
+    background-color: #111; /* Dark doors */
+    transition: transform 1s ease-in-out;
+    z-index: 10;
+  }
+  
+  /* Left Door */
+  .left-door {
+    left: 0;
+    transform: translateX(0);
+  }
+  
+  /* Right Door */
+  .right-door {
+    right: 0;
+    transform: translateX(0);
+  }
+  
+  /* Open State */
+  .destination-container .open.left-door {
+    transform: translateX(-100%);
+  }
+  
+  .destination-container .open.right-door {
+    transform: translateX(100%);
+  }
+  
+  /* Background Video */
+  .door-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    z-index: 5; /* Behind the doors */
+  }
+  

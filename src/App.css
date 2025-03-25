@@ -1,0 +1,20 @@
+.itinerary-text {
+  white-space: pre-line; /* Respect line breaks */
+  overflow-x: auto; /* Add horizontal scroll if needed */
+  font-family: sans-serif; /* A more readable font */
+}
+
+.itinerary-text h1,
+.itinerary-text h2,
+.itinerary-text h3 {
+  font-weight: bold; /* Make headings bold */
+}
+
+.itinerary-text ul {
+  list-style-type: disc; /* Use standard bullet points */
+  padding-left: 20px; /* Indent the list */
+}
+
+.itinerary-text li {
+  margin-bottom: 5px; /* Add spacing between list items */
+}

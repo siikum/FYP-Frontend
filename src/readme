@@ -1,0 +1,8 @@
+src
+        App.jsx → This is your main component. You will write most of your code here.
+        main.jsx → This is where React renders your app.
+index.html → The root HTML file where your app is injected.
+#To start coding, open App.jsx and edit it
+
+
+# To run the code, save it and write npm run dev in the terminal

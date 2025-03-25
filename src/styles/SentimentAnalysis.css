@@ -1,0 +1,20 @@
+.sentiment-analysis-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.charts-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Space between the charts */
+  flex-wrap: wrap; /* Ensures responsiveness */
+}
+
+.chart-box {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+  width: 550px;
+  text-align: center;
+}

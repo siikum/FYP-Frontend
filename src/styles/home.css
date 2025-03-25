@@ -1,0 +1,80 @@
+.home-container {
+  width: 100%;
+  background-color: #f1f1f1;
+  display: flex; /* Align items horizontally */
+  justify-content: space-between; /* Space out the text and video content */
+  align-items: center; /* Align text and videos vertically centered */
+  font-family: Lora;
+}
+
+.home-header {
+  text-align: left;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+  color: black;
+  white-space: nowrap;
+  flex: 1; /* Allow the header to take space */
+}
+
+.home-content {
+  display: flex;
+  justify-content: flex-end;
+  flex: 2; /* Allow video content to take more space */
+}
+
+.video-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.video-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.video-item {
+  width: 200px;
+  height: 150px;
+  background-color: #f1f1f1;
+}
+
+.sentiment-container {
+  width: 100%;
+  display: flex;
+  justify-content: center; /* Center SentimentAnalysis */
+  margin-top: 2rem; /* Adds spacing below videos */
+  background-color: #f1f1f1;
+}
+
+/* Explore Beyond Imagination Section */
+.explore-section {
+  text-align: right;
+  margin-top: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30vh;
+}
+
+.explore-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.explore-heading {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #000;
+  margin: 0;
+}

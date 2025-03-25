@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+.raleway {
+  font-family: "Raleway", sans-serif;
+}
+
+body {
+}
+
+path {
+  pointer-events: all;
+  filter: blur(0.5px);
+}
+
+path:hover {
+  fill: red;
+  stroke: blue;
+}
+
+.weatherBG {
+  background: linear-gradient(to right, #1a2b3c, #4b2f58, #d9a159);
+}

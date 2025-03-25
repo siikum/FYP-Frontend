@@ -1,0 +1,50 @@
+/* Slider Styles */
+.slider-container {
+    display: flex;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    gap: 20px;
+    padding: 10px 0;
+    cursor: pointer;
+    padding-left: 20px;
+  }
+  
+.slider-box {
+    flex-shrink: 0;
+    width: 550px;
+    height: 600px;
+    background-color: #aaa;
+    text-align:left;
+    line-height: 300px;
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    scroll-snap-align: start;
+    overflow: hidden;
+    position: relative;
+    transition: filter 0.3s ease-in-out;
+}
+
+.slider-box:hover {
+    filter: brightness(0.8); /* Makes the box slightly darker (greyish effect) */
+}
+
+.slider-container:active {
+cursor: pointer;
+}
+
+.slider-box img {
+width: 100%; /* Make the image take up the full width of the box */
+height: 100%; /* Make the image take up the full height of the box */
+object-fit: cover; /* Ensure the image covers the box while maintaining its aspect ratio */
+}
+
+.slider-box .text {
+    position: absolute; /* Position the text absolutely within the box */
+    left: 10px; /* Distance from the left of the box */
+    color: white; /* Text color */
+    bottom: 420px;
+    font-size: 1.4rem; /* Font size */
+    font-weight: bold; /* Make the text bold */
+    padding: 5px; /* Padding around the text */
+  }

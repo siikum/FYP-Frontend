@@ -1,0 +1,16 @@
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+.ScrollContainer {
+  height: 100%;
+  overflow: hidden;
+}
+
+.ScrollPage {
+  height: 100vh; /* Full height of the viewport */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

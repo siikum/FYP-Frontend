@@ -1,0 +1,23 @@
+.mainBox {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 100px;
+}
+
+.rapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    background-color: #33333333;
+    margin: 10px;
+}

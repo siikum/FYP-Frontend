@@ -1,0 +1,33 @@
+/* Fall.css */
+
+/* Falling leaf animation */
+@keyframes fall {
+    0% {
+      transform: translateY(-100px) rotate(0deg);
+    }
+    100% {
+      transform: translateY(100vh) rotate(360deg);
+    }
+  }
+  
+  /* Tailwind-specific class to apply the fall animation */
+  .fall-animation {
+    animation: fall 4s linear infinite;
+  }
+  
+  /* Modify leaf size to make it bigger */
+  .leaf {
+    width: 250px; /* Increased size of the leaf */
+    height: auto; /* Maintain aspect ratio */
+    opacity: 0.9;
+  }
+  
+  /* Add different positions for each leaf to make them fall at different spots */
+  .leaf:nth-child(odd) {
+    left: 25%;
+  }
+  
+  .leaf:nth-child(even) {
+    left: 75%;
+  }
+  

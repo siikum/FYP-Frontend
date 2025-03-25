@@ -1,0 +1,98 @@
+/* Full page background */
+.login-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Background Image */
+.background-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url("../assets/images/login-image.jpg") no-repeat center center/cover;
+    filter: brightness(0.6); /* Darkens the image for contrast */
+    z-index: -1;
+}
+
+/* Login Card */
+.login-card {
+    background: rgba(255, 255, 255, 0.8); /* White background with 80% opacity */
+    padding: 50px; /* Increased padding to make the card bigger */
+    border-radius: 12px; /* Slightly rounded corners */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); /* Improved shadow for depth */
+    width: 500px; /* Increased width */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 490px; /* Set height for the login card */
+    border: 2px solid rgba(0, 0, 0, 0.5); /* Light border with transparency */
+}
+
+
+/* Form Styles */
+h2 {
+    margin-bottom: 20px;
+    color: black; /* Ensures heading text is black */
+}
+
+.input-group {
+    margin-bottom: 20px; /* More spacing between input fields */
+    width: 100%;
+    text-align: left;
+}
+
+/* Input Field Styling */
+.input-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: black; /* Ensures label text is black */
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px; /* Increased padding for a bigger text box */
+    border: 1px solid #ccc;
+    border-radius: 6px; /* Slightly rounded corners for modern look */
+    font-size: 16px; /* Larger text size for better readability */
+    color: black; /* Ensures text inside input fields is black */
+}
+
+/* Button Styles */
+.login-button {
+    width: 100%;
+    padding: 14px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 18px; /* Adjust text size inside button */
+}
+
+.login-button:hover {
+    background-color: #333;
+}
+
+/* Style for Forgot Password Link */
+.forgot-password {
+    margin-top: 20px;
+    text-align: center;
+    color: black;
+  }
+  
+.reset-link {
+text-decoration: underline; /* Underline the "Reset here" text */
+color: black; /* Optional: Change the link color */
+cursor: pointer;
+}
+
+.reset-link:hover {
+color: grey; /* Optional: Change the color when hovered */
+}  
