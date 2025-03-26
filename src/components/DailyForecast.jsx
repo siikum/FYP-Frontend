@@ -208,7 +208,7 @@ const DailyForecast = () => {
           <>
             <div className="text-[150px] flex items-center font-semibold leading-tight raleway">
               <div className="">{Math.floor(currentWeather.temp)}&deg;</div>
-              {getIcon(currentWeather.icon)}
+              {currentWeather?.icon && getIcon(currentWeather.icon)}
             </div>
             <div className="flex flex-col gap-y-[5px] mt-[30px]">
               <div className="flex gap-x-4 text-xl font-medium">

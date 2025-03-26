@@ -17,7 +17,6 @@ import { useEffect } from "react";
 const IndividualDestination = () => {
   const navigate = useNavigate(); // Initialize the navigate function
 
-
   const handleRedirect = () => {
     navigate("/TripPlannerForm"); // Replace '/your-target-page' with the path you want to navigate to
   };
@@ -150,12 +149,12 @@ const IndividualDestination = () => {
             alt="Lo Manthang Monastery"
           />
         </div>
+        <DestinationSentiment destination={"Everest Base Camp"} />
       </motion.div>
       <DailyForecast />
       {/* Weather Destination added here */}
 
       {/* Use SentimentAnalysis Component */}
-      <DestinationSentiment />
       <br />
       <br />
 

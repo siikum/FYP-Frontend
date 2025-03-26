@@ -1,6 +1,29 @@
 import { Bar, Line } from "react-chartjs-2";
+import axiosInstance from "../api/axiosConfig";
+import { useEffect, useState } from "react";
 
-const DestinationSentiment = () => {
+const DestinationSentiment = ({ destination }) => {
+  const [sentimentData, setSentimentData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const fetchSentimentData = async () => {
+    try {
+      // Send a GET request to the Django backend with destination as query parameter
+      const response = await axiosInstance.get(
+        `http://127.0.0.1:8000/machine_learning/get_sentiment_analysis/?destination=${destination}`
+      );
+
+      console.log("API Response:", response.data);
+
+      setSentimentData(response.data.aggregated_sentiment); // Save sentiments from API response
+    } catch (err) {
+      console.error("Error fetching sentiment data:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSentimentData();
+  }, []);
+
   const chartData = {
     sentiment1: [0.7, 0.2, 0.1], // Positive, Neutral, Negative sentiment values
     sentimentTrends: {
@@ -16,11 +39,11 @@ const DestinationSentiment = () => {
       </h2>
 
       {/* Display charts only when sentimentData is available */}
-      {chartData && (
-        <div className="flex flex-col justify-between w-full px-[200px] lg:flex-row">
+      {sentimentData && (
+        <div className="flex flex-col justify-between w-full lg:flex-row">
           {/* Bar Chart */}
-          <div className="w-full sm:max-w-[400px] max-h-[400px] mx-auto">
-            <h3 className="text-xl font-semibold text-gray-700 mb-4">
+          <div className="w-full sm:max-w-[400px] max-h-[400px]">
+            <h3 className="text-xl text-left font-semibold text-gray-700 mb-4">
               Sentiment Comparison
             </h3>
             <Bar
@@ -29,13 +52,37 @@ const DestinationSentiment = () => {
                 datasets: [
                   {
                     label: "Sentiment Analysis",
-                    data: chartData.sentiment1,
-                    backgroundColor: ["#4CAF50", "#B0BEC5", "#FF7043"],
+                    data: [
+                      sentimentData.average_positive
+                        ? sentimentData.average_positive * 100
+                        : 0,
+                      sentimentData.average_neutral
+                        ? sentimentData.average_neutral * 100
+                        : 0,
+                      sentimentData.average_negative
+                        ? sentimentData.average_negative * 100
+                        : 0,
+                    ],
+                    backgroundColor: [
+                      "rgba(75, 192, 192, 0.2)",
+                      "rgba(255, 205, 86, 0.2)",
+                      "rgba(255, 99, 132, 0.2)",
+                      "rgba(255, 159, 64, 0.2)",
+                      "rgba(54, 162, 235, 0.2)",
+                      "rgba(153, 102, 255, 0.2)",
+                      "rgba(201, 203, 207, 0.2)",
+                    ],
+                    borderColor: [
+                      "rgb(75, 192, 192)",
+                      "rgb(255, 205, 86)",
+                      "rgb(255, 99, 132)",
+                    ],
+                    borderWidth: 2,
                   },
                 ],
               }}
               options={{ responsive: true, maintainAspectRatio: false }}
-              height={300}
+              height={250}
             />
           </div>
 

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import MapLanding from "../components/MapLanding";
+import ItineraryDownload from "../components/ItineraryDownload";
 import bgImage from "../assets/images/annapurna_trail.jpg";
 import ReactMarkdown from "react-markdown";
 
@@ -46,7 +47,7 @@ const TripPlannerForm = () => {
       ) {
         const itineraryText = response.data.contents[0].parts[0].text;
         if (itineraryText && itineraryText.trim() !== "") {
-          setItinerary(itineraryText);
+          setItinerary(itineraryText);  
           setError(""); // Clear any previous errors
         } else {
           setError("The AI returned an empty itinerary. Please try again.");
@@ -159,6 +160,8 @@ const TripPlannerForm = () => {
                   <ReactMarkdown>{itinerary}</ReactMarkdown>
                 </div>
               </div>
+              {/* Show Download Button Only When Itinerary is Available */}
+              <ItineraryDownload itinerary={itinerary} />
             </div>
           )}
 
