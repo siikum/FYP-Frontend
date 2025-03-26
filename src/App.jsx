@@ -11,7 +11,8 @@ import IndividualDestination from "./pages/IndividualDestion.tsx/IndividualDesti
 import TripPlannerForm from "./pages/TripPlannerForm.jsx";
 import SentimentTest from "./pages/SentimentTest.jsx";
 import About from "./pages/About.jsx";
-
+import BlogPage from "./pages/Blog/BlogPage.jsx";
+import MessagesPage from "./pages/Blog/MessagesPages.jsx";
 
 
 
@@ -37,6 +38,9 @@ function App() {
         <Route path="/TripPlannerForm" element={<TripPlannerForm />} />
         <Route path="/SentimentTest" element={<SentimentTest />} />
         <Route path="/About" element={<About />} />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog/MessagesPages" element={<MessagesPage />} />
+
 
       </Routes>
     </Router>
