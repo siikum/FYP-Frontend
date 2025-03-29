@@ -40,13 +40,14 @@ const DestinationSentiment = ({ destination }) => {
 
       {/* Display charts only when sentimentData is available */}
       {sentimentData && (
-        <div className="flex flex-col justify-between w-full lg:flex-row">
+        <div className="flex flex-col gap-x-[100px] justify-between w-full lg:flex-row">
           {/* Bar Chart */}
-          <div className="w-full sm:max-w-[400px] max-h-[400px]">
+          <div className="w-[50%]">
             <h3 className="text-xl text-left font-semibold text-gray-700 mb-4">
               Sentiment Comparison
             </h3>
             <Bar
+              className="w-full max-h-[526px]"
               data={{
                 labels: ["Positive", "Neutral", "Negative"],
                 datasets: [
@@ -82,16 +83,16 @@ const DestinationSentiment = ({ destination }) => {
                 ],
               }}
               options={{ responsive: true, maintainAspectRatio: false }}
-              height={250}
             />
           </div>
 
           {/* Line Chart */}
-          <div className="w-full sm:max-w-[400px] max-h-[400px] mx-auto">
+          <div className="w-[50%]">
             <h3 className="text-xl font-semibold text-gray-700 mb-4">
               Sentiment Trends
             </h3>
             <Line
+              className="w-full max-h-[526px]"
               data={{
                 labels: [1, 2, 3, 4, 5, 6], // Replace with actual review indices or date if available
                 datasets: [

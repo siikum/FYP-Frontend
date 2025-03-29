@@ -35,14 +35,14 @@ const IndividualDestination = () => {
                 <motion.div
                   initial={{
                     visibility: "hidden",
-                    y: 400,
+                    x: -400,
                   }}
                   viewport={{ once: true }}
                   whileInView={{
                     visibility: "visible",
-                    y: 0,
+                    x: 0,
                   }}
-                  transition={{ duration: 1, ease: "easeInOut" }}
+                  transition={{ duration: 1.75, ease: "easeInOut" }}
                   className="text-6xl text-white font-bold"
                 >
                   Lomanthang | लोमान्थाङ
@@ -98,7 +98,7 @@ const IndividualDestination = () => {
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, ease: "easeInOut" }}
+        transition={{ duration: 1.75, ease: "easeInOut" }}
         viewport={{ once: true }}
         className="max-w-7xl mx-auto bg-white shadow-lg rounded-2xl p-8 mt-10 mb-20"
       >

@@ -216,6 +216,8 @@ const MapLanding = () => {
           stroke="black"
         />
       </motion.svg>
+
+      
     </div>
   );
 };

@@ -11,6 +11,14 @@ const BlogPage = () => {
   const [image, setImage] = useState(null);
   const [openChats, setOpenChats] = useState([]);
 
+  // Utility function to get a cookie by name
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  };
+
   // Handle Image Upload
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -28,6 +36,67 @@ const BlogPage = () => {
 
   const closeChat = (id) => {
     setOpenChats(openChats.filter((chat) => chat.id !== id));
+  };
+
+  const handlePostSubmit = async () => {
+    if (!postText.trim()) {
+      alert("Post content cannot be empty!");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("description", postText);
+
+    if (image) {
+      const response = await fetch(image);
+      const blob = await response.blob();
+      formData.append("image", blob, "uploaded_image.jpg");
+    }
+
+    try {
+      const token = localStorage.getItem("token"); // Ensure token is stored
+      if (!token) {
+        alert("You need to be logged in to post.");
+        return;
+      }
+
+      const csrfToken = getCookie("csrftoken"); // CSRF token handling
+
+      const res = await fetch("http://127.0.0.1:8000/blog/blogposts/create/", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-CSRFToken": csrfToken,
+          Authorization: `Token ${token}`,
+        },
+        credentials: "include",
+      });
+
+      console.log("Response Status:", res.status); // Check the status
+      console.log("Response Headers:", res.headers); // Inspect the headers
+
+      if (res.ok) {
+        // Success
+      } else {
+        const errorData = await res.json();
+        console.error("Error Response:", errorData);
+        alert("Failed to create blog post. " + (errorData.detail || ""));
+      }
+
+      if (res.ok) {
+        alert("Blog post created successfully!");
+        setPostText("");
+        setImage(null);
+        setIsModalOpen(false);
+      } else {
+        const errorData = await res.json();
+        console.error("Error Response:", errorData);
+        alert("Failed to create blog post. " + (errorData.detail || ""));
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Something went wrong.");
+    }
   };
 
   return (
@@ -165,7 +234,10 @@ const BlogPage = () => {
               >
                 Cancel
               </button>
-              <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+              <button
+                onClick={handlePostSubmit}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              >
                 Post
               </button>
             </div>

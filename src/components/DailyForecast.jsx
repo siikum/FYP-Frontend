@@ -172,7 +172,7 @@ const DailyForecast = () => {
     }
   }
 
-  return (
+  return weatherDetails ? (
     <div className="flex flex-col gap-y-10 px-[200px] backdrop-blur-lg">
       <div className="grid grid-cols-7 w-full gap-x-10 justify-between">
         {weatherDetails &&
@@ -232,6 +232,8 @@ const DailyForecast = () => {
         )}
       </motion.div>
     </div>
+  ) : (
+    <></>
   );
 };
 

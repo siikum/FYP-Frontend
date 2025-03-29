@@ -1,15 +1,13 @@
 /* Navbar Styles */
 .navbar {
-  width: 100vw;
+  width: 100%;
   position: absolute;
   top: 0;
   left: 0;
   height: 50px;
-  padding: 0 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 2rem;
   z-index: 1000;
 }
 
@@ -46,7 +44,6 @@
 /* Each Link */
 .navbar .links a {
   text-decoration: none;
-  color: white; /* ✅ Make text black */
   font-size: 1.2rem;
   font-weight: 600;
   transition: color 0.3s ease;
