@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import axios from "axios";
 
-const CreateBlog = () => {
+const CreateBlog   = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");

@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import pfp from "../../assets/images/pf.jpg";
-import { useNavigate } from "react-router-dom";
 
 const baseUrl = "http://127.0.0.1:8000/blog";
 
 const CommentsSection = ({ postId }) => {
-  const navigate = useNavigate();
   const [newComment, setNewComment] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [comments, setComments] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
+  const [editingCommentId, setEditingCommentId] = useState(null); // Track which comment is being edited
+  const [editedContent, setEditedContent] = useState(""); // Store edited content for the comment
 
   const fetchComments = async () => {
     try {
@@ -43,6 +43,34 @@ const CommentsSection = ({ postId }) => {
       setError("Failed to create comment.");
     }
   };
+
+  const handleUpdateComment = async (commentId) => {
+    if (!editedContent.trim()) {
+      setError("Comment cannot be empty");
+      return;
+    }
+    try {
+      const response = await axios.put(
+        `${baseUrl}/comments/${commentId}/update/`,
+        { content: editedContent },  // This sends the updated content
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        fetchComments();  // Fetch updated comments list
+        setEditingCommentId(null);  // Stop editing mode
+        setEditedContent("");  // Clear the editing content
+      }
+    } catch (error) {
+      console.error("Error updating comment:", error.response.data);
+      setError("Failed to update comment.");
+    }
+};
+
 
   const handleDeleteComment = async (commentId) => {
     try {
@@ -95,6 +123,7 @@ const CommentsSection = ({ postId }) => {
     <div className="flex flex-col mt-10 gap-y-10">
       <div className="font-medium text-2xl">Comments</div>
 
+      {/* Create new comment */}
       <div className={`rounded-2xl p-6 bg-white border border-gray-300 text-lg ${isFocused ? "border-2" : ""}`}>
         <textarea
           onFocus={() => setIsFocused(true)}
@@ -116,6 +145,7 @@ const CommentsSection = ({ postId }) => {
         </div>
       </div>
 
+      {/* Comments */}
       <div className="flex flex-col gap-y-6">
         {comments.length > 0 ? (
           comments.map((value, index) => (
@@ -140,7 +170,10 @@ const CommentsSection = ({ postId }) => {
                         <ul>
                           <li
                             className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                            onClick={() => navigate(`/blog/comment/${value.id}/update`)}
+                            onClick={() => {
+                              setEditingCommentId(value.id);
+                              setEditedContent(value.content); // Pre-fill the content for editing
+                            }}
                           >
                             Update
                           </li>
@@ -155,7 +188,27 @@ const CommentsSection = ({ postId }) => {
                     )}
                   </button>
                 </div>
-                <div className="text-base">{value.content}</div>
+
+                {/* Editable comment UI */}
+                {editingCommentId === value.id ? (
+                  <div>
+                    <textarea
+                      className="w-full h-[100px] outline-none border border-gray-300 rounded-lg p-3"
+                      value={editedContent}
+                      onChange={(e) => setEditedContent(e.target.value)}
+                    />
+                    <div className="flex justify-end mt-4">
+                      <button
+                        onClick={() => handleUpdateComment(value.id)}
+                        className="bg-orange-500 rounded-4xl py-2 px-6 text-white"
+                      >
+                        Update Comment
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-base">{value.content}</div>
+                )}
               </div>
             </div>
           ))
