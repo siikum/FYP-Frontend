@@ -42,8 +42,8 @@ const UpdateBlog = () => {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
-    if (file) {
-      formData.append("image", file);
+    if (file && typeof file !== "string") {
+      formData.append("image", file); // Append image only if it's a file object
     }
 
     try {
@@ -55,9 +55,10 @@ const UpdateBlog = () => {
         }
       );
       if (response.ok) {
-        navigate(`/blog`); // Redirect to the updated blog page
+        navigate(`/blog/${id}`); // Redirect to the updated blog page
       } else {
-        setError("Failed to update blog");
+        const errorData = await response.json();
+        setError(errorData.detail || "Failed to update blog");
       }
     } catch (err) {
       setError("Failed to update blog");

@@ -11,11 +11,12 @@ import IndividualDestination from "./pages/IndividualDestion.tsx/IndividualDesti
 import TripPlannerForm from "./pages/TripPlannerForm.jsx";
 import SentimentTest from "./pages/SentimentTest.jsx";
 import About from "./pages/About.jsx";
-import MessagesPage from "./pages/Blog/MessagesPages.jsx";
 import IndividualBlog from "./pages/BlogPages/IndividualBlog.jsx";
 import BlogList from "./pages/BlogPages/BlogList.jsx";
 import CreateBlog from "./pages/BlogPages/CreateBlog.jsx";
 import UpdateBlog from "./pages/BlogPages/UpdateBlog.jsx";
+import UpdateComment from "./pages/BlogPages/UpdateComment.jsx";
+
 
 
 function App() {
@@ -44,7 +45,7 @@ function App() {
         <Route path="/blog/:id" element={<IndividualBlog />} />
         <Route path="/blog/add" element={<CreateBlog />} />
         <Route path="/blog/:id/update" element={<UpdateBlog />} />
-        <Route path="/blog/MessagesPages" element={<MessagesPage />} />
+        <Route path="/comment/:id/update" element={<UpdateComment />} />
       </Routes>
     </Router>
   );

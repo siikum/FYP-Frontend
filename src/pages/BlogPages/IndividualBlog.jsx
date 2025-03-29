@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";  // Import useParams
 import Navbar from "../../components/Navbar";
 import { motion } from "framer-motion";
 import pfp from "../../assets/images/pf.jpg";
+import CommentSection from "./CommentSection"; 
+
 
 const IndividualBlog = () => {
   const [isFocused, setIsFocused] = useState(false);
@@ -63,6 +65,8 @@ const IndividualBlog = () => {
             {blog.description}
           </div>
         </div>
+        {/* Comments Section */}
+        <CommentSection postId={id} />
       </div>
     </div>
   );
