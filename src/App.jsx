@@ -15,9 +15,7 @@ import IndividualBlog from "./pages/BlogPages/IndividualBlog.jsx";
 import BlogList from "./pages/BlogPages/BlogList.jsx";
 import CreateBlog from "./pages/BlogPages/CreateBlog.jsx";
 import UpdateBlog from "./pages/BlogPages/UpdateBlog.jsx";
-import UpdateComment from "./pages/BlogPages/UpdateComment.jsx";
-
-
+import AdminDashboard from "./pages/admin_dashboard.jsx";
 
 function App() {
   console.log("App Component Loaded!");
@@ -45,7 +43,7 @@ function App() {
         <Route path="/blog/:id" element={<IndividualBlog />} />
         <Route path="/blog/add" element={<CreateBlog />} />
         <Route path="/blog/:id/update" element={<UpdateBlog />} />
-        <Route path="/comment/:id/update" element={<UpdateComment />} />
+        <Route path="/AdminDashboard" element={<AdminDashboard />} />
       </Routes>
     </Router>
   );
