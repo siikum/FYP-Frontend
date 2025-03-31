@@ -20,7 +20,7 @@ const Home = () => {
   const [currentImg, setCurrentIMG] = useState(firstIMG);
 
   return (
-    <main className="bg-amber-50">
+    <main className="bg-amber-50 raleway">
       <Navbar />
       <MultiLayerParallax />
 

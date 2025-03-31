@@ -19,7 +19,7 @@ export default function MultiLayerParallax() {
     >
       <motion.h1
         style={{ y: textY }}
-        className="font-bold text-white text-7xl md:text-9xl relative z-10"
+        className="font-bold text-amber-50 text-7xl md:text-9xl relative z-10"
         initial={{
           opacity: 0,
         }}
@@ -32,7 +32,7 @@ export default function MultiLayerParallax() {
           delay: 0.15,
         }}
       >
-        TRAIL HIMALAYA
+        Trail Himalaya
       </motion.h1>
 
       <motion.div

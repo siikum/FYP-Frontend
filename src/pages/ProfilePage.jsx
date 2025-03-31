@@ -307,7 +307,7 @@ const ProfilePage = () => {
 
     // --- Full Component Render (User data loaded) ---
     return (
-        <div className="flex flex-col bg-amber-50 py-[100px] min-h-screen">
+        <div className="flex flex-col raleway bg-amber-50 py-[100px] min-h-screen">
             <Navbar isBlack={true} />
 
             {/* Hidden File Input */}

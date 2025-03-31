@@ -74,7 +74,7 @@ const Navbar = ({ isBlack = false }) => {
 
   return (
     // Base navbar class might still come from navbar.css if needed
-    <nav className={`navbar ${textColorClass} py-3`}>
+    <nav className={`navbar ${textColorClass} py-3 raleway text-black`}>
       {/* Using Tailwind for container, padding, flex layout */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
 
@@ -126,7 +126,7 @@ const Navbar = ({ isBlack = false }) => {
                 >
                   {/* Dropdown Item: User Profile */}
                   <button
-                     onClick={() => handleDropdownLinkClick('/profile')}
+                     onClick={() => handleDropdownLinkClick('/ProfilePage')}
                      className="flex w-full text-left items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                      role="menuitem"
                    >
