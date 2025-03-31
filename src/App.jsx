@@ -16,6 +16,12 @@ import BlogList from "./pages/BlogPages/BlogList.jsx";
 import CreateBlog from "./pages/BlogPages/CreateBlog.jsx";
 import UpdateBlog from "./pages/BlogPages/UpdateBlog.jsx";
 import AdminDashboard from "./pages/admin_dashboard.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
+import NewSignUpPage  from "./pages/NewSignUpPage.jsx";
+import LoginPage  from "./pages/LoginPage.jsx";
+
+
+
 
 function App() {
   console.log("App Component Loaded!");
@@ -44,6 +50,11 @@ function App() {
         <Route path="/blog/add" element={<CreateBlog />} />
         <Route path="/blog/:id/update" element={<UpdateBlog />} />
         <Route path="/AdminDashboard" element={<AdminDashboard />} />
+        <Route path="/ProfilePage" element={<ProfilePage />} />
+        <Route path="/ProfilePage" element={<ProfilePage />} />
+        <Route path="/NewSignUpPage" element={<NewSignUpPage  />} />
+        <Route path="/LoginPage" element={<LoginPage  />} />
+
       </Routes>
     </Router>
   );

@@ -8,12 +8,12 @@ const Navbar = ({ isBlack = false }) => {
   const [showBlogDropdown, setShowBlogDropdown] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("authToken"); // Changed "token" to "authToken" to match your login page
     setIsLoggedIn(!!token);
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("authToken"); // Changed "token" to "authToken" to match your login page
     setIsLoggedIn(false);
     navigate("/login");
   };
@@ -27,12 +27,12 @@ const Navbar = ({ isBlack = false }) => {
         <div className="links">
           <Link to="/">Home</Link>
           <Link to="/TripPlannerForm">Itinerary</Link>
-          <div 
-            className="dropdown" 
+          <div
+            className="dropdown"
             onMouseEnter={() => setShowBlogDropdown(true)}
             onMouseLeave={() => setShowBlogDropdown(false)}
           >
-            <button className="dropbtn">Blog </button>
+            <button className="dropbtn">Blog</button>
             {showBlogDropdown && (
               <div className="dropdown-content">
                 <Link to="/blog">Blog</Link>
@@ -41,12 +41,16 @@ const Navbar = ({ isBlack = false }) => {
             )}
           </div>
           <Link to="/About">About</Link>
-          
+
           {isLoggedIn ? (
-            <button onClick={handleLogout}>Logout</button>
+            <button onClick={handleLogout} className="text-sm">Logout</button>
           ) : (
-            <Link to="/login">Login</Link>
+            <div className="flex space-x-2 text-sm">
+              <Link to="/LoginPage" className="hover:underline">Login</Link>
+              <Link to="/NewSignUpPage" className="hover:underline">| Sign Up</Link>
+            </div>
           )}
+
         </div>
       </div>
     </nav>
