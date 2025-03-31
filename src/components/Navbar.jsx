@@ -26,10 +26,7 @@ const Navbar = ({ isBlack = false }) => {
         </div>
         <div className="links">
           <Link to="/">Home</Link>
-          <Link to="/About">About</Link>
-          <Link to="/destination">Destinations</Link>
-          <Link to="/itinerary">Itinerary</Link>
-          
+          <Link to="/TripPlannerForm">Itinerary</Link>
           <div 
             className="dropdown" 
             onMouseEnter={() => setShowBlogDropdown(true)}
@@ -43,6 +40,7 @@ const Navbar = ({ isBlack = false }) => {
               </div>
             )}
           </div>
+          <Link to="/About">About</Link>
           
           {isLoggedIn ? (
             <button onClick={handleLogout}>Logout</button>

@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import MapLanding from "../components/MapLanding";
 import ItineraryDownload from "../components/ItineraryDownload";
 import bgImage from "../assets/images/annapurna_trail.jpg";
 import ReactMarkdown from "react-markdown";
+import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
 
 const TripPlannerForm = () => {
   const [formData, setFormData] = useState({
@@ -22,9 +24,10 @@ const TripPlannerForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setError("");
     setLoading(true);
-    setItinerary(null); // Clear previous itinerary on new request
+    setItinerary(null);
 
     try {
       const response = await axios.post(
@@ -32,10 +35,8 @@ const TripPlannerForm = () => {
         formData
       );
 
-      // Log the response to check its structure
       console.log("API Response:", response.data);
 
-      // Ensure the API response contains valid itinerary data
       if (
         response.data &&
         response.data.contents &&
@@ -47,8 +48,8 @@ const TripPlannerForm = () => {
       ) {
         const itineraryText = response.data.contents[0].parts[0].text;
         if (itineraryText && itineraryText.trim() !== "") {
-          setItinerary(itineraryText);  
-          setError(""); // Clear any previous errors
+          setItinerary(itineraryText);
+          setError("");
         } else {
           setError("The AI returned an empty itinerary. Please try again.");
         }
@@ -65,15 +66,20 @@ const TripPlannerForm = () => {
 
   return (
     <div className="w-full h-full">
-      <MapLanding />
+      <Navbar />
+      {/* <MapLanding /> */}
 
       {/* Background Image Section */}
       <div
-        className="w-full min-h-screen flex justify-center items-center bg-cover bg-center"
-        style={{ backgroundImage: `url(${bgImage})`, backgroundSize: "cover" }}
+        className="w-full min-h-screen flex justify-center items-start bg-cover bg-center" // Keep items-start
+        style={{
+          backgroundImage: `url(${bgImage})`,
+          backgroundSize: "cover",
+          backgroundAttachment: "fixed", // Keep background fixed
+        }}
       >
         {/* Form Container with Grey Background & Border */}
-        <div className="container mx-auto p-8 bg-gray-100 shadow-lg rounded-lg max-w-200 min-h-[400px] border border-gray-300">
+        <div className="container mx-auto p-8 bg-gray-100 shadow-lg rounded-lg max-w-2xl min-h-[400px] border border-gray-300 mt-20 self-start"> {/* Keep mt-20, add self-start */}
           <h2 className="text-2xl font-bold mb-4 text-center">
             Plan Your Trip
           </h2>
@@ -89,7 +95,7 @@ const TripPlannerForm = () => {
                   value={formData.destination}
                   onChange={handleChange}
                   required
-                  className="w-80 p-3 border border-gray-300 rounded h-12"
+                  className="w-full p-3 border border-gray-300 rounded h-12"
                 />
               </div>
 
@@ -101,7 +107,7 @@ const TripPlannerForm = () => {
                   value={formData.travel_dates}
                   onChange={handleChange}
                   required
-                  className="w-80 p-3 border border-gray-300 rounded h-12"
+                  className="w-full p-3 border border-gray-300 rounded h-12"
                 />
               </div>
             </div>
@@ -116,7 +122,7 @@ const TripPlannerForm = () => {
                   value={formData.budget}
                   onChange={handleChange}
                   required
-                  className="w-80 p-3 border border-gray-300 rounded h-12"
+                  className="w-full p-3 border border-gray-300 rounded h-12"
                 />
               </div>
 
@@ -130,7 +136,7 @@ const TripPlannerForm = () => {
                   value={formData.num_travelers}
                   onChange={handleChange}
                   required
-                  className="w-80 p-3 border border-gray-300 rounded h-12"
+                  className="w-full p-3 border border-gray-300 rounded h-12"
                 />
               </div>
             </div>
@@ -155,7 +161,7 @@ const TripPlannerForm = () => {
           {itinerary && (
             <div className="itinerary-container mt-4">
               <h2 className="text-xl font-bold">Your Itinerary</h2>
-              <div className="bg-white p-4 border rounded">
+              <div className="bg-white p-4 border rounded max-h-[500px] overflow-y-auto">
                 <div className="space-y-6">
                   <ReactMarkdown>{itinerary}</ReactMarkdown>
                 </div>
@@ -169,6 +175,7 @@ const TripPlannerForm = () => {
           {error && <p className="text-red-500 mt-4">{error}</p>}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
