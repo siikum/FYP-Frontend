@@ -17,11 +17,9 @@ import CreateBlog from "./pages/BlogPages/CreateBlog.jsx";
 import UpdateBlog from "./pages/BlogPages/UpdateBlog.jsx";
 import AdminDashboard from "./pages/admin_dashboard.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
-import NewSignUpPage  from "./pages/NewSignUpPage.jsx";
-import LoginPage  from "./pages/LoginPage.jsx";
-
-
-
+import NewSignUpPage from "./pages/NewSignUpPage.jsx";
+import LoginPage from "./pages/LoginPage.jsx";
+import Chatting from "./pages/Chat/Chat.jsx";
 
 function App() {
   console.log("App Component Loaded!");
@@ -39,7 +37,7 @@ function App() {
         <Route path="/Footer" element={<Footer />} />
         <Route path="/destinations/Rara" element={<Rara />} />
         <Route path="/destination" element={<DestionationPage />} />
-        <Route path="/destination/:id" element={<IndividualDestination />} />
+        <Route path="/destination/:slug" element={<IndividualDestination />} /> 
         {/* <PrivateRoute path="/home" component={Post} /> */}
         {/* <Route path="/blog/:id" element={<BlogDetail />} /> */}
         <Route path="/TripPlannerForm" element={<TripPlannerForm />} />
@@ -52,9 +50,9 @@ function App() {
         <Route path="/AdminDashboard" element={<AdminDashboard />} />
         <Route path="/ProfilePage" element={<ProfilePage />} />
         <Route path="/ProfilePage" element={<ProfilePage />} />
-        <Route path="/NewSignUpPage" element={<NewSignUpPage  />} />
-        <Route path="/LoginPage" element={<LoginPage  />} />
-
+        <Route path="/NewSignUpPage" element={<NewSignUpPage />} />
+        <Route path="/LoginPage" element={<LoginPage />} />
+        <Route path="/Chat/Chat" element={<Chatting />} />
       </Routes>
     </Router>
   );

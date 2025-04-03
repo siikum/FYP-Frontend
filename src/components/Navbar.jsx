@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react"; // Import React explicitly
 import { Link, useNavigate } from "react-router-dom";
-import { FaUserCircle } from 'react-icons/fa'; // Fallback user icon
+import { FaUserCircle } from "react-icons/fa"; // Fallback user icon
 // Removed the import for "../styles/navbar.css" unless you have specific base styles there
 // If you do, keep the import: import "../styles/navbar.css";
 
@@ -59,7 +59,7 @@ const Navbar = ({ isBlack = false }) => {
   };
 
   const toggleProfileDropdown = () => {
-    setShowProfileDropdown(prev => !prev);
+    setShowProfileDropdown((prev) => !prev);
   };
 
   // Closes dropdown and navigates
@@ -70,14 +70,17 @@ const Navbar = ({ isBlack = false }) => {
 
   // Determine text color based on isBlack prop using Tailwind classes
   const textColorClass = isBlack ? "text-black" : "text-white";
-  const hoverTextColorClass = isBlack ? "hover:text-gray-700" : "hover:text-gray-300"; // Adjust hover color as needed
+  const hoverTextColorClass = isBlack
+    ? "hover:text-gray-700"
+    : "hover:text-gray-300"; // Adjust hover color as needed
 
   return (
     // Base navbar class might still come from navbar.css if needed
-    <nav className={`navbar ${textColorClass} py-3 raleway text-black`}>
+    <nav
+      className={`navbar ${textColorClass} fixed w-full h-fit top-0 py-3 raleway text-black`}
+    >
       {/* Using Tailwind for container, padding, flex layout */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-
         {/* Logo */}
         <div className="logo">
           <Link to="/">
@@ -88,14 +91,36 @@ const Navbar = ({ isBlack = false }) => {
         {/* Links and Profile/Auth Section */}
         <div className="flex items-center space-x-4 md:space-x-6">
           {/* Navigation Links */}
-          <Link to="/" className={`${hoverTextColorClass} transition duration-150 ease-in-out`}>Home</Link>
-          <Link to="/TripPlannerForm" className={`${hoverTextColorClass} transition duration-150 ease-in-out`}>Itinerary</Link>
-          <Link to="/blog" className={`${hoverTextColorClass} transition duration-150 ease-in-out`}>Blog</Link>
-          <Link to="/About" className={`${hoverTextColorClass} transition duration-150 ease-in-out`}>About</Link>
+          <Link
+            to="/"
+            className={`${hoverTextColorClass} transition duration-150 ease-in-out`}
+          >
+            Home
+          </Link>
+          <Link
+            to="/TripPlannerForm"
+            className={`${hoverTextColorClass} transition duration-150 ease-in-out`}
+          >
+            Itinerary
+          </Link>
+          <Link
+            to="/blog"
+            className={`${hoverTextColorClass} transition duration-150 ease-in-out`}
+          >
+            Blog
+          </Link>
+          <Link
+            to="/About"
+            className={`${hoverTextColorClass} transition duration-150 ease-in-out`}
+          >
+            About
+          </Link>
 
           {/* Conditional Rendering: Profile Dropdown or Login/Signup */}
           {isLoggedIn ? (
-            <div className="relative" ref={profileRef}> {/* Tailwind relative positioning context */}
+            <div className="relative" ref={profileRef}>
+              {" "}
+              {/* Tailwind relative positioning context */}
               {/* Profile Image Button */}
               <button
                 onClick={toggleProfileDropdown}
@@ -112,10 +137,13 @@ const Navbar = ({ isBlack = false }) => {
                   />
                 ) : (
                   // Fallback Icon when no profile picture URL
-                  <FaUserCircle className={`w-full h-full ${isBlack ? 'text-gray-600' : 'text-gray-200'}`} />
+                  <FaUserCircle
+                    className={`w-full h-full ${
+                      isBlack ? "text-gray-600" : "text-gray-200"
+                    }`}
+                  />
                 )}
               </button>
-
               {/* Dropdown Menu - Using Tailwind classes */}
               {showProfileDropdown && (
                 <div
@@ -126,11 +154,11 @@ const Navbar = ({ isBlack = false }) => {
                 >
                   {/* Dropdown Item: User Profile */}
                   <button
-                     onClick={() => handleDropdownLinkClick('/ProfilePage')}
-                     className="flex w-full text-left items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                     role="menuitem"
-                   >
-                     {/* Optional: Icon <FaUser className="mr-2" /> */}
+                    onClick={() => handleDropdownLinkClick("/ProfilePage")}
+                    className="flex w-full text-left items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
+                  >
+                    {/* Optional: Icon <FaUser className="mr-2" /> */}
                     User Profile
                   </button>
 
@@ -140,7 +168,7 @@ const Navbar = ({ isBlack = false }) => {
                     className="flex w-full text-left items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
                     role="menuitem"
                   >
-                     {/* Optional: Icon <FaSignOutAlt className="mr-2" /> */}
+                    {/* Optional: Icon <FaSignOutAlt className="mr-2" /> */}
                     Logout
                   </button>
                 </div>
@@ -149,9 +177,20 @@ const Navbar = ({ isBlack = false }) => {
           ) : (
             // Login/Sign Up Links
             <div className="flex items-center space-x-2 text-sm">
-              <Link to="/LoginPage" className={`${hoverTextColorClass} hover:underline`}>Login</Link>
-              <span className={`${textColorClass} opacity-50`}>|</span> {/* Separator */}
-              <Link to="/NewSignUpPage" className={`${hoverTextColorClass} hover:underline`}>Sign Up</Link>
+              <Link
+                to="/LoginPage"
+                className={`${hoverTextColorClass} hover:underline`}
+              >
+                Login
+              </Link>
+              <span className={`${textColorClass} opacity-50`}>|</span>{" "}
+              {/* Separator */}
+              <Link
+                to="/NewSignUpPage"
+                className={`${hoverTextColorClass} hover:underline`}
+              >
+                Sign Up
+              </Link>
             </div>
           )}
         </div>

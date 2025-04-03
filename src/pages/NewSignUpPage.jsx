@@ -225,7 +225,7 @@ const NewSignUpPage = () => {
                 >
                   Sign Up
                 </button>
-                <Link to="/login" className="inline-block align-baseline font-bold text-sm text-black hover:text-blue-800">
+                <Link to="/LoginPage" className="inline-block align-baseline font-bold text-sm text-black hover:text-blue-800">
                   Already have an account?
                 </Link>
               </div>
