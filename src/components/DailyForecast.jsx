@@ -14,7 +14,7 @@ import {
 
 import axiosInstance from "../api/axiosConfig";
 
-const DailyForecast = () => {
+const DailyForecast = ({ destination }) => {
   const [currentDate, setCurrentDate] = useState("");
   const [currentWeather, setCurrentWeather] = useState({});
   const [isSunrise, setIsSunrise] = useState(true);
@@ -22,7 +22,7 @@ const DailyForecast = () => {
 
   const fetchWeatherDetails = async () => {
     const response = await axiosInstance.get(
-      "itinerary/weather_info/?city=Jajarkot&country=Nepal"
+      `itinerary/weather_info/?city=${destination}&country=Nepal`
     );
 
     console.log;
@@ -54,82 +54,6 @@ const DailyForecast = () => {
       transition: { duration: 0.5 },
     },
   };
-
-  const availableOptions = [
-    {
-      day: "Sun",
-      date: "23",
-    },
-    {
-      day: "Mon",
-      date: "24",
-    },
-    {
-      day: "Tue",
-      date: "25",
-    },
-    {
-      day: "Wed",
-      date: "26",
-    },
-    {
-      day: "Thurs",
-      date: "27",
-    },
-  ];
-
-  const weatherData = [
-    {
-      date: 23,
-      temperature: 21,
-      description: "Clear",
-      minTemperature: 21,
-      maxTemperature: 21,
-      humidity: 1,
-      sunrise: 21,
-      sunset: 21,
-    },
-    {
-      date: 24,
-      temperature: 22,
-      description: "Partly Cloudy",
-      minTemperature: 20,
-      maxTemperature: 23,
-      humidity: 10,
-      sunrise: 22,
-      sunset: 22,
-    },
-    {
-      date: 25,
-      temperature: 19,
-      description: "Cloudy",
-      minTemperature: 18,
-      maxTemperature: 20,
-      humidity: 15,
-      sunrise: 21,
-      sunset: 21,
-    },
-    {
-      date: 26,
-      temperature: 18,
-      description: "Rainy",
-      minTemperature: 17,
-      maxTemperature: 19,
-      humidity: 85,
-      sunrise: 20,
-      sunset: 20,
-    },
-    {
-      date: 27,
-      temperature: 20,
-      description: "Sunny",
-      minTemperature: 18,
-      maxTemperature: 22,
-      humidity: 5,
-      sunrise: 21,
-      sunset: 21,
-    },
-  ];
 
   const getIcon = (value) => {
     switch (value.toLowerCase()) {
@@ -174,7 +98,7 @@ const DailyForecast = () => {
 
   return weatherDetails ? (
     <div className="flex flex-col gap-y-10 px-[200px] backdrop-blur-lg">
-      <div className="grid grid-cols-7 w-full gap-x-10 justify-between">
+      <div className="grid grid-cols-7 w-full gap-x-4 justify-between">
         {weatherDetails &&
           weatherDetails.map((val) => (
             <div

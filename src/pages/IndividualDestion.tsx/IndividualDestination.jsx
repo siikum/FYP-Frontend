@@ -5,6 +5,10 @@ import { motion } from "framer-motion";
 import Counter from "../../components/Counter";
 import Navbar from "../../components/Navbar";
 import axios from "axios";
+import DailyForecast from "../../components/DailyForecast";
+import DestinationSentiment from "../../components/DestinationSentiment";
+import CommentsSection from "../BlogPages/CommentSection";
+import ReviewComment from "../../components/ReviewComment";
 
 const IndividualDestination = () => {
   const { slug } = useParams();
@@ -14,8 +18,8 @@ const IndividualDestination = () => {
 
   useEffect(() => {
     axios
-    .get(`http://127.0.0.1:8000/account/destinations/${slug}/`)
-    .then((res) => {
+      .get(`http://127.0.0.1:8000/account/destinations/${slug}/`)
+      .then((res) => {
         setDestination(res.data);
       })
       .catch((err) => {
@@ -28,7 +32,8 @@ const IndividualDestination = () => {
     navigate("/TripPlannerForm");
   };
 
-  if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
+  if (error)
+    return <div className="text-center py-10 text-red-500">{error}</div>;
   if (!destination) return <div className="text-center py-10">Loading...</div>;
 
   return (
@@ -45,13 +50,13 @@ const IndividualDestination = () => {
         <div className="flex w-full max-h-screen justify-between absolute">
           <div className="flex w-fit min-h-screen items-end">
             <div className="py-8 pb-20 flex flex-col gap-y-4 z-[3] rounded-xl mx-5 mt-5">
-            <motion.div
-            initial={{ visibility: "hidden", x: -400 }}
-            viewport={{ once: true }}
-            whileInView={{ visibility: "visible", x: 0 }}
-            transition={{ duration: 1.75, ease: "easeInOut" }}
-            className="text-6xl text-black font-bold bg-white/20 px-4 py-2 shadow-lg backdrop-blur-sm"
-            >
+              <motion.div
+                initial={{ visibility: "hidden", x: -400 }}
+                viewport={{ once: true }}
+                whileInView={{ visibility: "visible", x: 0 }}
+                transition={{ duration: 1.75, ease: "easeInOut" }}
+                className="text-6xl text-black font-bold bg-white/20 px-4 py-2 shadow-lg backdrop-blur-sm"
+              >
                 {destination.display_title}
               </motion.div>
             </div>
@@ -73,7 +78,11 @@ const IndividualDestination = () => {
         <div className="px-[20%] flex w-full justify-between py-[70px] backdrop-blur-lg ">
           <div className="flex flex-col gap-y-2 items-center">
             <div className="text-6xl font-bold flex items-center gap-x-2">
-              <Counter initialValue={0} finalValue={destination.altitude} duration={2} />
+              <Counter
+                initialValue={0}
+                finalValue={destination.altitude}
+                duration={2}
+              />
               <Mountain className="w-[50px] h-[50px]" />
             </div>
             <div className="text-2xl font-medium">Altitude</div>
@@ -89,7 +98,11 @@ const IndividualDestination = () => {
 
           <div className="flex flex-col gap-y-2 items-center">
             <div className="text-6xl font-bold flex items-center gap-x-2">
-              <Counter initialValue={0} finalValue={destination.duration} duration={2} />
+              <Counter
+                initialValue={0}
+                finalValue={destination.duration}
+                duration={2}
+              />
               <Timer className="w-[50px] h-[50px]" />
             </div>
             <div className="text-2xl font-medium">Duration</div>
@@ -133,6 +146,9 @@ const IndividualDestination = () => {
           />
         </div>
       </motion.div>
+      <DailyForecast destination={destination?.location.replace(/\s+/g, "")} />
+      <DestinationSentiment destination={destination?.name} />
+      <ReviewComment destination={destination?.name} />
     </div>
   );
 };

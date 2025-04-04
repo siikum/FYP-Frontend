@@ -4,17 +4,19 @@ import { useEffect, useState } from "react";
 
 const DestinationSentiment = ({ destination }) => {
   const [sentimentData, setSentimentData] = useState(null);
+  const [sentimentRawData, setSentimentRawData] = useState([]);
   const [loading, setLoading] = useState(false);
+
   const fetchSentimentData = async () => {
     try {
-      // Send a GET request to the Django backend with destination as query parameter
       const response = await axiosInstance.get(
         `http://127.0.0.1:8000/machine_learning/get_sentiment_analysis/?destination=${destination}`
       );
 
       console.log("API Response:", response.data);
 
-      setSentimentData(response.data.aggregated_sentiment); // Save sentiments from API response
+      setSentimentData(response.data.aggregated_sentiment);
+      setSentimentRawData(response.data.sentiment_data);
     } catch (err) {
       console.error("Error fetching sentiment data:", err);
     }
@@ -24,21 +26,20 @@ const DestinationSentiment = ({ destination }) => {
     fetchSentimentData();
   }, []);
 
-  const chartData = {
-    sentiment1: [0.7, 0.2, 0.1], // Positive, Neutral, Negative sentiment values
+  const chartDataLine = {
     sentimentTrends: {
-      positive: [0.6, 0.7, 0.8, 0.75, 0.85, 0.9], // Positive sentiment trend over time
-      neutral: [0.2, 0.25, 0.3, 0.2, 0.15, 0.1], // Neutral sentiment trend over time
-      negative: [0.1, 0.05, 0.05, 0.05, 0.05, 0.05], // Negative sentiment trend over time
+      positive: sentimentRawData.map((s) => s.positive_score * 100),
+      neutral: sentimentRawData.map((s) => s.neutral_score * 100),
+      negative: sentimentRawData.map((s) => s.negative_score * 100),
     },
   };
+
   return (
     <div className="text-center p-8">
       <h2 className="text-3xl font-bold text-gray-800 mb-4">
         Sentiment Analysis
       </h2>
 
-      {/* Display charts only when sentimentData is available */}
       {sentimentData && (
         <div className="flex flex-col gap-x-[100px] justify-between w-full lg:flex-row">
           {/* Bar Chart */}
@@ -68,10 +69,6 @@ const DestinationSentiment = ({ destination }) => {
                       "rgba(75, 192, 192, 0.2)",
                       "rgba(255, 205, 86, 0.2)",
                       "rgba(255, 99, 132, 0.2)",
-                      "rgba(255, 159, 64, 0.2)",
-                      "rgba(54, 162, 235, 0.2)",
-                      "rgba(153, 102, 255, 0.2)",
-                      "rgba(201, 203, 207, 0.2)",
                     ],
                     borderColor: [
                       "rgb(75, 192, 192)",
@@ -94,23 +91,23 @@ const DestinationSentiment = ({ destination }) => {
             <Line
               className="w-full max-h-[526px]"
               data={{
-                labels: [1, 2, 3, 4, 5, 6], // Replace with actual review indices or date if available
+                labels: sentimentRawData.map((_, i) => `Review ${i + 1}`),
                 datasets: [
                   {
                     label: "Positive",
-                    data: chartData.sentimentTrends.positive,
+                    data: chartDataLine.sentimentTrends.positive,
                     borderColor: "#4CAF50",
                     fill: false,
                   },
                   {
                     label: "Neutral",
-                    data: chartData.sentimentTrends.neutral,
+                    data: chartDataLine.sentimentTrends.neutral,
                     borderColor: "#B0BEC5",
                     fill: false,
                   },
                   {
                     label: "Negative",
-                    data: chartData.sentimentTrends.negative,
+                    data: chartDataLine.sentimentTrends.negative,
                     borderColor: "#FF7043",
                     fill: false,
                   },
