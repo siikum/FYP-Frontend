@@ -18,7 +18,7 @@ const CommentsSection = ({ postId }) => {
     try {
       const response = await axios.get(`${baseUrl}/comments/post/${postId}/`, {
         headers: {
-          Authorization: `Token ${localStorage.getItem("token")}`,
+          Authorization: `Token ${localStorage.getItem("authToken")}`
         },
       });
       setComments(response.data);
@@ -32,7 +32,7 @@ const CommentsSection = ({ postId }) => {
       const response = await axios.post(`${baseUrl}/comments/create/`, newComment, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Token ${localStorage.getItem("token")}`,
+          Authorization: `Token ${localStorage.getItem("authToken")}`
         },
       });
       if (response.status === 201 || response.status === 200) {
@@ -56,7 +56,7 @@ const CommentsSection = ({ postId }) => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Token ${localStorage.getItem("token")}`,
+            Authorization: `Token ${localStorage.getItem("authToken")}`
           },
         }
       );
@@ -76,7 +76,7 @@ const CommentsSection = ({ postId }) => {
     try {
       await axios.delete(`${baseUrl}/comments/${commentId}/delete/`, {
         headers: {
-          Authorization: `Token ${localStorage.getItem("token")}`,
+          Authorization: `Token ${localStorage.getItem("authToken")}`
         },
       });
       fetchComments();
@@ -155,8 +155,8 @@ const CommentsSection = ({ postId }) => {
               </div>
               <div className="flex flex-col gap-y-2">
                 <div className="flex items-center gap-x-4 relative">
-                  <div className="font-medium text-lg">{value.author}</div>
-                  <div className="text-gray-500 text-sm">{new Date(value.created_at).toDateString()}</div>
+                <div className="font-medium text-lg">{value.author_username}</div>
+                <div className="text-gray-500 text-sm">{new Date(value.created_at).toDateString()}</div>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();

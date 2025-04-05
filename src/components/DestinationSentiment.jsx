@@ -43,8 +43,8 @@ const DestinationSentiment = ({ destination }) => {
       {sentimentData && (
         <div className="flex flex-col gap-x-[100px] justify-between w-full lg:flex-row">
           {/* Bar Chart */}
-          <div className="w-[50%]">
-            <h3 className="text-xl text-left font-semibold text-gray-700 mb-4">
+          <div className="w-full lg:w-[48%] bg-white rounded-xl shadow-md p-4 mb-6">
+          <h3 className="text-xl text-left font-semibold text-gray-700 mb-4">
               Sentiment Comparison
             </h3>
             <Bar
@@ -84,7 +84,7 @@ const DestinationSentiment = ({ destination }) => {
           </div>
 
           {/* Line Chart */}
-          <div className="w-[50%]">
+<div className="w-full lg:w-[48%] bg-white rounded-xl shadow-md p-4 mb-6">
             <h3 className="text-xl font-semibold text-gray-700 mb-4">
               Sentiment Trends
             </h3>

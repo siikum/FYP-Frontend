@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import firstIMG from "../assets/images/login-image.jpg"; // Import the image
+import firstIMG from "../assets/images/login-image.jpg";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -23,11 +23,12 @@ const LoginPage = () => {
       const response = await axios.post('http://127.0.0.1:8000/account/login/', formData);
       console.log(response.data);
 
-      // Store the token (example using localStorage - consider alternatives)
-      localStorage.setItem('authToken', response.data.token); // Assuming your backend returns a 'token' field
+      // ✅ Save token and login state
+      localStorage.setItem('authToken', response.data.token);
+      localStorage.setItem('isLoggedIn', 'true');
 
       alert("Login Successful!");
-      navigate("/"); // Redirect to the home page or another protected route
+      navigate("/"); // redirect after login
     } catch (error) {
       setError(error.response?.data?.error || 'Invalid credentials');
     }
@@ -37,11 +38,7 @@ const LoginPage = () => {
     <div className="flex h-screen raleway bg-amber-50 font-raleway">
       {/* Left Side: Image */}
       <div className="w-[60%] h-full">
-        <img
-          src={firstIMG}
-          alt="Travel"
-          className="object-cover h-full w-full"
-        />
+        <img src={firstIMG} alt="Travel" className="object-cover h-full w-full" />
       </div>
 
       {/* Right Side: Form */}

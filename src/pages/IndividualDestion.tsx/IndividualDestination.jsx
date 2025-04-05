@@ -7,7 +7,6 @@ import Navbar from "../../components/Navbar";
 import axios from "axios";
 import DailyForecast from "../../components/DailyForecast";
 import DestinationSentiment from "../../components/DestinationSentiment";
-import CommentsSection from "../BlogPages/CommentSection";
 import ReviewComment from "../../components/ReviewComment";
 
 const IndividualDestination = () => {
@@ -15,6 +14,7 @@ const IndividualDestination = () => {
   const navigate = useNavigate();
   const [destination, setDestination] = useState(null);
   const [error, setError] = useState("");
+  const [chartKey, setChartKey] = useState(0); // NEW: chart refresh trigger
 
   useEffect(() => {
     axios
@@ -30,6 +30,11 @@ const IndividualDestination = () => {
 
   const handleRedirect = () => {
     navigate("/TripPlannerForm");
+  };
+
+  // NEW: function to refresh sentiment chart
+  const handleSentimentUpdate = () => {
+    setChartKey((prev) => prev + 1);
   };
 
   if (error)
@@ -146,9 +151,18 @@ const IndividualDestination = () => {
           />
         </div>
       </motion.div>
+
       <DailyForecast destination={destination?.location.replace(/\s+/g, "")} />
-      <DestinationSentiment destination={destination?.name} />
-      <ReviewComment destination={destination?.name} />
+      
+      <DestinationSentiment
+        destination={destination?.name}
+        key={chartKey} // triggers chart re-fetch on update
+      />
+      
+      <ReviewComment
+        destination={destination?.name}
+        onReviewSubmitted={handleSentimentUpdate} // 🔁 refresh chart after review
+      />
     </div>
   );
 };

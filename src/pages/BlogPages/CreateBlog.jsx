@@ -36,7 +36,7 @@ const CreateBlog   = () => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Token ${localStorage.getItem("token")}`, // Correct token format
+            Authorization: `Token ${localStorage.getItem("authToken")}`
           },
         }
       );

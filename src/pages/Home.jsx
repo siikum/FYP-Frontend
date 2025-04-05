@@ -21,8 +21,9 @@ const Home = () => {
 
   return (
     <main className="bg-amber-50 raleway">
-      <Navbar />
+      
       <MultiLayerParallax />
+      <Navbar />
 
       {/* Explore Beyond Imagination Section */}
       <div className="explore-section w-full flex px-20">

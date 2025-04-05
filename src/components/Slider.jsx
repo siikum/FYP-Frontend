@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/slider.css";
-import raraTrailImage1 from "../assets/images/slider-destination/rara trail.jpg";
-import Lomanthang from "../assets/images/slider-destination/lomanthang-1.jpg";
-import upperMustang from "../assets/images/slider-destination/upper-mustang.jpg";
-import village from "../assets/images/slider-destination/village.jpg";
-import bara from "../assets/images/slider-destination/Bara-1.jpg";
-import manang from "../assets/images/slider-destination/manang.png";
-import dolpo from "../assets/images/slider-destination/upper dolpo.jpg";
+import singlaMane from "../assets/images/slider-destination/Singla-mane.jpg";
+import apiHimal from "../assets/images/slider-destination/api-himal.jpg";
+import shivaDhara from "../assets/images/slider-destination/shivav-dhara.jpg";
+import tsumValley from "../assets/images/slider-destination/tsum-valley.jpg";
+import limiValley from "../assets/images/slider-destination/limi-valley.jpg";
+import sheyPhoksundo from "../assets/images/slider-destination/shey-phoksundo.jpg";
 import { motion } from "framer-motion";
 
 const Slider = ({ shouldAnimate }) => {
@@ -39,65 +38,44 @@ const Slider = ({ shouldAnimate }) => {
   };
 
   useEffect(() => {
-    sliderRef.scrollLeft += 400;
+    sliderRef.current.scrollLeft += 400;
   }, []);
 
-  const handleClick = () => {
-    navigate("/destinations/Rara"); // Ensure this matches your Route path
-  };
+  const destinations = [
+    { name: "Singla Mane, Rasuwa", path: "singla-mane", image: singlaMane },
+    { name: "Api Himal Base Camp, Darchula", path: "api-himal-base-camp", image: apiHimal },
+    { name: "Shiva Dhara, Solukhumbu", path: "shiva-dhara", image: shivaDhara },
+    { name: "Tsum Valley, Gorkha", path: "tsum-valley", image: tsumValley },
+    { name: "Limi Valley, Humla", path: "limi-valley", image: limiValley },
+    { name: "Shey Phoksundo Lake, Dolpa", path: "shey-phoksundo-lake", image: sheyPhoksundo },
+  ];
+
   return (
     <motion.div
-      initial={{
-        opacity: 0,
-        y: "100%",
-      }}
+      initial={{ opacity: 0, y: "100%" }}
       animate={{
         opacity: shouldAnimate && [0, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1],
         y: shouldAnimate && "0",
       }}
-      transition={{
-        duration: 2,
-        ease: "easeInOut",
-        delay: 0.15,
-      }}
+      transition={{ duration: 2, ease: "easeInOut", delay: 0.15 }}
       className="slider-container"
       ref={sliderRef}
+      onMouseDown={handleMouseDown}
+      onMouseLeave={handleMouseLeave}
+      onMouseUp={handleMouseUp}
+      onMouseMove={handleMouseMove}
     >
-      {/* Add images inside slider boxes */}
-      <div
-        className="slider-box"
-        onClick={handleClick}
-        style={{ cursor: "pointer" }}
-      >
-        <div className="text">Rara Lake, Mugu</div>
-        <img src={raraTrailImage1} alt="Image 1" />
-      </div>
-
-      <div className="slider-box">
-        <div className="text">Lomanthang, Mustang</div>
-        <img src={Lomanthang} alt="Image 2" />
-      </div>
-      <div className="slider-box">
-        <div className="text">Lomanthang, Mustang</div>
-        <img src={village} alt="Image 3" />
-      </div>
-      <div className="slider-box">
-        <div className="text">Manang, Mustang</div>
-        <img src={manang} alt="Image 4" />
-      </div>
-      <div className="slider-box">
-        <div className="text">Upper Dolpo, Dolpa</div>
-        <img src={dolpo} alt="Image 5" />
-      </div>
-      <div className="slider-box">
-        <div className="text">Mainali Farm House, Bara</div>
-        <img src={bara} alt="Image 6" />
-      </div>
-      <div className="slider-box">
-        <div className="text">Upper Mustang, Mustang</div>
-
-        <img src={upperMustang} alt="Image 7" />
-      </div>
+      {destinations.map((destination, index) => (
+        <div
+          key={index}
+          className="slider-box"
+          onClick={() => navigate(`/destination/${destination.path}`)}
+          style={{ cursor: "pointer" }}
+        >
+          <div className="text">{destination.name}</div>
+          <img src={destination.image} alt={destination.name} />
+        </div>
+      ))}
     </motion.div>
   );
 };
