@@ -1,56 +1,50 @@
 import React from "react";
-import "../styles/Fall.css";
-import Leaf1 from "../assets/images/leaf/leaf 1.png";
-import Navbar from "../components/Navbar";
 import { motion } from "framer-motion";
+import BackgroundImage from "../assets/images/AboutImage1.jpg";
+import Navbar from "../components/Navbar";
+import AboutTrailHimalaya from "../components/AboutTrailHimalaya";
 
-function App() {
-  const leafCount = 6; // The number of leaves you want falling
-
-  // Function to generate random position and delay
-  const getRandomPosition = () => {
-    return Math.random() * 100; // Random left position between 0% and 100%
-  };
-
-  const getRandomDuration = () => {
-    return Math.random() * 3 + 5; // Random duration between 5s and 8s
-  };
-
-  const getRandomDelay = () => {
-    return Math.random() * 2 + 0; // Random delay between 0s and 2s
-  };
-
+const About = () => {
   return (
-    <div className="relative min-h-screen bg-beige-100 overflow-hidden">
-      <Navbar />
-      {/* Falling Leaves */}
-      {Array.from({ length: leafCount }).map((_, index) => (
-        <motion.img
-          key={index}
-          src={Leaf1}
-          initial={{ y: -400, x: getRandomPosition() + "%" }}
-          alt="Falling Leaf"
-          className="leaf absolute top-0 fall-animation"
-          style={{
-            left: `${getRandomPosition}%`,
-            animationDuration: `${getRandomDuration()}s`,
-            animationDelay: `${getRandomDelay()}s`,
-          }}
-        />
-      ))}
+    <>
+      {/* Landing Section */}
+      <section className="relative w-full raleway h-screen overflow-hidden bg-[#0B3D20]">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-10 border-4 border-[#0B3D20]">
+          <img
+            src={BackgroundImage}
+            alt="Sustainable Nepal"
+            className="w-full h-full object-cover animate-zoomSlow"
+          />
+        </div>
 
-      {/* Slogan in the center */}
-      <div
-        className="absolute inset-0 flex items-center justify-center text-4xl font-bold px-6 py-4"
-        style={{ color: "#013220" }}
-      >
-        <p className="text-center text-6xl">
-          Promote Sustainable Travel, <br />
-          Support Local Economy.
-        </p>
-      </div>
-    </div>
+        {/* Navbar */}
+        <div className="absolute top-0 left-0 w-full z-20">
+          <Navbar />
+        </div>
+
+        {/* Text Content */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 2, duration: 1 }}
+          className="relative z-20 flex flex-col items-center justify-center h-full text-white text-center px-4"
+        >
+          <h1 className="text-4xl md:text-7xl font-serif font-bold leading-tight tracking-wide">
+            Support a Sustainable <br className="hidden md:block" />
+            Future
+          </h1>
+          <p className="mt-6 text-lg md:text-xl max-w-2xl">
+            Embrace conscious travel. Protect the pristine landscapes. Let nature
+            breathe through your journey.
+          </p>
+        </motion.div>
+      </section>
+
+      {/* Scroll Section */}
+      <AboutTrailHimalaya />
+    </>
   );
-}
+};
 
-export default App;
+export default About;

@@ -8,7 +8,6 @@ import TrialPage from "./pages/trial/TrialPage..jsx";
 import DestionationPage from "./pages/DestinationPage/DestinationPage.jsx";
 import IndividualDestination from "./pages/IndividualDestion.tsx/IndividualDestination.jsx";
 import TripPlannerForm from "./pages/TripPlannerForm.jsx";
-import SentimentTest from "./pages/SentimentTest.jsx";
 import About from "./pages/About.jsx";
 import IndividualBlog from "./pages/BlogPages/IndividualBlog.jsx";
 import BlogList from "./pages/BlogPages/BlogList.jsx";
@@ -39,7 +38,6 @@ function App() {
         {/* <PrivateRoute path="/home" component={Post} /> */}
         {/* <Route path="/blog/:id" element={<BlogDetail />} /> */}
         <Route path="/TripPlannerForm" element={<TripPlannerForm />} />
-        <Route path="/SentimentTest" element={<SentimentTest />} />
         <Route path="/About" element={<About />} />
         <Route path="/blog" element={<BlogList />} />
         <Route path="/blog/:id" element={<IndividualBlog />} />
