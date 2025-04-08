@@ -67,7 +67,7 @@ const TripPlannerForm = () => {
   return (
     <div className="w-full h-full">
       <Navbar />
-      {/* <MapLanding /> */}
+      <MapLanding /> 
 
       {/* Background Image Section */}
       <div
