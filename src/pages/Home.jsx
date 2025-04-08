@@ -2,8 +2,9 @@ import "../styles/home.css";
 import Navbar from "../components/Navbar";
 // import SentimentAnalysis from "../components/SentimentAnalysis";
 import ReactPlayer from "react-player";
-import Footer from "../components/Footer"; // Import Footer component
-import Slider from "../components/Slider"; // Import Slider
+import Footer from "../components/Footer"; 
+import Slider from "../components/Slider";
+import TopDestination from "../components/TopDestinations"; // Import Slider
 import MultiLayerParallax from "./trial/MultiLayerParallax";
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
@@ -62,6 +63,8 @@ const Home = () => {
             to share
           </h1> */}
       </div>
+
+      <TopDestination />
 
       {/* Footer added here */}
       <Footer />

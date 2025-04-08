@@ -17,7 +17,6 @@ import AdminDashboard from "./pages/admin_dashboard.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import NewSignUpPage from "./pages/NewSignUpPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
-import Chatting from "./pages/Chat/Chat.jsx";
 
 function App() {
   console.log("App Component Loaded!");
@@ -48,7 +47,7 @@ function App() {
         <Route path="/ProfilePage" element={<ProfilePage />} />
         <Route path="/NewSignUpPage" element={<NewSignUpPage />} />
         <Route path="/LoginPage" element={<LoginPage />} />
-        <Route path="/Chat/Chat" element={<Chatting />} />
+
       </Routes>
     </Router>
   );

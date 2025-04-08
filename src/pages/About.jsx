@@ -5,6 +5,8 @@ import Navbar from "../components/Navbar";
 import AboutTrailHimalaya from "../components/AboutTrailHimalaya";
 import FeaturedCreators from "../components/FeaturedCreators";
 import ContactUs from "../components/ContactUs";
+import Footer from "../components/Footer"; 
+
 
 
 const About = () => {
@@ -160,6 +162,7 @@ const About = () => {
       </section>
 
       <ContactUs />
+      <Footer />
     </>
   );
 };

@@ -80,7 +80,9 @@ const Navbar = ({ isBlack = false }) => {
         {/* Logo */}
         <div className="logo">
           <Link to="/">
-            <h1 className={`text-xl font-bold ${textColorClass}`}>Logo</h1>
+          <h1 className={`text-2xl font-extrabold tracking-wide font-serif text-[#0B3D20]`}>
+            <span className="text-amber-50">Trail</span><span className="text-[#295b42]">Himalaya</span>
+          </h1>
           </Link>
         </div>
 
