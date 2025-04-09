@@ -107,6 +107,12 @@ const Navbar = ({ isBlack = false }) => {
             Blog
           </Link>
           <Link
+            to="/channels"
+            className={`${hoverTextColorClass} transition duration-150 ease-in-out`}
+          >
+            Channels
+          </Link>
+          <Link
             to="/About"
             className={`${hoverTextColorClass} transition duration-150 ease-in-out`}
           >

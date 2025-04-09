@@ -15,25 +15,51 @@ const LoginPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setError('');
+
+  //   try {
+  //     const response = await axios.post('http://127.0.0.1:8000/account/login/', formData);
+  //     console.log(response.data);
+
+  //     // ✅ Save token and login state
+  //     localStorage.setItem('authToken', response.data.token);
+  //     localStorage.setItem('isLoggedIn', 'true');
+  //     localStorage.setItem("username", response.data.username);
+
+  //     alert("Login Successful!");
+  //     navigate("/"); // redirect after login
+  //   } catch (error) {
+  //     setError(error.response?.data?.error || 'Invalid credentials');
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
+  
     try {
       const response = await axios.post('http://127.0.0.1:8000/account/login/', formData);
-      console.log(response.data);
-
-      // ✅ Save token and login state
-      localStorage.setItem('authToken', response.data.token);
+      const data = response.data;
+  
+      console.log("✅ Logged in user:", data.username);
+  
+      // ✅ Save token and username
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('username', data.username);
       localStorage.setItem('isLoggedIn', 'true');
+      console.log(localStorage.getItem("username"));
 
       alert("Login Successful!");
-      navigate("/"); // redirect after login
+      navigate("/"); // or wherever you redirect
     } catch (error) {
+      console.error("Login error:", error.response?.data);
+
       setError(error.response?.data?.error || 'Invalid credentials');
     }
   };
-
+  
   return (
     <div className="flex h-screen raleway bg-amber-50 font-raleway">
       {/* Left Side: Image */}

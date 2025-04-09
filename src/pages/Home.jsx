@@ -9,9 +9,7 @@ import MultiLayerParallax from "./trial/MultiLayerParallax";
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import firstIMG from "../assets/images/1.jpg";
-import secondIMG from "../assets/images/2.jpg";
-import thirdIMG from "../assets/images/3.jpg";
-import fourthIMG from "../assets/images/4.jpg";
+
 
 const Home = () => {
   const ref = useRef(null);
@@ -63,6 +61,7 @@ const Home = () => {
             to share
           </h1> */}
       </div>
+
 
       <TopDestination />
 

@@ -17,6 +17,8 @@ import AdminDashboard from "./pages/admin_dashboard.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import NewSignUpPage from "./pages/NewSignUpPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
+import ChannelList from "./pages/channels/ChannelList.jsx";
+import ChannelMessage from "./pages/channels/ChannelMessage.jsx"; 
 
 function App() {
   console.log("App Component Loaded!");
@@ -47,7 +49,9 @@ function App() {
         <Route path="/ProfilePage" element={<ProfilePage />} />
         <Route path="/NewSignUpPage" element={<NewSignUpPage />} />
         <Route path="/LoginPage" element={<LoginPage />} />
-
+        <Route path="/channels" element={<ChannelList />} />
+        <Route path="/channels/:id" element={<ChannelMessage />} />
+        
       </Routes>
     </Router>
   );

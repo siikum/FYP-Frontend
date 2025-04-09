@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import mapImage from "../assets/images/nepal - map.webp";
 import bgImage from "../assets/images/map-bg-1.jpg";
@@ -6,7 +6,7 @@ import bgImage from "../assets/images/map-bg-1.jpg";
 const pins = [
   { id: 1, top: "25%", left: "19%", url: "/destination/kailash-overland", name: "kailash parbhat" },
   { id: 2, top: "62%", left: "60%", url: "/destination/tsum-valley", name: "tsum valley" },
-  { id: 3, top: "35%", left: "26%", url: "/destination/daphe-lagna", name: "Daphne Lagna Pass" },
+  { id: 3, top: "35%", left: "26%", url: "/destination/daphne-lagna-pass", name: "Daphne Lagna Pass" },
   { id: 4, top: "50%", left: "45%", url: "/destination/sekong-lake", name: "Sekong Lake" },
   { id: 5, top: "58%", left: "70%", url: "/destination/singla-mane", name: "Singla Mane" },
   { id: 6, top: "72%", left: "80%", url: "/destination/mundhum-trail", name: "Khotang" },
@@ -19,6 +19,25 @@ const pins = [
 
 const MapLanding = () => {
   const navigate = useNavigate();
+
+  const [activePins, setActivePins] = useState(getRandomPins(3, pins.length));
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActivePins(getRandomPins(2, pins.length));
+    }, 4000);
+  
+    return () => clearInterval(interval);
+  }, []);
+  
+  function getRandomPins(count, total) {
+    const selected = new Set();
+    while (selected.size < count) {
+      selected.add(Math.floor(Math.random() * total));
+    }
+    return [...selected];
+  }
+  
 
   return (
     <div
@@ -45,21 +64,27 @@ const MapLanding = () => {
           alt="Nepal Map"
           className="w-full h-auto object-contain relative z-10"
         />
-        {pins.map((pin) => (
-          <div
-            key={pin.id}
-            onClick={() => navigate(pin.url)}
-            title={pin.name}
-            className="absolute z-20 cursor-pointer"
-            style={{
-              top: pin.top,
-              left: pin.left,
-              transform: "translate(-50%, -50%)",
-            }}
-          >
-            <div className="w-4 h-4 bg-amber-50 border-2 border-white rounded-full shadow-md hover:scale-195 transition-transform duration-15 0" />
-          </div>
-        ))}
+        {pins.map((pin, index) => (
+        <div
+          key={pin.id}
+          onClick={() => navigate(pin.url)}
+          title={pin.name}
+          className="absolute z-20 cursor-pointer"
+          style={{
+            top: pin.top,
+            left: pin.left,
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          <span className="relative flex h-4 w-4">
+            {activePins.includes(index) && (
+              <span className="animate-ping   absolute inline-flex  h-5 w-5 rounded-full bg-amber-50 opacity-95" />
+            )}
+            <span className="relative inline-flex rounded-full h-4 w-4 bg-amber-50 border-2 border-white shadow-md" />
+          </span>
+        </div>
+      ))}
+
       </div>
     </div>
   );
