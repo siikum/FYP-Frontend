@@ -8,6 +8,8 @@ import axios from "axios";
 import DailyForecast from "../../components/DailyForecast";
 import DestinationSentiment from "../../components/DestinationSentiment";
 import ReviewComment from "../../components/ReviewComment";
+import Footer from "../../components/Footer"; 
+
 
 const IndividualDestination = () => {
   const { slug } = useParams();
@@ -163,6 +165,8 @@ const IndividualDestination = () => {
         destination={destination?.name}
         onReviewSubmitted={handleSentimentUpdate} // 🔁 refresh chart after review
       />
+
+      <Footer />
     </div>
   );
 };

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { motion } from "framer-motion";
+import Footer from "../../components/Footer"; 
+
 
 export default function ChannelList() {
   const navigate = useNavigate();
@@ -100,6 +102,7 @@ export default function ChannelList() {
           ))}
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

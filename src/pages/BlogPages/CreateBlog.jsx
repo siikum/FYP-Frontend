@@ -3,8 +3,9 @@ import Navbar from "../../components/Navbar";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import axios from "axios";
+import { Typewriter } from "react-simple-typewriter";
 
-const CreateBlog   = () => {
+const CreateBlog = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -27,22 +28,21 @@ const CreateBlog   = () => {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
-      formData.append("image", file); // Appending the file
+      formData.append("image", file);
 
-      // Send the POST request with the form data
       const response = await axios.post(
         "http://127.0.0.1:8000/blog/blogposts/create/",
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Token ${localStorage.getItem("authToken")}`
+            Authorization: `Token ${localStorage.getItem("authToken")}`,
           },
         }
       );
 
       if (response.status === 201) {
-        navigate("/blog"); // Redirect to blogs page after successful post
+        navigate("/blog");
       }
     } catch (err) {
       console.log(err);
@@ -53,7 +53,7 @@ const CreateBlog   = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-amber-50 py-[100px]">
+    <div className="flex flex-col min-h-screen font-serif bg-[#f3f8f6] py-[100px]">
       <Navbar isBlack={true} />
       <div className="flex gap-x-20 h-full px-[10%]">
         <motion.div
@@ -61,68 +61,85 @@ const CreateBlog   = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: "easeInOut" }}
           viewport={{ once: true }}
-          className="flex flex-col mt-[150px] fixed gap-y-4 w-[35%]"
+          className="flex flex-col mt-[150px] gap-y-4 w-[35%]"
         >
-          <div className="text-9xl raleway font-bold break-words">Blogs</div>
-          <div className="w-[50%] text-2xl raleway font-medium break-words self-end text-end">
-            Share your travel story with the world
+          <div className="text-9xl font-serif font-bold break-words">Blogs</div>
+          <div className="mt-4 mr-30 text-mm italic text-black w-[70%] self-end text-end">
+            <Typewriter
+              words={[
+                "“Every journey begins with a story. Start yours today.”",
+              ]}
+              loop={false}
+              cursor
+              cursorStyle="_"
+              typeSpeed={200}
+              deleteSpeed={0}
+              delaySpeed={3000}
+            />
           </div>
         </motion.div>
 
-        <div className="w-[50%]"></div>
+        <div className="w-[50%] pt-[100px] flex justify-center">
+          <div className="bg-white shadow-md rounded-xl p-10 w-full max-w-2xl">
+            <h2 className="text-3xl font-bold text-[#0B3D20] mb-6">
+              Share Your Journey
+            </h2>
+            <p className="text-gray-600 mb-8 text-md leading-relaxed">
+              Inspire others by sharing your travel story. Your experience might
+              be the spark someone needs to explore the world.
+            </p>
 
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col flex-1 h-full justify-center w-[50%] pt-[100px] gap-y-10"
-        >
-          <div className="flex flex-col h-full w-full text-2xl gap-y-10">
-            {error && (
-              <div className="text-red-500 font-medium text-lg">{error}</div>
-            )}
+            <form onSubmit={handleSubmit} className="flex flex-col gap-y-6">
+              {error && (
+                <div className="text-red-500 font-medium text-lg">{error}</div>
+              )}
 
-            <div className="flex flex-col gap-y-4">
-              <div className="font-medium">Title</div>
-              <input
-                className="border-2 border-gray-400 p-4 text-lg rounded-md"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </div>
+              <div className="flex flex-col gap-y-2">
+                <label className="text-lg font-semibold">Title</label>
+                <input
+                  className="border border-gray-400 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0B3D20]"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Give your blog a title"
+                />
+              </div>
 
-            <div className="flex flex-col gap-y-4">
-              <div className="font-medium">Image</div>
-              <input
-                type="file"
-                onChange={(e) => setFile(e.target.files[0])}
-                id="fileInput"
-                className="hidden"
-              />
-              <label
-                htmlFor="fileInput"
-                className="w-full h-[64px] border-2 border-gray-400 p-4 text-lg rounded-md"
+              <div className="flex flex-col gap-y-2">
+                <label className="text-lg font-semibold">Image</label>
+                <input
+                  type="file"
+                  onChange={(e) => setFile(e.target.files[0])}
+                  id="fileInput"
+                  className="hidden"
+                />
+                <label
+                  htmlFor="fileInput"
+                  className="cursor-pointer border border-gray-400 p-3 rounded-md bg-white hover:bg-gray-100"
+                >
+                  {file ? file.name : "Select an image"}
+                </label>
+              </div>
+
+              <div className="flex flex-col gap-y-2">
+                <label className="text-lg font-semibold">Description</label>
+                <textarea
+                  className="border border-gray-400 p-3 rounded-md h-[160px] resize-none focus:outline-none focus:ring-2 focus:ring-[#0B3D20]"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Tell your story..."
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="text-lg font-medium w-full px-6 py-3 rounded-md text-white bg-[#0B3D20] hover:bg-green-900"
               >
-                {file ? file.name : "Please select an image"}
-              </label>
-            </div>
-
-            <div className="flex flex-col gap-y-4">
-              <div className="font-medium">Description</div>
-              <textarea
-                className="border-2 h-[200px] border-gray-400 text-lg rounded-md p-2"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="text-xl font-medium w-fit text-white bg-orange-500 hover:bg-orange-400 self-end rounded-3xl px-6 py-2 cursor-pointer"
-            >
-              {loading ? "Creating..." : "Create"}
-            </button>
+                {loading ? "Creating..." : "Create Blog"}
+              </button>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

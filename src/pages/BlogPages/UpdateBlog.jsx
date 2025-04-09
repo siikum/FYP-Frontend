@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import axios from "axios";
-import { motion } from "framer-motion"; // <-- Add this import
+import { motion } from "framer-motion";
+import { Typewriter } from "react-simple-typewriter";
 
 const UpdateBlog = () => {
-  const { id } = useParams(); // Get blog id from URL
+  const { id } = useParams();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [file, setFile] = useState(null);
@@ -14,17 +15,13 @@ const UpdateBlog = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch blog data by ID
     const fetchBlogData = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:8000/blog/blogposts/${id}`
-        );
+        const response = await fetch(`http://localhost:8000/blog/blogposts/${id}`);
         const data = await response.json();
         if (data) {
           setTitle(data.title);
           setDescription(data.description);
-          // Set the image if it exists
           setFile(data.image ? data.image : null);
         }
       } catch (err) {
@@ -43,19 +40,17 @@ const UpdateBlog = () => {
     formData.append("title", title);
     formData.append("description", description);
     if (file && typeof file !== "string") {
-      formData.append("image", file); // Append image only if it's a file object
+      formData.append("image", file);
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:8000/blog/blogposts/${id}/update/`,
-        {
-          method: "PUT", // We are updating the blog
-          body: formData,
-        }
-      );
+      const response = await fetch(`http://localhost:8000/blog/blogposts/${id}/update/`, {
+        method: "PUT",
+        body: formData,
+      });
+
       if (response.ok) {
-        navigate(`/blog/${id}`); // Redirect to the updated blog page
+        navigate(`/blog/${id}`);
       } else {
         const errorData = await response.json();
         setError(errorData.detail || "Failed to update blog");
@@ -68,7 +63,7 @@ const UpdateBlog = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-amber-50 py-[100px]">
+    <div className="flex flex-col min-h-screen font-serif bg-[#f3f8f6] py-[100px]">
       <Navbar isBlack={true} />
       <div className="flex gap-x-20 h-full px-[10%]">
         <motion.div
@@ -76,82 +71,95 @@ const UpdateBlog = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: "easeInOut" }}
           viewport={{ once: true }}
-          className="flex flex-col mt-[150px] fixed gap-y-4 w-[35%]"
+          className="flex flex-col mt-[150px] gap-y-4 w-[35%]"
         >
-          <div className="text-9xl raleway font-bold break-words">
-            Update Blog
+          <div className="text-9xl font-serif font-bold whitespace-nowrap">
+            Update
           </div>
-          <div className="w-[50%] text-2xl raleway font-medium break-words self-end text-end">
-            Edit your travel story
+          <div className="mt-4 text-mm italic text-black w-[70%] self-end text-end">
+            <Typewriter
+              words={["Make changes to your journey — keep your story alive."]}
+              loop={false}
+              cursor
+              cursorStyle="_"
+              typeSpeed={200}
+              deleteSpeed={0}
+              delaySpeed={3000}
+            />
           </div>
         </motion.div>
 
-        <div className="w-[50%]"></div>
+        <div className="w-[50%] pt-[100px] flex justify-center">
+          <div className="bg-white shadow-md rounded-xl p-10 w-full max-w-2xl">
+            <h2 className="text-3xl font-bold text-[#0B3D20] mb-6">
+              Edit Your Story
+            </h2>
+            <p className="text-gray-600 mb-8 text-md leading-relaxed">
+              Updating your travel experience helps others learn more from your journey.
+            </p>
 
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col flex-1 h-full justify-center w-[50%] pt-[100px] gap-y-10"
-        >
-          <div className="flex flex-col h-full w-full text-2xl gap-y-10">
-            {error && (
-              <div className="text-red-500 font-medium text-lg">{error}</div>
-            )}
-
-            <div className="flex flex-col gap-y-4">
-              <div className="font-medium">Title</div>
-              <input
-                className="border-2 border-gray-400 p-4 text-lg rounded-md"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </div>
-
-            <div className="flex flex-col gap-y-4">
-              <div className="font-medium">Image</div>
-
-              {/* Existing Image Preview */}
-              {file && typeof file === "string" && (
-                <img
-                  src={file}
-                  alt="Current Blog"
-                  className="h-40 w-auto rounded-md"
-                />
+            <form onSubmit={handleSubmit} className="flex flex-col gap-y-6">
+              {error && (
+                <div className="text-red-500 font-medium text-lg">{error}</div>
               )}
 
-              <input
-                type="file"
-                onChange={(e) => setFile(e.target.files[0])}
-                id="fileInput"
-                className="hidden"
-              />
-              <label
-                htmlFor="fileInput"
-                className="w-full h-[64px] border-2 border-gray-400 p-4 text-lg rounded-md"
+              <div className="flex flex-col gap-y-2">
+                <label className="text-lg font-semibold">Title</label>
+                <input
+                  className="border border-gray-400 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0B3D20]"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Update your blog title"
+                />
+              </div>
+
+              <div className="flex flex-col gap-y-2">
+                <label className="text-lg font-semibold">Image</label>
+
+                {file && typeof file === "string" && (
+                  <img
+                    src={file}
+                    alt="Current Blog"
+                    className="h-40 w-auto rounded-md object-cover"
+                  />
+                )}
+
+                <input
+                  type="file"
+                  onChange={(e) => setFile(e.target.files[0])}
+                  id="fileInput"
+                  className="hidden"
+                />
+                <label
+                  htmlFor="fileInput"
+                  className="cursor-pointer border border-gray-400 p-3 rounded-md bg-white hover:bg-gray-100"
+                >
+                  {file && typeof file !== "string"
+                    ? file.name
+                    : "Select a new image (optional)"}
+                </label>
+              </div>
+
+              <div className="flex flex-col gap-y-2">
+                <label className="text-lg font-semibold">Description</label>
+                <textarea
+                  className="border border-gray-400 p-3 rounded-md h-[160px] resize-none focus:outline-none focus:ring-2 focus:ring-[#0B3D20]"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Update your story..."
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="text-lg font-medium w-full px-6 py-3 rounded-md text-white bg-[#0B3D20] hover:bg-green-900"
               >
-                {file && typeof file !== "string"
-                  ? file.name
-                  : "Please select an image (optional)"}
-              </label>
-            </div>
-
-            <div className="flex flex-col gap-y-4">
-              <div className="font-medium">Description</div>
-              <textarea
-                className="border-2 h-[200px] border-gray-400 text-lg rounded-md p-2"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="text-xl font-medium w-fit text-white bg-orange-500 hover:bg-orange-400 self-end rounded-3xl px-6 py-2 cursor-pointer"
-            >
-              {loading ? "Updating..." : "Update"}
-            </button>
+                {loading ? "Updating..." : "Update Blog"}
+              </button>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

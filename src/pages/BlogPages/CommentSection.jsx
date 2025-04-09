@@ -137,7 +137,7 @@ const CommentsSection = ({ postId }) => {
         <div className="flex justify-end mt-4">
           <button
             onClick={handleSubmitComment}
-            className="bg-orange-500 rounded-4xl py-2 px-6 text-white"
+            className="bg-[#0B3D20] rounded-4xl py-2 px-6 text-white"
             disabled={loading}
           >
             {loading ? "Posting..." : "Comment"}
@@ -200,7 +200,7 @@ const CommentsSection = ({ postId }) => {
                     <div className="flex justify-end mt-4">
                       <button
                         onClick={() => handleUpdateComment(value.id)}
-                        className="bg-orange-500 rounded-4xl py-2 px-6 text-white"
+                        className="bg-[#0B3D20] rounded-4xl py-2 px-6 text-white"
                       >
                         Update Comment
                       </button>

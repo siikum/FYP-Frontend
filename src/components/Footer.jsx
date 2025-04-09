@@ -2,7 +2,7 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#183029] text-[#d2e3dc] px-6 py-16">
+    <footer className="bg-[#183029] max-w-s text-[#d2e3dc] px-6 py-16">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
 
         {/* Left Contact Info & Logo */}

@@ -26,7 +26,7 @@ const IndividualBlog = () => {
   }
 
   return (
-    <div className="flex flex-col bg-amber-50 py-[100px]">
+    <div className="flex flex-col bg-[#f3f8f6] py-[100px]">
       <Navbar isBlack={true} />
       <div className="flex flex-col gap-y-16 px-[10%]">
         <motion.div
@@ -50,18 +50,18 @@ const IndividualBlog = () => {
           viewport={{ once: true }}
           className="flex flex-col gap-y-4"
         >
-          <div className="w-full raleway font-medium flex items-center gap-x-4">
+          <div className="w-full font-serif font-medium flex items-center gap-x-4">
             <div className="px-4 py-1 rounded-2xl bg-black text-white text-sm">
               Blog
             </div>
             <div className="">{blog.date}</div>
           </div>
-          <div className="text-7xl raleway font-bold w-[45%]">
+          <div className="text-7xl font-serif font-bold w-[45%]">
             {blog.title}
           </div>
         </motion.div>
         <div className="flex flex-col gap-y-5">
-          <div className="text-2xl raleway text-justify w-[60%]">
+          <div className="text-2xl font-serif text-justify w-[60%]">
             {blog.description}
           </div>
         </div>

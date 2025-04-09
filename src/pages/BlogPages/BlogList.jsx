@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { motion } from "framer-motion";
+import { Typewriter } from "react-simple-typewriter";
+import Footer from "../../components/Footer";
 
 const BlogList = () => {
   const navigate = useNavigate();
@@ -11,7 +13,7 @@ const BlogList = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await fetch("http://localhost:8000/blog/blogposts"); // Make sure this is correct
+        const response = await fetch("http://localhost:8000/blog/blogposts/"); // Make sure this is correct
         if (response.ok) {
           const data = await response.json();
           console.log(data); // For debugging, see if the blog posts are returned
@@ -59,7 +61,7 @@ const BlogList = () => {
   };
 
   return (
-    <div className="flex flex-col bg-amber-50 py-[100px]">
+    <div className="flex flex-col min-h-screen font-serif bg-[#f3f8f6] py-[100px]">
       <Navbar isBlack={true} />
       <div className="flex gap-x-20 px-[10%]">
         <motion.div
@@ -69,15 +71,24 @@ const BlogList = () => {
           viewport={{ once: true }}
           className="flex flex-col mt-[150px] fixed gap-y-4 w-[35%]"
         >
-          <div className="text-9xl raleway font-bold break-words">Blogs</div>
-          <div className="w-[50%] text-2xl raleway font-medium break-words self-end text-end">
-            Explore the world through the eyes of our travelers
+          <div className="text-9xl font-serif font-bold break-words">Blogs</div>
+          <div className="w-[50%] mt-5 font-serif text-2xl font-medium break-words self-end text-end mr-62">
+            <Typewriter
+              words={["Share your stories."]}
+              loop={false}
+              cursor
+              cursorStyle="_"
+              typeSpeed={200}
+              deleteSpeed={0}
+              delaySpeed={4000}
+            />
           </div>
+
           <button
             onClick={() => {
               navigate("/blog/add");
             }}
-            className="text-2xl font-medium w-fit text-white bg-orange-500 hover:bg-orange-400 self-end rounded-3xl px-6 py-2 cursor-pointer"
+            className="text-2xl font-medium mr-62 w-fit text-white bg-[#0B3D20] hover:bg-green-900 self-end rounded-3xl px-6 py-2 cursor-pointer"
           >
             Create
           </button>
@@ -106,7 +117,7 @@ const BlogList = () => {
                       />
                     </div>
                   </div>
-                  <div className="w-full raleway font-medium flex items-center gap-x-4">
+                  <div className="w-full font-serif font-medium flex items-center gap-x-4">
                     <div className="px-4 py-1 rounded-2xl bg-black text-white text-sm">
                       Blog
                     </div>
@@ -144,10 +155,12 @@ const BlogList = () => {
                       )}
                     </button>
                   </div>
-                  <div className="text-3xl raleway font-bold">{blog.title}</div>
+                  <div className="text-3xl font-serif font-bold">
+                    {blog.title}
+                  </div>
                 </div>
 
-                <div className="text-base raleway w-full line-clamp-4">
+                <div className="text-base font-serif w-full line-clamp-4">
                   {blog.description}
                 </div>
                 <hr className="mt-10" />
@@ -158,6 +171,7 @@ const BlogList = () => {
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

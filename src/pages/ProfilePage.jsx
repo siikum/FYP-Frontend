@@ -1,121 +1,106 @@
-// ✅ CLEANED & ORGANIZED PROFILE PAGE
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { FaPencilAlt, FaTrash, FaUpload } from 'react-icons/fa';
+import { Typewriter } from "react-simple-typewriter";
+// import Footer from "../components/Footer"; 
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 const PROFILE_API_URL = `${API_BASE_URL}/account/profile/`;
+const BLOGS_API_URL = `${API_BASE_URL}/blog/blogposts/`;
 
 const ProfilePage = () => {
-  // 🧠 State Management
   const [user, setUser] = useState(null);
-  const [editedBio, setEditedBio] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
-  const [isUpdating, setIsUpdating] = useState(false);
+  const [blogs, setBlogs] = useState([]);
+  const [editedBio, setEditedBio] = useState("");
+  const [isEditingBio, setIsEditingBio] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [isEditingBio, setIsEditingBio] = useState(false);
-  const [showPicOptions, setShowPicOptions] = useState(false);
-  const [showBioOptions, setShowBioOptions] = useState(false);
-
   const fileInputRef = useRef(null);
-  const bioOptionsRef = useRef(null);
-  const picOptionsRef = useRef(null);
   const navigate = useNavigate();
 
-  // 🔐 Token Helper
-  const getAuthToken = () => localStorage.getItem('authToken');
+  const getAuthToken = () => localStorage.getItem("authToken");
 
-  // 📦 Fetch Profile
   useEffect(() => {
-    const fetchProfile = async () => {
-      setIsLoading(true);
+    const fetchProfileAndBlogs = async () => {
       const token = getAuthToken();
-      if (!token) return navigate('/login');
+      if (!token) return navigate("/login");
 
       try {
-        const res = await fetch(PROFILE_API_URL, {
+        const profileRes = await fetch(PROFILE_API_URL, {
           headers: { Authorization: `Token ${token}` },
         });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        setUser(data);
-        setEditedBio(data.bio || '');
+        if (!profileRes.ok) throw new Error("Profile fetch failed");
+        const profileData = await profileRes.json();
+        setUser(profileData);
+        setEditedBio(profileData.bio || "");
+
+        const blogsRes = await fetch(BLOGS_API_URL);
+        const blogData = await blogsRes.json();
+        const userBlogs = blogData.filter(
+          (blog) =>
+            blog.author?.toLowerCase() === profileData.username?.toLowerCase()
+        );
+        setBlogs(userBlogs);
       } catch (err) {
         console.error(err);
-        setError("Could not load profile.");
+        setError("Failed to load profile");
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
-    fetchProfile();
+
+    fetchProfileAndBlogs();
   }, [navigate]);
 
-  // 🧹 Close dropdowns
-  useEffect(() => {
-    const handleClick = (e) => {
-      if (!picOptionsRef.current?.contains(e.target)) setShowPicOptions(false);
-      if (!bioOptionsRef.current?.contains(e.target)) setShowBioOptions(false);
-    };
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, []);
-
-  // 🔄 Profile Updater
   const updateProfile = async (payload, isFormData = false) => {
     const token = getAuthToken();
-    if (!token) return false;
-    setIsUpdating(true);
-    setError(null);
-
     const headers = { Authorization: `Token ${token}` };
-    if (!isFormData) headers['Content-Type'] = 'application/json';
+    if (!isFormData) headers["Content-Type"] = "application/json";
 
     try {
       const res = await fetch(PROFILE_API_URL, {
-        method: 'PATCH',
+        method: "PATCH",
         headers,
         body: isFormData ? payload : JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const updated = await res.json();
       setUser(updated);
-      if (payload.bio !== undefined) setEditedBio(updated.bio || '');
-      return true;
+      setEditedBio(updated.bio || "");
+      setIsEditingBio(false);
     } catch (err) {
       setError("Update failed.");
-      return false;
-    } finally {
-      setIsUpdating(false);
     }
   };
 
-  // 📸 Picture Handlers
   const handleFileSelected = async (e) => {
     const file = e.target.files?.[0];
-    if (!file || !file.type.startsWith('image/')) return;
+    if (!file || !file.type.startsWith("image/")) return;
     const formData = new FormData();
-    formData.append('profile_picture', file);
+    formData.append("profile_picture", file);
     await updateProfile(formData, true);
     e.target.value = null;
   };
 
   const handleDeletePicture = () => updateProfile({ profile_picture: null });
 
-  // ✍️ Bio Handlers
   const handleSaveBio = async () => {
-    const success = await updateProfile({ bio: editedBio });
-    if (success) setIsEditingBio(false);
+    await updateProfile({ bio: editedBio });
   };
 
-  if (isLoading) return <div className="text-center py-32">Loading...</div>;
-  if (!user) return <div className="text-center py-32 text-red-500">{error || "User not found"}</div>;
+  if (loading) return <div className="text-center py-32">Loading...</div>;
+  if (!user)
+    return (
+      <div className="text-center py-32 text-red-500">
+        {error || "User not found"}
+      </div>
+    );
 
   return (
-    <div className="min-h-screen bg-amber-50 pt-24 px-4 md:px-20">
+    <div className="min-h-screen bg-[#f3f8f6] pt-24 px-4 md:px-20">
       <Navbar isBlack={true} />
-
       <input
         type="file"
         ref={fileInputRef}
@@ -124,67 +109,124 @@ const ProfilePage = () => {
         onChange={handleFileSelected}
       />
 
-      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
-        <div className="flex flex-col sm:flex-row items-center gap-6">
-          <div ref={picOptionsRef} className="relative group">
-            <img
-              src={user.profile_picture ? `${API_BASE_URL}${user.profile_picture}` : '/path/to/default-avatar.png'}
-              className="w-32 h-32 rounded-full object-cover border-2 border-gray-300 cursor-pointer"
-              alt="Profile"
-              onClick={() => setShowPicOptions((prev) => !prev)}
-            />
-            {showPicOptions && (
-              <div className="absolute z-10 mt-2 bg-white border rounded shadow-md w-40">
-                <button onClick={() => fileInputRef.current?.click()} className="block w-full px-4 py-2 hover:bg-gray-100 text-left">Change</button>
-                <button onClick={handleDeletePicture} className="block w-full px-4 py-2 hover:bg-gray-100 text-left text-red-600">Delete</button>
-              </div>
-            )}
-          </div>
+      <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-10 bg-white shadow-md rounded-2xl p-10">
+        {/* Profile Left */}
+        <div className="flex flex-col items-center md:items-start text-center md:text-left">
+          <img
+            src={
+              user.profile_picture
+                ? `${API_BASE_URL}${user.profile_picture}`
+                : "/path/to/default-avatar.png"
+            }
+            className="w-32 h-32 rounded-full object-cover border-4 border-[#0B3D20] shadow"
+            alt="Profile"
+            onClick={() => fileInputRef.current?.click()}
+          />
+          <h2 className="text-2xl font-bold text-[#0B3D20] mt-4">
+            {user.username}
+          </h2>
+          <p className="text-gray-500">
+            {user.first_name} {user.last_name}
+          </p>
 
-          <div className="text-center sm:text-left">
-            <h2 className="text-2xl font-bold">{user.username}</h2>
-            {(user.first_name || user.last_name) && (
-              <p className="text-gray-500">{user.first_name} {user.last_name}</p>
-            )}
+          <hr className="my-4 border-t border-gray-300 w-full" />
+
+          <div className="space-y-1 text-mm">
+            <p>
+              <span className="font-semibold text-[#0B3D20]">
+                Blogs Posted:
+              </span>{" "}
+              {blogs.length}
+            </p>
+            <p>
+              <span className="font-semibold text-[#0B3D20]">Email:</span>{" "}
+              {user.email}
+            </p>
           </div>
         </div>
 
-        {/* 🧾 BIO SECTION */}
-        <div className="mt-6">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold">Bio</h3>
-            <div ref={bioOptionsRef}>
+        {/* Bio Right */}
+        <div className="flex flex-col justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-[#0B3D20] flex justify-between">
+              Bio
               {!isEditingBio && (
                 <button
                   onClick={() => setIsEditingBio(true)}
-                  className="text-sm text-blue-500 hover:underline"
+                  className="text-sm text-[#0B3D20] hover:underline"
                 >
                   Edit
                 </button>
               )}
-            </div>
+            </h3>
+            {isEditingBio ? (
+              <>
+                <textarea
+                  value={editedBio}
+                  onChange={(e) => setEditedBio(e.target.value)}
+                  rows={4}
+                  className="w-full mt-2 p-3 border rounded-md text-sm"
+                  placeholder="Tell us about your travel journey..."
+                />
+                <div className="mt-2 flex gap-2 justify-end">
+                  <button
+                    onClick={() => setIsEditingBio(false)}
+                    className="text-sm px-4 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSaveBio}
+                    className="text-sm px-4 py-1 bg-[#0B3D20] text-white rounded hover:bg-green-900"
+                  >
+                    Save
+                  </button>
+                </div>
+              </>
+            ) : (
+              <p className="text-sm mt-2 text-gray-700 min-h-[5em] whitespace-pre-wrap">
+                {user.bio || (
+                  <span className="italic text-gray-400">No bio yet.</span>
+                )}
+              </p>
+            )}
           </div>
 
-          {isEditingBio ? (
-            <div className="mt-2">
-              <textarea
-                className="w-full border rounded p-2"
-                rows={4}
-                value={editedBio}
-                onChange={(e) => setEditedBio(e.target.value)}
+          <div className="mt-6">
+            <p className="text-sm italic text-gray-500 text-right">
+              <Typewriter
+                words={["“Your stories matter. Keep writing.”"]}
+                loop={false}
+                cursor
+                cursorStyle="_"
+                typeSpeed={40}
               />
-              <div className="flex justify-end mt-2 gap-2">
-                <button onClick={() => setIsEditingBio(false)} className="text-sm px-3 py-1 bg-gray-200 rounded">Cancel</button>
-                <button onClick={handleSaveBio} className="text-sm px-3 py-1 bg-amber-500 text-white rounded">Save</button>
-              </div>
-            </div>
-          ) : (
-            <p className="text-gray-700 mt-2 whitespace-pre-wrap min-h-[4em]">
-              {user.bio || <span className="italic text-gray-400">No bio added yet.</span>}
             </p>
-          )}
+          </div>
         </div>
       </div>
+
+      {/* Blog List */}
+      <div className="max-w-4xl mx-auto mt-10">
+        <h3 className="text-2xl font-bold mb-6 text-[#0B3D20]">Your Blogs</h3>
+        {blogs.length > 0 ? (
+          blogs.map((blog) => (
+            <div
+              key={blog.id}
+              onClick={() => navigate(`/blog/${blog.id}`)}
+              className="cursor-pointer mb-6 bg-white p-5 rounded-lg shadow hover:shadow-md transition"
+            >
+              <h4 className="text-xl font-semibold mb-2">{blog.title}</h4>
+              <p className="text-gray-600 line-clamp-3">{blog.description}</p>
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-500 italic">
+            You haven't written any blogs yet.
+          </p>
+        )}
+      </div>
+      {/* <Footer /> */}
     </div>
   );
 };
