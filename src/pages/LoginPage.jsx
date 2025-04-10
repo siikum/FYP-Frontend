@@ -48,6 +48,7 @@ const LoginPage = () => {
       // ✅ Save token and username
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('username', data.username);
+      localStorage.setItem("profilePicUrl", response.data.user.profilePicUrl);
       localStorage.setItem('isLoggedIn', 'true');
       console.log(localStorage.getItem("username"));
 

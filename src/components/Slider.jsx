@@ -3,10 +3,14 @@ import { useNavigate } from "react-router-dom";
 import "../styles/slider.css";
 import singlaMane from "../assets/images/slider-destination/Singla-mane.jpg";
 import apiHimal from "../assets/images/slider-destination/api-himal.jpg";
-import shivaDhara from "../assets/images/slider-destination/shivav-dhara.jpg";
-import tsumValley from "../assets/images/slider-destination/tsum-valley.jpg";
+import shivaDhara from "../assets/images/slider-destination/shivadhara.jpg";
+import tsumValley from "../assets/images/slider-destination/tsumvalley.jpg";
 import limiValley from "../assets/images/slider-destination/limi-valley.jpg";
 import sheyPhoksundo from "../assets/images/slider-destination/shey-phoksundo.jpg";
+import sekonglake from "../assets/images/slider-destination/sekonglake.jpg";
+import dlp from "../assets/images/slider-destination/dlp.jpg";
+import kailashparbhat from "../assets/images/slider-destination/kailashparbhat.jpg";
+import mundhunmTrail from "../assets/images/slider-destination/mundhumTrail.jpg";
 import { motion } from "framer-motion";
 
 const Slider = ({ shouldAnimate }) => {
@@ -42,12 +46,16 @@ const Slider = ({ shouldAnimate }) => {
   }, []);
 
   const destinations = [
-    { name: "Singla Mane, Rasuwa", path: "singla-mane", image: singlaMane },
-    { name: "Api Himal Base Camp, Darchula", path: "api-himal-base-camp", image: apiHimal },
-    { name: "Shiva Dhara, Solukhumbu", path: "shiva-dhara", image: shivaDhara },
-    { name: "Tsum Valley, Gorkha", path: "tsum-valley", image: tsumValley },
+    { name: "Sekong Lake, Mustang", path: "sekong-lake", image: sekonglake },
+    { name: "Kailash Mansarovar, Humla", path: "kailash-overland", image: kailashparbhat},
     { name: "Limi Valley, Humla", path: "limi-valley", image: limiValley },
-    { name: "Shey Phoksundo Lake, Dolpa", path: "shey-phoksundo-lake", image: sheyPhoksundo },
+    { name: "Mundhum Trail, Khotang", path: "mundhum-trail", image: mundhunmTrail },
+    { name: "Daphne Lagna Pass, Rukum", path: "daphne-lagna-pass", image: dlp},
+    { name: "Api Himal Base Camp, Darchula", path: "api-himal-base-camp", image: apiHimal},
+    { name: "Shiva Dhara, Solukhumbu", path: "shiva-dhara", image: shivaDhara },
+    { name: "Shey Phoksundo Lake, Dolpa", path: "shey-phoksundo-lake", image: sheyPhoksundo},
+    { name: "Singla Mane, Rasuwa", path: "singla-mane", image: singlaMane },
+    { name: "Tsum Valley, Gorkha", path: "tsum-valley", image: tsumValley },
   ];
 
   return (
