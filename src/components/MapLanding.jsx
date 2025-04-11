@@ -41,11 +41,11 @@ const MapLanding = () => {
 
   return (
     <div
-      className="min-h-screen bg-cover bg-center flex flex-col items-start justify-start px-10"
+      className="min-h-screen bg-cover bg-center flex font-serif flex-col items-start justify-start px-10"
       style={{ backgroundImage: `url(${bgImage})` }}
     >
       {/* Text Positioned ABOVE the Map */}
-      <div className="mt-36 ml-4 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.9)] z-30">
+      <div className="mt-36 ml-4 text-white z-30">
         <h2 className="text-5xl font-bold">
           Discover Hidden <span className="text-[#0B3D20]">Nepal</span>
         </h2>
@@ -56,8 +56,8 @@ const MapLanding = () => {
 
       {/* Map - Shifted Down */}
       <div
-        className="relative w-[600px] mt-90 ml-4"
-        style={{ transform: "rotate(13deg)" }}
+        className="relative w-[600px] mt-15 ml-4"
+        style={{ transform: "rotate(10deg)" }}
       >
         <img
           src={mapImage}

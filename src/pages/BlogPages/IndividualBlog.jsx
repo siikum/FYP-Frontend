@@ -52,16 +52,22 @@ const IndividualBlog = () => {
         >
           <div className="w-full font-serif font-medium flex items-center gap-x-4">
             <div className="px-4 py-1 rounded-2xl bg-black text-white text-sm">
-              Blog
+              #blog
+            </div>
+            <div className="px-4 py-1 rounded-2xl bg-black text-white text-sm">
+              #trekking
+            </div>
+            <div className="px-4 py-1 rounded-2xl bg-black text-white text-sm">
+              #nepal
             </div>
             <div className="">{blog.date}</div>
           </div>
-          <div className="text-7xl font-serif font-bold w-[45%]">
-            {blog.title}
+          <div className="text-5xl font-serif font-bold w-full leading-tight">
+          {blog.title}
           </div>
         </motion.div>
         <div className="flex flex-col gap-y-5">
-          <div className="text-2xl font-serif text-justify w-[60%]">
+          <div className="text-2xl font-serif text-justify w-full">
             {blog.description}
           </div>
         </div>

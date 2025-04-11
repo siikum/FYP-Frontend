@@ -61,9 +61,9 @@ const ItineraryDownload = ({ itinerary }) => {
     <div className="flex justify-center mt-4">
       <button
         onClick={handleDownload}
-        className="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600"
+        className="bg-[#295b42] text-white px-6 py-2 rounded hover:bg-[#0B3D20]"
       >
-        Download Itinerary 📄
+        Download Your Itinerary 📄
       </button>
     </div>
   );

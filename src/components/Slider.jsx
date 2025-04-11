@@ -47,23 +47,39 @@ const Slider = ({ shouldAnimate }) => {
 
   const destinations = [
     { name: "Sekong Lake, Mustang", path: "sekong-lake", image: sekonglake },
-    { name: "Kailash Mansarovar, Humla", path: "kailash-overland", image: kailashparbhat},
+    {
+      name: "Kailash Mansarovar, Humla",
+      path: "kailash-overland",
+      image: kailashparbhat,
+    },
     { name: "Limi Valley, Humla", path: "limi-valley", image: limiValley },
-    { name: "Mundhum Trail, Khotang", path: "mundhum-trail", image: mundhunmTrail },
-    { name: "Daphne Lagna Pass, Rukum", path: "daphne-lagna-pass", image: dlp},
-    { name: "Api Himal Base Camp, Darchula", path: "api-himal-base-camp", image: apiHimal},
+    {
+      name: "Mundhum Trail, Khotang",
+      path: "mundhum-trail",
+      image: mundhunmTrail,
+    },
+    { name: "Daphne Lagna Pass, Rukum", path: "daphne-lagna-pass", image: dlp },
+    {
+      name: "Api Himal Base Camp, Darchula",
+      path: "api-himal-base-camp",
+      image: apiHimal,
+    },
     { name: "Shiva Dhara, Solukhumbu", path: "shiva-dhara", image: shivaDhara },
-    { name: "Shey Phoksundo Lake, Dolpa", path: "shey-phoksundo-lake", image: sheyPhoksundo},
+    {
+      name: "Shey Phoksundo Lake, Dolpa",
+      path: "shey-phoksundo-lake",
+      image: sheyPhoksundo,
+    },
     { name: "Singla Mane, Rasuwa", path: "singla-mane", image: singlaMane },
     { name: "Tsum Valley, Gorkha", path: "tsum-valley", image: tsumValley },
   ];
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: "100%" }}
+      initial={{ opacity: 1, x: "-50%" }}
       animate={{
         opacity: shouldAnimate && [0, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 1],
-        y: shouldAnimate && "0",
+        x: shouldAnimate && "0%",
       }}
       transition={{ duration: 2, ease: "easeInOut", delay: 0.15 }}
       className="slider-container"

@@ -119,8 +119,15 @@ const BlogList = () => {
                   </div>
                   <div className="w-full font-serif font-medium flex items-center gap-x-4">
                     <div className="px-4 py-1 rounded-2xl bg-black text-white text-sm">
-                      Blog
+                      #blog
                     </div>
+                    <div className="px-4 py-1 rounded-2xl bg-black text-white text-sm">
+                      #trekking
+                    </div>
+                    <div className="px-4 py-1 rounded-2xl bg-black text-white text-sm">
+                      #nepal
+                    </div>
+
                     {/* Three-dot button */}
                     <button
                       onClick={(e) => {

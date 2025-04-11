@@ -22,9 +22,6 @@ const AboutTrailHimalaya = () => {
             Through real-time weather updates, custom itineraries, community reviews, and interactive maps,
             we empower travelers to explore responsibly and sustainably.
           </p>
-          <button className="bg-[#0B3D20] text-white px-6 py-3 uppercase tracking-wide font-semibold text-sm hover:bg-green-900 transition-all duration-300">
-            Discover More
-          </button>
         </motion.div>
       </div>
 
@@ -41,7 +38,7 @@ const AboutTrailHimalaya = () => {
         alt="Trail Himalaya"
         initial={{ scale: 1.1 }}
         whileInView={{ scale: 1 }}
-        transition={{ duration: 10, ease: "easeOut" }}
+        transition={{ duration: 6, ease: "easeOut" }}
         className="w-full h-full object-cover"
       />
     </motion.div>

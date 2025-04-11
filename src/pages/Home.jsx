@@ -45,17 +45,17 @@ const Home = () => {
 
       {/* Explore Beyond Imagination Section */}
       <div className="explore-section w-full flex pr-250 py-10">
-      <h1 className="font-serif text-3xl md:text-6xl font-bold text-left text-black leading-snug">
-        A Window to <br />
-        <span className="italic text-[#295b42]">New Adventures</span>
-      </h1>
-    </div>
+        <h1 className="font-serif text-3xl md:text-6xl font-bold text-left text-black leading-snug">
+          A Window to <br />
+          <span className="italic text-[#295b42]">New Adventures</span>
+        </h1>
+      </div>
 
       {/* Slider */}
-      <div className="px-20">
+      <div ref={ref} className="px-20">
         <Slider shouldAnimate={isInView} />
       </div>
-<br></br>
+      <br></br>
       {/* Featured Blogs */}
       <div className="px-20 py-12 bg-[#f3f8f6] font-serif">
         <h2 className="text-4xl font-bold text-[#0B3D20] mb-10">
@@ -80,9 +80,7 @@ const Home = () => {
                 <span className="bg-black text-white text-xs font-medium px-3 py-1 rounded-full w-fit">
                   Blog
                 </span>
-                <h3 className="text-xl font-bold leading-snug">
-                  {blog.title}
-                </h3>
+                <h3 className="text-xl font-bold leading-snug">{blog.title}</h3>
                 <p className="text-gray-600 text-sm line-clamp-3">
                   {blog.description}
                 </p>

@@ -57,7 +57,7 @@ const About = () => {
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.2 }}
             className="text-4xl md:text-6xl font-serif font-bold text-center mb-16"
           >
             Travel Smart. Travel Safe.
@@ -87,7 +87,7 @@ const About = () => {
                 key={idx}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: idx * 0.2 }}
+                transition={{ duration: 0.2, delay: idx * 0.2 }}
                 className="bg-white rounded-xl p-6 shadow-md"
               >
                 <div className="text-4xl">{stat.icon}</div>

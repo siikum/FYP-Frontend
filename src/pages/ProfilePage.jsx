@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { Typewriter } from "react-simple-typewriter";
-// import Footer from "../components/Footer"; 
-
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 const PROFILE_API_URL = `${API_BASE_URL}/account/profile/`;
 const BLOGS_API_URL = `${API_BASE_URL}/blog/blogposts/`;
+const MY_CHANNELS_API_URL = `${API_BASE_URL}/account/groupchats/my-channels/`;
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const [blogs, setBlogs] = useState([]);
+  const [channelsJoined, setChannelsJoined] = useState(0);
   const [editedBio, setEditedBio] = useState("");
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -24,26 +23,34 @@ const ProfilePage = () => {
   const getAuthToken = () => localStorage.getItem("authToken");
 
   useEffect(() => {
-    const fetchProfileAndBlogs = async () => {
+    const fetchData = async () => {
       const token = getAuthToken();
       if (!token) return navigate("/login");
 
       try {
-        const profileRes = await fetch(PROFILE_API_URL, {
-          headers: { Authorization: `Token ${token}` },
-        });
+        const [profileRes, blogsRes, channelsRes] = await Promise.all([
+          fetch(PROFILE_API_URL, {
+            headers: { Authorization: `Token ${token}` },
+          }),
+          fetch(BLOGS_API_URL),
+          fetch(MY_CHANNELS_API_URL, {
+            headers: { Authorization: `Token ${token}` },
+          }),
+        ]);
+
         if (!profileRes.ok) throw new Error("Profile fetch failed");
         const profileData = await profileRes.json();
         setUser(profileData);
         setEditedBio(profileData.bio || "");
 
-        const blogsRes = await fetch(BLOGS_API_URL);
-        const blogData = await blogsRes.json();
-        const userBlogs = blogData.filter(
-          (blog) =>
-            blog.author?.toLowerCase() === profileData.username?.toLowerCase()
+        const allBlogs = await blogsRes.json();
+        const userBlogs = allBlogs.filter(
+          (b) => b.author?.toLowerCase() === profileData.username?.toLowerCase()
         );
         setBlogs(userBlogs);
+
+        const userChannels = await channelsRes.json();
+        setChannelsJoined(userChannels.length);
       } catch (err) {
         console.error(err);
         setError("Failed to load profile");
@@ -52,7 +59,7 @@ const ProfilePage = () => {
       }
     };
 
-    fetchProfileAndBlogs();
+    fetchData();
   }, [navigate]);
 
   const updateProfile = async (payload, isFormData = false) => {
@@ -84,8 +91,6 @@ const ProfilePage = () => {
     e.target.value = null;
   };
 
-  const handleDeletePicture = () => updateProfile({ profile_picture: null });
-
   const handleSaveBio = async () => {
     await updateProfile({ bio: editedBio });
   };
@@ -109,62 +114,77 @@ const ProfilePage = () => {
         onChange={handleFileSelected}
       />
 
+      {/* Profile Card */}
       <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-10 bg-white shadow-md rounded-2xl p-10">
-        {/* Profile Left */}
+        {/* Left */}
         <div className="flex flex-col items-center md:items-start text-center md:text-left">
-          <img
-            src={
-              user.profile_picture
-                ? `${API_BASE_URL}${user.profile_picture}`
-                : "/path/to/default-avatar.png"
-            }
-            className="w-32 h-32 rounded-full object-cover border-4 border-[#0B3D20] shadow"
-            alt="Profile"
+          <div
+            className="relative group cursor-pointer"
             onClick={() => fileInputRef.current?.click()}
-          />
+          >
+            <img
+              src={
+                user.profile_picture
+                  ? `${API_BASE_URL}${user.profile_picture}`
+                  : "/path/to/default-avatar.png"
+              }
+              className="w-32 h-32 rounded-full object-cover border-4 border-[#0B3D20] shadow"
+              alt="Profile"
+            />
+            <div className="absolute inset-0 rounded-full bg-gray-300 bg-opacity-50 hidden group-hover:flex items-center justify-center text-xs text-[#0B3D20] font-medium">
+              Update Profile Picture
+            </div>
+          </div>
           <h2 className="text-2xl font-bold text-[#0B3D20] mt-4">
             {user.username}
           </h2>
-          <p className="text-gray-500">
-            {user.first_name} {user.last_name}
-          </p>
-
           <hr className="my-4 border-t border-gray-300 w-full" />
-
-          <div className="space-y-1 text-mm">
-            <p>
-              <span className="font-semibold text-[#0B3D20]">
-                Blogs Posted:
-              </span>{" "}
-              {blogs.length}
+          <div className="space-y-2 w-full text-left text-base">
+            <p className="font-semibold text-[#0B3D20] text-lg">
+              Blogs Posted:{" "}
+              <span className="font-normal text-gray-800">{blogs.length}</span>
             </p>
-            <p>
-              <span className="font-semibold text-[#0B3D20]">Email:</span>{" "}
-              {user.email}
+            <p className="font-semibold text-[#0B3D20] text-lg">
+              Channels Joined:{" "}
+              <span className="font-normal text-gray-800">
+                {channelsJoined}
+              </span>
             </p>
           </div>
         </div>
 
-        {/* Bio Right */}
-        <div className="flex flex-col justify-between">
+        {/* Right */}
+        <div className="flex flex-col gap-6 justify-center">
+          {/* Full Name */}
+          <p className="text-sm  text-gray-700">
+            <span className="font-semibold">Full Name:</span> {user.first_name}{" "}
+            {user.last_name}
+          </p>
+
+          {/* Email */}
+          <p className="text-sm text-gray-700">
+            <span className="font-semibold">Email:</span> {user.email}
+          </p>
+
+          {/* Bio */}
           <div>
-            <h3 className="text-lg font-semibold text-[#0B3D20] flex justify-between">
-              Bio
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="text-lg font-semibold text-[#0B3D20]">Bio</h3>
               {!isEditingBio && (
                 <button
                   onClick={() => setIsEditingBio(true)}
-                  className="text-sm text-[#0B3D20] hover:underline"
+                  className="text-[#0B3D20] hover:text-[#0B3D20]"
                 >
-                  Edit
+                  ✎
                 </button>
               )}
-            </h3>
+            </div>
             {isEditingBio ? (
               <>
                 <textarea
                   value={editedBio}
                   onChange={(e) => setEditedBio(e.target.value)}
-                  rows={4}
+                  rows={3}
                   className="w-full mt-2 p-3 border rounded-md text-sm"
                   placeholder="Tell us about your travel journey..."
                 />
@@ -184,29 +204,17 @@ const ProfilePage = () => {
                 </div>
               </>
             ) : (
-              <p className="text-sm mt-2 text-gray-700 min-h-[5em] whitespace-pre-wrap">
+              <p className="text-sm mt-2 text-gray-700 min-h-[4em] whitespace-pre-wrap">
                 {user.bio || (
                   <span className="italic text-gray-400">No bio yet.</span>
                 )}
               </p>
             )}
           </div>
-
-          <div className="mt-6">
-            <p className="text-sm italic text-gray-500 text-right">
-              <Typewriter
-                words={["“Your stories matter. Keep writing.”"]}
-                loop={false}
-                cursor
-                cursorStyle="_"
-                typeSpeed={40}
-              />
-            </p>
-          </div>
         </div>
       </div>
 
-      {/* Blog List */}
+      {/* Blogs */}
       <div className="max-w-4xl mx-auto mt-10">
         <h3 className="text-2xl font-bold mb-6 text-[#0B3D20]">Your Blogs</h3>
         {blogs.length > 0 ? (
@@ -226,7 +234,6 @@ const ProfilePage = () => {
           </p>
         )}
       </div>
-      {/* <Footer /> */}
     </div>
   );
 };
