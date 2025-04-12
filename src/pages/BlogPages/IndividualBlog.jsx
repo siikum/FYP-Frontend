@@ -1,28 +1,29 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";  // Import useParams
+import { useParams } from "react-router-dom"; // Import useParams
 import Navbar from "../../components/Navbar";
 import { motion } from "framer-motion";
 import pfp from "../../assets/images/pf.jpg";
-import CommentSection from "./CommentSection"; 
-
+import CommentSection from "./CommentSection";
 
 const IndividualBlog = () => {
   const [isFocused, setIsFocused] = useState(false);
-  const [blog, setBlog] = useState(null);  // State to store the fetched blog
-  const { id } = useParams();  // Get the blog id from the URL
+  const [blog, setBlog] = useState(null); // State to store the fetched blog
+  const { id } = useParams(); // Get the blog id from the URL
 
   useEffect(() => {
     const fetchBlogPost = async () => {
-      const response = await fetch(`http://localhost:8000/blog/blogposts/${id}/`);
+      const response = await fetch(
+        `http://localhost:8000/blog/blogposts/${id}/`
+      );
       const data = await response.json();
-      setBlog(data);  // Set the blog data to state
+      setBlog(data); // Set the blog data to state
     };
 
     fetchBlogPost();
-  }, [id]);  // Fetch the blog when the component mounts or when the id changes
+  }, [id]); // Fetch the blog when the component mounts or when the id changes
 
   if (!blog) {
-    return <div>Loading...</div>;  // Show loading while fetching
+    return <div>Loading...</div>; // Show loading while fetching
   }
 
   return (
@@ -36,10 +37,10 @@ const IndividualBlog = () => {
           viewport={{ once: true }}
           className="h-[500px] rounded-lg border overflow-hidden relative"
         >
-          <img 
-            src={blog.image || pfp} 
-            alt={blog.title} 
-            className="w-full h-full object-cover"  // Makes the image fill the container
+          <img
+            src={blog.image || pfp}
+            alt={blog.title}
+            className="w-full h-full object-cover" // Makes the image fill the container
           />
         </motion.div>
 
@@ -63,8 +64,9 @@ const IndividualBlog = () => {
             <div className="">{blog.date}</div>
           </div>
           <div className="text-5xl font-serif font-bold w-full leading-tight">
-          {blog.title}
+            {blog.title}
           </div>
+          <div className="text-base text-black font-serif italic">by {blog.author}</div>
         </motion.div>
         <div className="flex flex-col gap-y-5">
           <div className="text-2xl font-serif text-justify w-full">

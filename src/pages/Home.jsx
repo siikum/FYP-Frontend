@@ -81,6 +81,10 @@ const Home = () => {
                   Blog
                 </span>
                 <h3 className="text-xl font-bold leading-snug">{blog.title}</h3>
+                <div className="text-base text-gray-500 italic">
+                  by {blog.author}
+                </div>
+                <br />
                 <p className="text-gray-600 text-sm line-clamp-3">
                   {blog.description}
                 </p>

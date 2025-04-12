@@ -12,6 +12,7 @@ import BlogList from "./pages/BlogPages/BlogList.jsx";
 import CreateBlog from "./pages/BlogPages/CreateBlog.jsx";
 import UpdateBlog from "./pages/BlogPages/UpdateBlog.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import PublicProfile from "./pages/PublicProfile";
 import NewSignUpPage from "./pages/NewSignUpPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import ChannelList from "./pages/channels/ChannelList.jsx";
@@ -45,6 +46,7 @@ function App() {
         <Route path="/blog/add" element={<CreateBlog />} />
         <Route path="/blog/:id/update" element={<UpdateBlog />} />
         <Route path="/ProfilePage" element={<ProfilePage />} />
+        <Route path="/user/:username" element={<PublicProfile />} />
         <Route path="/NewSignUpPage" element={<NewSignUpPage />} />
         <Route path="/LoginPage" element={<LoginPage />} />
         <Route path="/channels" element={<ChannelList />} />

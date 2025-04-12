@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import firstIMG from "../assets/images/login-image.jpg";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
+    username: "",
+    password: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,32 +37,38 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-  
+    setError("");
+
     try {
-      const response = await axios.post('http://127.0.0.1:8000/account/login/', formData);
+      const response = await axios.post(
+        "http://127.0.0.1:8000/account/login/",
+        formData
+      );
       const data = response.data;
-  
+
       console.log("✅ Logged in user:", data.username);
-  
-      localStorage.setItem('authToken', data.token);
-      localStorage.setItem('username', data.username);
-      localStorage.setItem('isLoggedIn', 'true');
-  
+
+      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("username", data.username);
+      localStorage.setItem("isLoggedIn", "true");
+
       alert("Login Successful!");
-      navigate("/");
+      window.location.href = "/";
     } catch (error) {
       console.error("Login error:", error.response?.data);
-      setError(error.response?.data?.error || 'Invalid credentials');
+      setError(error.response?.data?.error || "Invalid credentials");
     }
   };
-  
-  
+
   return (
     <div className="flex h-screen raleway bg-amber-50 font-raleway">
       {/* Left Side: Image */}
       <div className="w-[60%] h-full">
-        <img src={firstIMG} alt="Travel" className="object-cover h-full w-full" />
+        <img
+          src={firstIMG}
+          alt="Travel"
+          className="object-cover h-full w-full"
+        />
       </div>
 
       {/* Right Side: Form */}
@@ -72,7 +78,10 @@ const LoginPage = () => {
           <br />
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="username"
+              >
                 Username
               </label>
               <input
@@ -87,7 +96,10 @@ const LoginPage = () => {
               />
             </div>
             <div className="mb-6">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="password"
+              >
                 Password
               </label>
               <input
@@ -109,7 +121,10 @@ const LoginPage = () => {
               >
                 Login
               </button>
-              <Link to="/NewSignUpPage" className="inline-block align-baseline font-bold text-sm text-black hover:text-blue-800">
+              <Link
+                to="/NewSignUpPage"
+                className="inline-block align-baseline font-bold text-sm text-black hover:text-blue-800"
+              >
                 Don't have an account?
               </Link>
             </div>

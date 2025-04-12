@@ -17,7 +17,8 @@ const UpdateBlog = () => {
   useEffect(() => {
     const fetchBlogData = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/blog/blogposts/${id}`);
+        const response = await fetch(`http://localhost:8000/blog/blogposts/${id}/`);
+
         const data = await response.json();
         if (data) {
           setTitle(data.title);
@@ -44,10 +45,16 @@ const UpdateBlog = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8000/blog/blogposts/${id}/update/`, {
-        method: "PUT",
-        body: formData,
-      });
+      const response = await fetch(
+        `http://localhost:8000/blog/blogposts/${id}/update/`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Token ${localStorage.getItem("authToken")}`,
+          },
+          body: formData,
+        }
+      );
 
       if (response.ok) {
         navigate(`/blog/${id}`);
@@ -95,7 +102,8 @@ const UpdateBlog = () => {
               Edit Your Story
             </h2>
             <p className="text-gray-600 mb-8 text-md leading-relaxed">
-              Updating your travel experience helps others learn more from your journey.
+              Updating your travel experience helps others learn more from your
+              journey.
             </p>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-y-6">
