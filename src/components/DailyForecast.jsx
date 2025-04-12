@@ -16,33 +16,38 @@ import axiosInstance from "../api/axiosConfig";
 
 const DailyForecast = ({ destination }) => {
   const [currentDate, setCurrentDate] = useState("");
-  const [currentWeather, setCurrentWeather] = useState({});
+  const [currentWeather, setCurrentWeather] = useState(null);
   const [isSunrise, setIsSunrise] = useState(true);
   const [weatherDetails, setWeatherDetails] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const fetchWeatherDetails = async () => {
-    const response = await axiosInstance.get(
-      `itinerary/weather_info/?city=${destination}&country=Nepal`
-    );
+    try {
+      const response = await axiosInstance.get(
+        `itinerary/weather_info/?city=${destination}&country=Nepal`
+      );
 
-    console.log;
+      const days = response?.data?.jsonData?.days;
 
-    if (
-      response?.data?.jsonData?.days &&
-      Array.isArray(response.data.jsonData?.days) &&
-      response.data.jsonData?.days.length >= 7
-    ) {
-      console.log(response.data.jsonData?.days);
-
-      setWeatherDetails(response.data.jsonData.days.slice(0, 7));
-      setCurrentDate(response.data.jsonData.days[0].datetime);
-      setCurrentWeather(response.data.jsonData.days[0]);
+      if (Array.isArray(days) && days.length >= 7) {
+        setWeatherDetails(days.slice(0, 7));
+        setCurrentDate(days[0].datetime);
+        setCurrentWeather(days[0]);
+        setErrorMessage(""); // clear any error
+      } else {
+        setWeatherDetails([]);
+        setErrorMessage("Weather data not available for this destination.");
+      }
+    } catch (error) {
+      console.error("Weather fetch failed:", error.response?.data || error.message);
+      setWeatherDetails([]);
+      setErrorMessage("Weather data could not be loaded for this destination.");
     }
   };
 
   useEffect(() => {
     fetchWeatherDetails();
-  }, []);
+  }, [destination]);
 
   const gradientVariants = {
     sunrise: {
@@ -56,7 +61,7 @@ const DailyForecast = ({ destination }) => {
   };
 
   const getIcon = (value) => {
-    switch (value.toLowerCase()) {
+    switch (value?.toLowerCase()) {
       case "snow":
         return <Snowflake className="w-[120px] h-[120px] mt-[20px]" />;
       case "rain":
@@ -68,7 +73,6 @@ const DailyForecast = ({ destination }) => {
       case "cloudy":
         return <Cloud className="w-[120px] h-[120px] mt-[20px]" />;
       case "partly-cloudy-day":
-        return <CloudSun className="w-[120px] h-[120px] mt-[20px]" />;
       case "partly-cloudy-night":
         return <CloudSun className="w-[120px] h-[120px] mt-[20px]" />;
       case "clear-day":
@@ -87,42 +91,43 @@ const DailyForecast = ({ destination }) => {
   }
 
   function formatTime(time) {
-    if (time) {
-      // Split the time by the colon
-      let timeParts = time.split(":");
-
-      // Return only hours and minutes
-      return timeParts.slice(0, 2).join(":");
-    }
+    if (!time) return "";
+    return time.split(":").slice(0, 2).join(":");
   }
 
-  return weatherDetails ? (
+  if (errorMessage) {
+    return (
+      <div className="text-center text-xl font-semibold text-red-600 px-4 py-10">
+        {errorMessage}
+      </div>
+    );
+  }
+
+  return weatherDetails.length ? (
     <div className="flex flex-col gap-y-10 px-[200px] backdrop-blur-lg">
+      {/* Days selector */}
       <div className="grid grid-cols-7 w-full gap-x-4 justify-between">
-        {weatherDetails &&
-          weatherDetails.map((val) => (
-            <div
-              onClick={() => {
-                setCurrentDate(val.datetime);
-                setCurrentWeather(val);
-                setIsSunrise((prev) => !prev);
-              }}
-              className={`col-span-1 ${
-                currentDate === val.datetime && "border-2"
-              } text-2xl flex flex-col p-4 gap-y-2 cursor-pointer rounded-2xl hover:border-2 hover:border-black-200`}
-              key={val.datetime[0] + val.datetime[1]}
-            >
-              <div className="font-medium text-gray-500">
-                {getShortDayFromDate(val.datetime)}
-              </div>
-              <div className="font-bold">
-                {val.datetime[0] + val.datetime[1]}
-              </div>
+        {weatherDetails.map((val) => (
+          <div
+            onClick={() => {
+              setCurrentDate(val.datetime);
+              setCurrentWeather(val);
+              setIsSunrise((prev) => !prev);
+            }}
+            className={`col-span-1 ${
+              currentDate === val.datetime ? "border-2 border-black" : ""
+            } text-2xl flex flex-col p-4 gap-y-2 cursor-pointer rounded-2xl hover:border-2 hover:border-black-200`}
+            key={val.datetime}
+          >
+            <div className="font-medium text-gray-500">
+              {getShortDayFromDate(val.datetime)}
             </div>
-          ))}
+            <div className="font-bold">{val.datetime.slice(8, 10)}</div>
+          </div>
+        ))}
       </div>
 
-      {/* Render the selected weather data */}
+      {/* Current Weather Display */}
       <motion.div
         animate={isSunrise ? "sunrise" : "sunset"}
         variants={gradientVariants}
@@ -131,8 +136,8 @@ const DailyForecast = ({ destination }) => {
         {currentWeather ? (
           <>
             <div className="text-[150px] flex items-center font-semibold leading-tight raleway">
-              <div className="">{Math.floor(currentWeather.temp)}&deg;</div>
-              {currentWeather?.icon && getIcon(currentWeather.icon)}
+              <div>{Math.floor(currentWeather.temp)}&deg;</div>
+              {getIcon(currentWeather.icon)}
             </div>
             <div className="flex flex-col gap-y-[5px] mt-[30px]">
               <div className="flex gap-x-4 text-xl font-medium">
@@ -156,9 +161,7 @@ const DailyForecast = ({ destination }) => {
         )}
       </motion.div>
     </div>
-  ) : (
-    <></>
-  );
+  ) : null;
 };
 
 export default DailyForecast;

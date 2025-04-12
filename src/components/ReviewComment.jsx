@@ -5,11 +5,13 @@ import { Star } from "lucide-react";
 const ReviewComment = ({ destination, onReviewSubmitted }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [review, setReview] = useState("");
-  const [rating, setRating] = useState(0); // ⭐ star rating state
+  const [rating, setRating] = useState(0);
   const [comments, setComments] = useState([]);
   const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const isLoggedIn = !!localStorage.getItem("authToken");
+  const REVIEWS_PER_PAGE = 5;
 
   const fetchComments = async () => {
     try {
@@ -18,6 +20,7 @@ const ReviewComment = ({ destination, onReviewSubmitted }) => {
       );
       if (response.data?.sentiment_data) {
         setComments(response.data.sentiment_data.reverse());
+        setCurrentPage(1); // reset to first page on new load
       }
     } catch (err) {
       console.error("Error fetching comments", err);
@@ -50,10 +53,19 @@ const ReviewComment = ({ destination, onReviewSubmitted }) => {
 
       console.log("Posted review:", response.data);
       setReview("");
-      setRating(0); // reset rating
+      setRating(0);
+
+      setComments((prev) => [
+        {
+          username: localStorage.getItem("username") || "You",
+          review,
+          created_at: new Date().toISOString(),
+          rating: rating,
+        },
+        ...prev,
+      ]);
 
       onReviewSubmitted?.();
-      fetchComments();
     } catch (err) {
       console.error("Error posting review:", err);
       setError("Failed to post comment. Please try again.");
@@ -64,73 +76,124 @@ const ReviewComment = ({ destination, onReviewSubmitted }) => {
     fetchComments();
   }, [destination]);
 
+  // Pagination logic
+  const startIdx = (currentPage - 1) * REVIEWS_PER_PAGE;
+  const endIdx = startIdx + REVIEWS_PER_PAGE;
+  const paginatedComments = comments.slice(startIdx, endIdx);
+  const totalPages = Math.ceil(comments.length / REVIEWS_PER_PAGE);
+
   return (
-    <div className="flex flex-col mt-10 gap-y-10 px-[20%]">
-      <div className="font-medium text-2xl">Already visited this place? Drop a review.</div>
+    <div className="pl-45 py-10">
+      <div className="bg-gray-100 rounded-xl shadow-md p-10 w-full max-w-340">
+        <div className="font-medium text-2xl mb-6">
+          Already visited this place? Drop a review.
+        </div>
 
-      {error && <div className="text-red-500 text-sm">{error}</div>}
+        {error && <div className="text-red-500 text-sm mb-2">{error}</div>}
 
-      {/* Create new comment */}
-      <div
-        className={`rounded-2xl p-6 bg-white border border-gray-300 text-lg ${
-          isFocused ? "border-2 border-blue-400" : ""
-        }`}
-      >
-        {/* ⭐ Interactive Stars */}
-        <div className="flex gap-x-1 mb-3 cursor-pointer">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <Star
-              key={star}
-              size={22}
-              fill={star <= rating ? "#facc15" : "none"}
-              stroke="#facc15"
-              onClick={() => setRating(star)}
-            />
+        {/* Review Box */}
+        <div
+          className={`rounded-2xl p-6 bg-gray-50 border border-gray-300 text-lg ${
+            isFocused ? "border-blue-400 border-2" : ""
+          }`}
+        >
+          {/* ⭐ Stars */}
+          <div className="flex gap-x-1 mb-3 cursor-pointer">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star
+                key={star}
+                size={22}
+                fill={star <= rating ? "#facc15" : "none"}
+                stroke="#facc15"
+                onClick={() => setRating(star)}
+              />
+            ))}
+          </div>
+
+          <textarea
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            onChange={(e) => setReview(e.target.value)}
+            value={review}
+            className="w-full h-[100px] outline-none rounded-lg p-3"
+            placeholder={
+              isLoggedIn ? "Write your review..." : "Login to post a review"
+            }
+            disabled={!isLoggedIn}
+          />
+
+          <div className="flex justify-end mt-4">
+            <button
+              onClick={handlePostComment}
+              className={`bg-[#0B3D20] hover:bg-green-900 rounded-md py-2 px-6 text-white ${
+                !isLoggedIn ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              disabled={!isLoggedIn}
+            >
+              Post Review
+            </button>
+          </div>
+        </div>
+
+        {/* Render paginated comments */}
+        <div className="flex flex-col gap-y-6 mt-10 min-h-[400px] transition-all duration-300">
+          {paginatedComments.map((comment, i) => (
+            <div key={i} className="flex flex-col gap-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-x-4">
+                  <div className="font-medium text-lg">
+                    {comment.username || "Anonymous"}
+                  </div>
+                  {comment.created_at && (
+                    <div className="text-black text-sm">
+                      {new Date(comment.created_at).toDateString()}
+                    </div>
+                  )}
+                </div>
+
+                {/* Display static star rating if present */}
+                {comment.rating && (
+                  <div className="flex gap-x-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        size={18}
+                        fill={star <= comment.rating ? "#facc15" : "none"}
+                        stroke="#facc15"
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="text-base text-black">{comment.review}</div>
+            </div>
           ))}
         </div>
 
-        <textarea
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          onChange={(e) => setReview(e.target.value)}
-          value={review}
-          className="w-full h-[100px] outline-none rounded-lg p-3"
-          placeholder={
-            isLoggedIn ? "Write your review..." : "Login to post a review"
-          }
-          disabled={!isLoggedIn}
-        />
-
-        <div className="flex justify-end mt-4">
-          <button
-            onClick={handlePostComment}
-            className={`bg-orange-500 rounded-4xl py-2 px-6 text-white ${
-              !isLoggedIn ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-            disabled={!isLoggedIn}
-          >
-            Post
-          </button>
-        </div>
-      </div>
-
-      {/* Render comments */}
-      <div className="flex flex-col gap-y-6">
-        {comments.map((comment, i) => (
-          <div key={i} className="flex flex-col gap-y-2">
-            <div className="flex items-center gap-x-4">
-              <div className="font-medium text-lg">
-                {comment.username || "Anonymous"}
-              </div>
-              {comment.created_at && (
-                <div className="text-gray-500 text-sm">
-                  {new Date(comment.created_at).toDateString()}
-                </div>
-              )}
-            </div>
-            <div className="text-base text-gray-700">{comment.review}</div>
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-6 gap-4">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="px-4 py-1 bg-gray-200 hover:bg-gray-300 rounded disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <span className="text-sm text-black">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+              disabled={currentPage === totalPages}
+              className="px-4 py-1 bg-gray-200 hover:bg-gray-300 rounded disabled:opacity-50"
+            >
+              Next
+            </button>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );

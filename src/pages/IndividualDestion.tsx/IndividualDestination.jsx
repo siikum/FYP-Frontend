@@ -44,7 +44,7 @@ const IndividualDestination = () => {
   if (!destination) return <div className="text-center py-10">Loading...</div>;
 
   return (
-    <div className="flex flex-col pb-[100px]">
+    <div className="flex flex-col pb-[100px] bg-[#f3f8f6]">
       <Navbar />
 
       {/* Cover Image + Title */}

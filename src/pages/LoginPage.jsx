@@ -45,21 +45,18 @@ const LoginPage = () => {
   
       console.log("✅ Logged in user:", data.username);
   
-      // ✅ Save token and username
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('username', data.username);
-      localStorage.setItem("profilePicUrl", response.data.user.profilePicUrl);
       localStorage.setItem('isLoggedIn', 'true');
-      console.log(localStorage.getItem("username"));
-
+  
       alert("Login Successful!");
-      navigate("/"); // or wherever you redirect
+      navigate("/");
     } catch (error) {
       console.error("Login error:", error.response?.data);
-
       setError(error.response?.data?.error || 'Invalid credentials');
     }
   };
+  
   
   return (
     <div className="flex h-screen raleway bg-amber-50 font-raleway">

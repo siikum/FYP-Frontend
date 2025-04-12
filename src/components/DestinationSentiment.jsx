@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 const DestinationSentiment = ({ destination }) => {
   const [sentimentData, setSentimentData] = useState(null);
   const [sentimentRawData, setSentimentRawData] = useState([]);
-  const [loading, setLoading] = useState(false);
 
   const fetchSentimentData = async () => {
     try {
@@ -24,13 +23,13 @@ const DestinationSentiment = ({ destination }) => {
 
   useEffect(() => {
     fetchSentimentData();
-  }, []);
+  }, [destination]);
 
   const chartDataLine = {
     sentimentTrends: {
-      positive: sentimentRawData.map((s) => s.positive_score * 100),
-      neutral: sentimentRawData.map((s) => s.neutral_score * 100),
-      negative: sentimentRawData.map((s) => s.negative_score * 100),
+      positive: sentimentRawData.map((s) => (s.positive_score ?? 0) * 100),
+      neutral: sentimentRawData.map((s) => (s.neutral_score ?? 0) * 100),
+      negative: sentimentRawData.map((s) => (s.negative_score ?? 0) * 100),
     },
   };
 
@@ -40,20 +39,21 @@ const DestinationSentiment = ({ destination }) => {
         Sentiment Analysis
       </h2>
 
-      {sentimentData && (
-        <div className="flex flex-col gap-x-[100px] justify-between w-full lg:flex-row">
+      {sentimentData && sentimentRawData.length > 0 && (
+        <div className="flex flex-col lg:flex-row items-start gap-4 pl-38">
           {/* Bar Chart */}
-          <div className="w-full lg:w-[48%] bg-white rounded-xl shadow-md p-4 mb-6">
-          <h3 className="text-xl text-left font-semibold text-gray-700 mb-4">
+          <div className="w-full lg:w-[45%] bg-white rounded-xl shadow-md p-4">
+            <h3 className="text-xl text-left font-semibold text-gray-700 mb-4">
               Sentiment Comparison
             </h3>
             <Bar
+              redraw
               className="w-full max-h-[526px]"
               data={{
                 labels: ["Positive", "Neutral", "Negative"],
                 datasets: [
                   {
-                    label: "Sentiment Analysis",
+                    label: "Sentiment (%)",
                     data: [
                       sentimentData.average_positive
                         ? sentimentData.average_positive * 100
@@ -79,16 +79,23 @@ const DestinationSentiment = ({ destination }) => {
                   },
                 ],
               }}
-              options={{ responsive: true, maintainAspectRatio: false }}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: { display: true, position: "bottom" },
+                },
+              }}
             />
           </div>
 
           {/* Line Chart */}
-<div className="w-full lg:w-[48%] bg-white rounded-xl shadow-md p-4 mb-6">
+          <div className="w-full lg:w-[45%] bg-white rounded-xl shadow-md p-4">
             <h3 className="text-xl font-semibold text-gray-700 mb-4">
               Sentiment Trends
             </h3>
             <Line
+              redraw
               className="w-full max-h-[526px]"
               data={{
                 labels: sentimentRawData.map((_, i) => `Review ${i + 1}`),
@@ -113,7 +120,13 @@ const DestinationSentiment = ({ destination }) => {
                   },
                 ],
               }}
-              options={{ responsive: true, maintainAspectRatio: false }}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: { display: true, position: "bottom" },
+                },
+              }}
               height={300}
             />
           </div>
