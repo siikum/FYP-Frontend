@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // Import useParams
+import { useParams, useNavigate  } from "react-router-dom"; // Import useParams
 import Navbar from "../../components/Navbar";
 import { motion } from "framer-motion";
 import pfp from "../../assets/images/pf.jpg";
@@ -9,6 +9,8 @@ const IndividualBlog = () => {
   const [isFocused, setIsFocused] = useState(false);
   const [blog, setBlog] = useState(null); // State to store the fetched blog
   const { id } = useParams(); // Get the blog id from the URL
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchBlogPost = async () => {
@@ -66,8 +68,12 @@ const IndividualBlog = () => {
           <div className="text-5xl font-serif font-bold w-full leading-tight">
             {blog.title}
           </div>
-          <div className="text-base text-black font-serif italic">by {blog.author}</div>
-        </motion.div>
+          <div
+  className="text-base text-gray-500 italic hover:underline cursor-pointer"
+  onClick={() => navigate(`/user/${blog.author}`)}
+>
+  by {blog.author}
+</div>        </motion.div>
         <div className="flex flex-col gap-y-5">
           <div className="text-2xl font-serif text-justify w-full">
             {blog.description}
