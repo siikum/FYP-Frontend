@@ -10,9 +10,6 @@ const AdminLogin = () => {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-  // Save login time
-  const now = new Date().getTime();
-  localStorage.setItem("adminLoginTime", now);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,11 +17,16 @@ const AdminLogin = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:8000/account/login/",
+        "http://localhost:8000/admin_dashboard/login/",
         form
       );
+
       const token = res.data.token;
-      localStorage.setItem("authToken", token);
+      localStorage.setItem("adminAuthToken", token);
+
+      // Save login time after successful login
+      const now = new Date().getTime();
+      localStorage.setItem("adminLoginTime", now);
 
       // Now verify if user is actually staff
       const check = await axios.get(
@@ -40,7 +42,7 @@ const AdminLogin = () => {
         navigate("/admin/dashboard");
       } else {
         setError("Access denied: not an admin.");
-        localStorage.removeItem("authToken");
+        localStorage.removeItem("adminAuthToken");
       }
     } catch (err) {
       console.error(err);

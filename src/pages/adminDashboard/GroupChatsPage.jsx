@@ -12,20 +12,26 @@ const GroupChatsPage = () => {
   const [editingGroup, setEditingGroup] = useState(null);
 
   const fetchGroups = async () => {
-    const res = await axios.get("http://localhost:8000/admin_dashboard/groupchats/", {
-      headers: {
-        Authorization: `Token ${localStorage.getItem("authToken")}`,
-      },
-    });
+    const res = await axios.get(
+      "http://localhost:8000/admin_dashboard/groupchats/",
+      {
+        headers: {
+          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`
+        },
+      }
+    );
     setGroups(res.data);
   };
 
   const fetchUsers = async () => {
-    const res = await axios.get("http://localhost:8000/admin_dashboard/users/", {
-      headers: {
-        Authorization: `Token ${localStorage.getItem("authToken")}`,
-      },
-    });
+    const res = await axios.get(
+      "http://localhost:8000/admin_dashboard/users/",
+      {
+        headers: {
+          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`
+        },
+      }
+    );
     setUsers(res.data);
   };
 
@@ -34,7 +40,9 @@ const GroupChatsPage = () => {
     if (name === "group_image") {
       setFormData({ ...formData, [name]: files[0] });
     } else if (name === "members") {
-      const selected = Array.from(e.target.selectedOptions).map((opt) => opt.value);
+      const selected = Array.from(e.target.selectedOptions).map(
+        (opt) => opt.value
+      );
       setFormData({ ...formData, members: selected });
     } else {
       setFormData({ ...formData, [name]: value });
@@ -56,7 +64,7 @@ const GroupChatsPage = () => {
 
     await axios[method](url, data, {
       headers: {
-        Authorization: `Token ${localStorage.getItem("authToken")}`,
+        Authorization: `Token ${localStorage.getItem("adminAuthToken")}`,
         "Content-Type": "multipart/form-data",
       },
     });
@@ -77,11 +85,14 @@ const GroupChatsPage = () => {
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this group?")) return;
-    await axios.delete(`http://localhost:8000/admin_dashboard/groupchats/${id}/`, {
-      headers: {
-        Authorization: `Token ${localStorage.getItem("authToken")}`,
-      },
-    });
+    await axios.delete(
+      `http://localhost:8000/admin_dashboard/groupchats/${id}/`,
+      {
+        headers: {
+          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`
+        },
+      }
+    );
     fetchGroups();
   };
 
@@ -92,9 +103,14 @@ const GroupChatsPage = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-[#0B3D20] mb-6">Manage Group Chats</h1>
+      <h1 className="text-2xl font-bold text-[#0B3D20] mb-6">
+        Manage Group Chats
+      </h1>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-6 rounded shadow mb-10">
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-6 rounded shadow mb-10"
+      >
         <input
           type="text"
           name="group_name"
@@ -149,17 +165,23 @@ const GroupChatsPage = () => {
                 <td className="px-6 py-3">{group.group_name}</td>
                 <td className="px-6 py-3">{group.created_by}</td>
                 <td className="px-6 py-3">
-  {Array.isArray(group.members)
-    ? group.members.map((m, i) =>
-        typeof m === "object" ? m.username : m
-      ).join(", ")
-    : "No members"}
-</td>
+                  {Array.isArray(group.members)
+                    ? group.members
+                        .map((m, i) => (typeof m === "object" ? m.username : m))
+                        .join(", ")
+                    : "No members"}
+                </td>
                 <td className="px-6 py-3 flex gap-3">
-                  <button onClick={() => handleEdit(group)} className="text-blue-600 hover:underline text-sm">
+                  <button
+                    onClick={() => handleEdit(group)}
+                    className="text-blue-600 hover:underline text-sm"
+                  >
                     Edit
                   </button>
-                  <button onClick={() => handleDelete(group.group_id)} className="text-red-600 hover:underline text-sm">
+                  <button
+                    onClick={() => handleDelete(group.group_id)}
+                    className="text-red-600 hover:underline text-sm"
+                  >
                     Delete
                   </button>
                 </td>

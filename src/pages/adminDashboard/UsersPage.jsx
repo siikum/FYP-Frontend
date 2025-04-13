@@ -11,7 +11,7 @@ const UsersPage = () => {
     try {
       const res = await axios.get("http://localhost:8000/admin_dashboard/users/", {
         headers: {
-          Authorization: `Token ${localStorage.getItem("authToken")}`,
+          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`
         },
       });
       setUsers(res.data);
@@ -30,7 +30,7 @@ const UsersPage = () => {
         { is_active: !currentStatus },
         {
           headers: {
-            Authorization: `Token ${localStorage.getItem("authToken")}`,
+            Authorization: `Token ${localStorage.getItem("adminAuthToken")}`
           },
         }
       );

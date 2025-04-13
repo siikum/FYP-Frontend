@@ -29,7 +29,7 @@ const DestinationsPage = () => {
     try {
       const res = await axios.get("http://localhost:8000/admin_dashboard/destinations/", {
         headers: {
-          Authorization: `Token ${localStorage.getItem("authToken")}`,
+          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`
         },
       });
       setDestinations(res.data);
@@ -70,7 +70,7 @@ const DestinationsPage = () => {
 
       await axios[method](url, data, {
         headers: {
-          Authorization: `Token ${localStorage.getItem("authToken")}`,
+          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`,          
           "Content-Type": "multipart/form-data",
         },
       });
@@ -122,7 +122,7 @@ const DestinationsPage = () => {
     try {
       await axios.delete(`http://localhost:8000/admin_dashboard/destinations/${destination_id}/`, {
         headers: {
-          Authorization: `Token ${localStorage.getItem("authToken")}`,
+          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`
         },
       });
       fetchDestinations();

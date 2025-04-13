@@ -14,7 +14,7 @@ const AdminBlogsPage = () => {
     try {
       const res = await axios.get("http://localhost:8000/admin_dashboard/blogs/", {
         headers: {
-          Authorization: `Token ${localStorage.getItem("authToken")}`,
+          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`
         },
       });
       setBlogs(res.data);
@@ -48,7 +48,7 @@ const AdminBlogsPage = () => {
     try {
       await axios[method](url, data, {
         headers: {
-          Authorization: `Token ${localStorage.getItem("authToken")}`,
+          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`,
           "Content-Type": "multipart/form-data",
         },
       });

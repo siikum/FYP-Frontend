@@ -11,7 +11,7 @@ const AdminSentimentReviews = () => {
         `http://localhost:8000/admin_dashboard/sentiments/?destination=${filter}`,
         {
           headers: {
-            Authorization: `Token ${localStorage.getItem("authToken")}`,
+            Authorization: `Token ${localStorage.getItem("adminAuthToken")}`,
           },
         }
       );
@@ -28,7 +28,7 @@ const AdminSentimentReviews = () => {
         `http://localhost:8000/admin_dashboard/sentiments/${id}/`,
         {
           headers: {
-            Authorization: `Token ${localStorage.getItem("authToken")}`,
+            Authorization: `Token ${localStorage.getItem("adminAuthToken")}`,
           },
         }
       );
@@ -44,14 +44,17 @@ const AdminSentimentReviews = () => {
 
   const handleExportPDF = async () => {
     try {
-      const res = await fetch("http://localhost:8000/admin_dashboard/sentiments/export-pdf/", {
-        headers: {
-          Authorization: `Token ${localStorage.getItem("authToken")}`,
-        },
-      });
-  
+      const res = await fetch(
+        "http://localhost:8000/admin_dashboard/sentiments/export-pdf/",
+        {
+          headers: {
+            Authorization: `Token ${localStorage.getItem("adminAuthToken")}`,
+          },
+        }
+      );
+
       if (!res.ok) throw new Error("Download failed");
-  
+
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -64,7 +67,32 @@ const AdminSentimentReviews = () => {
       alert("PDF export failed: " + err.message);
     }
   };
-  
+
+  const handleExportCSV = async () => {
+    try {
+      const res = await fetch(
+        "http://localhost:8000/admin_dashboard/sentiments/export-csv/",
+        {
+          headers: {
+            Authorization: `Token ${localStorage.getItem("adminAuthToken")}`,
+          },
+        }
+      );
+
+      if (!res.ok) throw new Error("Download failed");
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "sentiment_reviews.csv");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      alert("CSV export failed: " + err.message);
+    }
+  };
 
   return (
     <div>
@@ -79,12 +107,18 @@ const AdminSentimentReviews = () => {
           className="p-2 border rounded w-full max-w-sm"
         />
         <button
-  onClick={handleExportPDF}
-  className="px-4 py-2 bg-[#0B3D20] text-white rounded hover:bg-[#12492b]"
->
-  Export PDF
-</button>
+          onClick={handleExportPDF}
+          className="px-4 py-2 bg-[#0B3D20] text-white rounded hover:bg-[#12492b]"
+        >
+          Export PDF
+        </button>
 
+        <button
+          onClick={handleExportCSV}
+          className="px-4 py-2 bg-[#0B3D20] text-white rounded hover:bg-[#12492b]"
+        >
+          Export CSV
+        </button>
       </div>
 
       <div className="overflow-x-auto bg-white rounded shadow">

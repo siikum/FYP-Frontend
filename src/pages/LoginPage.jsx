@@ -15,25 +15,6 @@ const LoginPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setError('');
-
-  //   try {
-  //     const response = await axios.post('http://127.0.0.1:8000/account/login/', formData);
-  //     console.log(response.data);
-
-  //     // ✅ Save token and login state
-  //     localStorage.setItem('authToken', response.data.token);
-  //     localStorage.setItem('isLoggedIn', 'true');
-  //     localStorage.setItem("username", response.data.username);
-
-  //     alert("Login Successful!");
-  //     navigate("/"); // redirect after login
-  //   } catch (error) {
-  //     setError(error.response?.data?.error || 'Invalid credentials');
-  //   }
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
