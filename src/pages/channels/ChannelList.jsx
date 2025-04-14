@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { motion } from "framer-motion";
-import Footer from "../../components/Footer"; 
-
+import Footer from "../../components/Footer";
 
 export default function ChannelList() {
   const navigate = useNavigate();
@@ -13,7 +12,9 @@ export default function ChannelList() {
   useEffect(() => {
     const fetchChannels = async () => {
       try {
-        const response = await fetch("http://localhost:8000/account/groupchats/");
+        const response = await fetch("http://localhost:8000/account/groupchats/", {
+          headers: token ? { Authorization: `Token ${token}` } : {},
+        });
         if (response.ok) {
           const data = await response.json();
           setChannels(data);
@@ -26,7 +27,7 @@ export default function ChannelList() {
     };
 
     fetchChannels();
-  }, []);
+  }, [token]);
 
   return (
     <div className="min-h-screen bg-[#f3f8f6] font-serif">
@@ -36,12 +37,17 @@ export default function ChannelList() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-center mb-12"
+          className="text-center mb-6"
         >
           <h1 className="text-6xl font-extrabold text-[#0B3D20]">Community Channels</h1>
           <p className="text-xl text-[#295b42] mt-4 max-w-xl mx-auto">
             Connect with fellow explorers and share your journeys in our themed group chats.
           </p>
+          {!token && (
+            <p className="text-red-500 mt-3 font-medium">
+              Please log in to join or access any group channels.
+            </p>
+          )}
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl">
@@ -54,8 +60,11 @@ export default function ChannelList() {
               className="rounded-2xl overflow-hidden shadow-lg border border-[#0B3D20] bg-white hover:shadow-2xl transform hover:-translate-y-1 transition-all"
             >
               <div
-                onClick={() => navigate(`/channels/${channel.group_id}`)}
-                className="cursor-pointer"
+                onClick={() => {
+                  if (!token || !channel.has_joined) return;
+                  navigate(`/channels/${channel.group_id}`);
+                }}
+                className={`${token && channel.has_joined ? "cursor-pointer" : "cursor-not-allowed"}`}
               >
                 <div className="h-[180px] overflow-hidden bg-[#f0ebe4]">
                   <img
@@ -84,18 +93,49 @@ export default function ChannelList() {
                   </div>
 
                   <p className="text-mm text-gray-600 font-medium">
-                  👥 {channel.member_count} member{channel.member_count !== 1 ? "s" : ""}
+                    👥 {channel.member_count} member{channel.member_count !== 1 ? "s" : ""}
                   </p>
 
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/channels/${channel.group_id}`);
-                    }}
-                    className="mt-2 bg-[#0B3D20] hover:bg-[#295b42] text-white font-semibold px-5 py-2 rounded-full"
-                  >
-                    Open
-                  </button>
+                  {/* Action Button */}
+                  {token && channel.has_joined ? (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/channels/${channel.group_id}`);
+                      }}
+                      className="mt-2 bg-[#0B3D20] hover:bg-[#295b42] text-white font-semibold px-5 py-2 rounded-full"
+                    >
+                      Open
+                    </button>
+                  ) : token && channel.has_requested ? (
+                    <button className="mt-2 bg-gray-400 text-white font-semibold px-5 py-2 rounded-full" disabled>
+                      Requested
+                    </button>
+                  ) : token ? (
+                    <button
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        const res = await fetch(
+                          `http://localhost:8000/account/groupchats/${channel.group_id}/request/`,
+                          {
+                            method: "POST",
+                            headers: {
+                              Authorization: `Token ${token}`,
+                            },
+                          }
+                        );
+                        if (res.ok) {
+                          alert("✅ Join request sent!");
+                          window.location.reload();
+                        } else {
+                          alert("❌ Failed to send request.");
+                        }
+                      }}
+                      className="mt-2 bg-[#0B3D20] hover:bg-[#295b42] text-white font-semibold px-5 py-2 rounded-full"
+                    >
+                      Join
+                    </button>
+                  ) : null}
                 </div>
               </div>
             </motion.div>

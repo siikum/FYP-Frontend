@@ -5,15 +5,14 @@ import Navbar from "../components/Navbar";
 import AboutTrailHimalaya from "../components/AboutTrailHimalaya";
 import FeaturedCreators from "../components/FeaturedCreators";
 import ContactUs from "../components/ContactUs";
-import Footer from "../components/Footer"; 
-
-
+import Footer from "../components/Footer";
+import OfficeMap from "../components/OfficeMap"; // adjust path if different
 
 const About = () => {
   return (
     <>
       {/* Landing Section */}
-      <section className="relative w-full raleway h-screen overflow-hidden bg-[#0B3D20]">
+      <section className="relative w-full raleway h-screen overflow-hidden bg-[#0B3D20] pt-[80px]">
         {/* Background Image */}
         <div className="absolute inset-0 z-10 border-4 border-[#0B3D20]">
           <img
@@ -24,9 +23,7 @@ const About = () => {
         </div>
 
         {/* Navbar */}
-        <div className="absolute top-0 left-0 w-full z-20">
-          <Navbar />
-        </div>
+        <Navbar />
 
         {/* Text Content */}
         <motion.div
@@ -63,40 +60,34 @@ const About = () => {
             Travel Smart. Travel Safe.
           </motion.h2>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center mb-20">
+          {/* Emergency Contacts as Individual Cards */}
+          {/* Emergency Contacts Title */}
+          <h3 className="text-2xl font-semibold mb-10 text-center">
+            Emergency Contacts
+          </h3>
+          <div className="grid grid-cols-1 mb-10 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
             {[
-              {
-                icon: "🧭",
-                number: "1,200+",
-                label: "Trails with Local Guides",
-              },
-              {
-                icon: "🏥",
-                number: "50+",
-                label: "Trekking Zone Health Posts",
-              },
-              { icon: "📞", number: "112", label: "Nepal Emergency Hotline" },
-              {
-                icon: "📶",
-                number: "60%+",
-                label: "Trails with Mobile Coverage",
-              },
-            ].map((stat, idx) => (
+              { icon: "🚓", number: "100", label: "Police" },
+              { icon: "🚑", number: "102", label: "Ambulance" },
+              { icon: "📞", number: "1144", label: "Tourist Info" },
+              { icon: "🆘", number: "+977-1-4442747", label: "Rescue" },
+            ].map((item, index) => (
               <motion.div
-                key={idx}
+                key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2, delay: idx * 0.2 }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
                 className="bg-white rounded-xl p-6 shadow-md"
               >
-                <div className="text-4xl">{stat.icon}</div>
-                <div className="text-2xl font-bold mt-2">{stat.number}</div>
-                <div className="mt-1 text-[#2e5b45]">{stat.label}</div>
+                <div className="text-4xl">{item.icon}</div>
+                <div className="text-2xl font-bold mt-2">{item.label}</div>
+                <div className="mt-1 text-[#2e5b45]">{item.number}</div>
               </motion.div>
             ))}
           </div>
-
+          <br />
+          <hr />
+          <br />
           {/* Guidelines Title */}
           <h3 className="text-2xl font-semibold mb-10 text-center">
             Guidelines for a Safer Journey
@@ -131,37 +122,33 @@ const About = () => {
               </motion.div>
             ))}
           </div>
-
-          {/* Emergency Contacts Title */}
-          <h3 className="text-2xl font-semibold mb-10 text-center">
-            Emergency Contacts
-          </h3>
-
-          {/* Emergency Contacts as Individual Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
-            {[
-              { icon: "🚓", number: "100", label: "Police" },
-              { icon: "🚑", number: "102", label: "Ambulance" },
-              { icon: "📞", number: "1144", label: "Tourist Info" },
-              { icon: "🆘", number: "+977-1-4442747", label: "Rescue" },
-            ].map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                className="bg-white rounded-xl p-6 shadow-md"
-              >
-                <div className="text-4xl">{item.icon}</div>
-                <div className="text-2xl font-bold mt-2">{item.label}</div>
-                <div className="mt-1 text-[#2e5b45]">{item.number}</div>
-              </motion.div>
-            ))}
-          </div>
         </div>
       </section>
 
       <ContactUs />
+
+      <section className="px-4 py-10 sm:px-10 lg:px-16 bg-[#f3f8f6]">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
+      <OfficeMap />
+          <div>
+            <h2 className="text-4xl md:text-4xl font-serif font-bold text-[#0B3D20] mb-4">
+              Visit Our Office
+            </h2>
+            <p className="text-lg max-w-lg text-[#0B3D20] mt-5">
+              We’re based in the heart of Kathmandu and always happy to welcome
+              fellow explorers, creators, and collaborators.
+            </p>
+            <p className="mt-5 font-semibold mb-2 text-[#0B3D20]">
+              📍 Trail Himalaya HQ
+              <br />
+              Putalisadak, Kathmandu 44600
+              <br />
+              Nepal
+            </p>
+          </div>
+        </div>
+      </section>
+
       <Footer />
     </>
   );
