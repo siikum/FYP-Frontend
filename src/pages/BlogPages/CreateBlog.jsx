@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -7,11 +7,15 @@ import { Typewriter } from "react-simple-typewriter";
 
 const CreateBlog = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const isLoggedIn = !!localStorage.getItem("authToken");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,7 +59,9 @@ const CreateBlog = () => {
   return (
     <div className="flex flex-col min-h-screen font-serif bg-[#f3f8f6] py-[100px]">
       <Navbar isBlack={true} />
+
       <div className="flex gap-x-20 h-full px-[10%]">
+        {/* Left Section */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -66,9 +72,7 @@ const CreateBlog = () => {
           <div className="text-9xl font-serif font-bold break-words">Blogs</div>
           <div className="mt-4 mr-30 text-mm italic text-black w-[70%] self-end text-end">
             <Typewriter
-              words={[
-                "“Every journey begins with a story. Start yours today.”",
-              ]}
+              words={["“Every journey begins with a story. Start yours today.”"]}
               loop={false}
               cursor
               cursorStyle="_"
@@ -79,6 +83,7 @@ const CreateBlog = () => {
           </div>
         </motion.div>
 
+        {/* Right Section - Form */}
         <div className="w-[50%] pt-[100px] flex justify-center">
           <div className="bg-white shadow-md rounded-xl p-10 w-full max-w-2xl">
             <h2 className="text-3xl font-bold text-[#0B3D20] mb-6">
@@ -94,18 +99,42 @@ const CreateBlog = () => {
                 <div className="text-red-500 font-medium text-lg">{error}</div>
               )}
 
+              {!isLoggedIn && (
+                <p className="text-mm text-gray-600 -mt-2 mb-2">
+                  Please{" "}
+                  <span
+                    className="text-green-800 underline cursor-pointer"
+                    onClick={() =>
+                      navigate("/LoginPage", {
+                        state: { from: location.pathname },
+                      })
+                    }
+                  >
+                    login
+                  </span>{" "}
+                  to create a blog.
+                </p>
+              )}
+
+              {/* Title Field */}
               <div className="flex flex-col gap-y-2">
-                <label className="text-lg font-semibold">Title</label>
+                <label className="text-lg font-semibold">
+                  Title <span className="text-red-500">*</span>
+                </label>
                 <input
                   className="border border-gray-400 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0B3D20]"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Give your blog a title"
+                  required
                 />
               </div>
 
+              {/* Image Field */}
               <div className="flex flex-col gap-y-2">
-                <label className="text-lg font-semibold">Image</label>
+                <label className="text-lg font-semibold">
+                  Image <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="file"
                   onChange={(e) => setFile(e.target.files[0])}
@@ -120,20 +149,29 @@ const CreateBlog = () => {
                 </label>
               </div>
 
+              {/* Description Field */}
               <div className="flex flex-col gap-y-2">
-                <label className="text-lg font-semibold">Description</label>
+                <label className="text-lg font-semibold">
+                  Description <span className="text-red-500">*</span>
+                </label>
                 <textarea
                   className="border border-gray-400 p-3 rounded-md h-[160px] resize-none focus:outline-none focus:ring-2 focus:ring-[#0B3D20]"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Tell your story..."
+                  required
                 />
               </div>
 
+              {/* Submit Button */}
               <button
                 type="submit"
-                disabled={loading}
-                className="text-lg font-medium w-full px-6 py-3 rounded-md text-white bg-[#0B3D20] hover:bg-green-900"
+                disabled={loading || !isLoggedIn}
+                className={`text-lg font-medium w-full px-6 py-3 rounded-md transition ${
+                  isLoggedIn
+                    ? "text-white bg-[#0B3D20] hover:bg-green-900"
+                    : "bg-gray-300 text-gray-600 cursor-not-allowed"
+                }`}
               >
                 {loading ? "Creating..." : "Create Blog"}
               </button>

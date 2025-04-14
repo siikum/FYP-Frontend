@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate , useLocation } from "react-router-dom";
 import axios from "axios";
 import firstIMG from "../assets/images/login-image.jpg";
 
@@ -10,36 +10,35 @@ const LoginPage = () => {
     password: "",
   });
   const [error, setError] = useState("");
+  const location = useLocation();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
+  
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/account/login/",
         formData
       );
       const data = response.data;
-
-      console.log("✅ Logged in user:", data.username);
-
+  
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("username", data.username);
       localStorage.setItem("isLoggedIn", "true");
-
-      alert("Login Successful!");
-      window.location.href = "/";
+  
+      const redirectPath = location.state?.from || "/";
+      navigate(redirectPath); 
     } catch (error) {
       console.error("Login error:", error.response?.data);
       setError(error.response?.data?.error || "Invalid credentials");
     }
   };
+
 
   return (
     <div className="flex h-screen raleway bg-amber-50 font-raleway">
@@ -53,9 +52,28 @@ const LoginPage = () => {
       </div>
 
       {/* Right Side: Form */}
-      <div className="w-[40%] flex items-center justify-center">
+      <div className="w-[40%] flex items-center justify-center relative">
+        {/* Logo and Home Link */}
+        <div className="absolute top-6 right-8 text-right">
+          <Link to="/">
+            <h1 className="text-2xl font-extrabold tracking-wide font-serif text-[#0B3D20]">
+              <span className="text-black">Trail</span>
+              <span className="text-[#295b42]">Himalaya</span>
+            </h1>
+          </Link>
+          <Link
+            to="/"
+            className="text-sm text-gray-600 hover:text-black transition duration-200 mt-1 inline-block"
+          >
+            Go to Homepage &gt;
+          </Link>
+        </div>
+
         <div className="bg-amber-50 px-8 pt-6 pb-8 mb-4">
-          <div className="text-6xl font-bold mb-6 text-center">Login</div>
+        <div className="text-6xl font-bold mb-2 text-center">Login</div>
+        <p className="text-[#295b42] text-mm text-center mb-6 italic">
+            Your trail awaits.
+          </p>
           <br />
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
@@ -63,7 +81,7 @@ const LoginPage = () => {
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="username"
               >
-                Username
+                Username <span className="text-red-500">*</span>
               </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -81,7 +99,7 @@ const LoginPage = () => {
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="password"
               >
-                Password
+                Password <span className="text-red-500">*</span>
               </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
@@ -97,14 +115,14 @@ const LoginPage = () => {
             {error && <p className="text-red-500 text-xs italic">{error}</p>}
             <div className="flex items-center justify-between gap-x-5">
               <button
-                className="bg-black hover:bg-white hover:text-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                className="bg-black hover:bg-[#295b42] hover:text-white text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 type="submit"
               >
                 Login
               </button>
               <Link
                 to="/NewSignUpPage"
-                className="inline-block align-baseline font-bold text-sm text-black hover:text-blue-800"
+                className="inline-block align-baseline font-bold text-sm text-black hover:text-[#295b42]"
               >
                 Don't have an account?
               </Link>

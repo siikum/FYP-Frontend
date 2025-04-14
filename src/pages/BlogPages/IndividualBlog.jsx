@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate  } from "react-router-dom"; // Import useParams
+import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { motion } from "framer-motion";
 import pfp from "../../assets/images/pf.jpg";
 import CommentSection from "./CommentSection";
+import Footer from "../../components/Footer";
 
 const IndividualBlog = () => {
   const [isFocused, setIsFocused] = useState(false);
-  const [blog, setBlog] = useState(null); // State to store the fetched blog
-  const { id } = useParams(); // Get the blog id from the URL
+  const [blog, setBlog] = useState(null);
+  const { id } = useParams();
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const fetchBlogPost = async () => {
@@ -18,20 +18,22 @@ const IndividualBlog = () => {
         `http://localhost:8000/blog/blogposts/${id}/`
       );
       const data = await response.json();
-      setBlog(data); // Set the blog data to state
+      setBlog(data);
     };
 
     fetchBlogPost();
-  }, [id]); // Fetch the blog when the component mounts or when the id changes
+  }, [id]);
 
   if (!blog) {
-    return <div>Loading...</div>; // Show loading while fetching
+    return <div>Loading...</div>;
   }
 
   return (
-    <div className="flex flex-col bg-[#f3f8f6] py-[100px]">
+    <div className="flex flex-col min-h-screen font-serif bg-[#f3f8f6]">
       <Navbar isBlack={true} />
-      <div className="flex flex-col gap-y-16 px-[10%]">
+
+      <main className="flex-grow py-[100px] px-[10%] flex flex-col gap-y-16">
+        {/* Blog Image */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -42,10 +44,11 @@ const IndividualBlog = () => {
           <img
             src={blog.image || pfp}
             alt={blog.title}
-            className="w-full h-full object-cover" // Makes the image fill the container
+            className="w-full h-full object-cover"
           />
         </motion.div>
 
+        {/* Blog Info */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -54,34 +57,31 @@ const IndividualBlog = () => {
           className="flex flex-col gap-y-4"
         >
           <div className="w-full font-serif font-medium flex items-center gap-x-4">
-            <div className="px-4 py-1 rounded-2xl bg-black text-white text-sm">
-              #blog
-            </div>
-            <div className="px-4 py-1 rounded-2xl bg-black text-white text-sm">
-              #trekking
-            </div>
-            <div className="px-4 py-1 rounded-2xl bg-black text-white text-sm">
-              #nepal
-            </div>
-            <div className="">{blog.date}</div>
+            <div>{blog.date}</div>
           </div>
           <div className="text-5xl font-serif font-bold w-full leading-tight">
             {blog.title}
           </div>
           <div
-  className="text-base text-gray-500 italic hover:underline cursor-pointer"
-  onClick={() => navigate(`/user/${blog.author}`)}
->
-  by {blog.author}
-</div>        </motion.div>
+            className="text-base text-gray-500 italic hover:underline cursor-pointer"
+            onClick={() => navigate(`/user/${blog.author}`)}
+          >
+            by {blog.author}
+          </div>
+        </motion.div>
+
+        {/* Blog Description */}
         <div className="flex flex-col gap-y-5">
           <div className="text-2xl font-serif text-justify w-full">
             {blog.description}
           </div>
         </div>
-        {/* Comments Section */}
+
+        {/* Comments */}
         <CommentSection postId={id} />
-      </div>
+      </main>
+
+      <Footer />
     </div>
   );
 };

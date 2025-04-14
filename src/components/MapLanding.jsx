@@ -46,10 +46,10 @@ const MapLanding = () => {
     >
       {/* Text Positioned ABOVE the Map */}
       <div className="mt-36 ml-4 text-white z-30">
-        <h2 className="text-5xl font-bold">
+        <h2 className="text-5xl font-bold text-amber-50">
           Discover Hidden <span className="text-[#0B3D20]">Nepal</span>
         </h2>
-        <p className="text-xl text-white">
+        <p className="text-xl text-amber-50">
           Handpicked underrated treasures of Nepal. Click a pin to explore more.
         </p>
       </div>

@@ -1,25 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import firstIMG from "../assets/images/login-image.jpg";
 
 const NewSignUpPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    username: '',
-    email: '',
-    password: '',
-    retypePassword: '',
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
+    password: "",
+    retypePassword: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [otpSent, setOtpSent] = useState(false);
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp] = useState("");
   const [resendDisabled, setResendDisabled] = useState(true);
   const [resendSeconds, setResendSeconds] = useState(60);
-  const [registrationEmail, setRegistrationEmail] = useState(''); // Keep track of email used for registration.
-
+  const [registrationEmail, setRegistrationEmail] = useState(""); // Keep track of email used for registration.
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,7 +27,6 @@ const NewSignUpPage = () => {
   const handleOtpChange = (e) => {
     setOtp(e.target.value);
   };
-
 
   const startResendTimer = () => {
     setResendDisabled(true);
@@ -52,75 +50,112 @@ const NewSignUpPage = () => {
     // Cleanup on unmount
     return () => {
       // Find any intervals and clear it
-      let intervalId = window.setInterval(()=>{}, 9999); // Get a big interval id
+      let intervalId = window.setInterval(() => {}, 9999); // Get a big interval id
       for (let i = 1; i < intervalId; i++) {
         window.clearInterval(i);
       }
     };
   }, [otpSent]);
 
-
   const handleResendOtp = async () => {
     try {
-      const response = await axios.post('http://127.0.0.1:8000/account/resend_otp/', { email: registrationEmail }); // used registrationEmail
+      const response = await axios.post(
+        "http://127.0.0.1:8000/account/resend_otp/",
+        { email: registrationEmail }
+      ); // used registrationEmail
       console.log(response.data);
       alert("New OTP sent to your email.");
       startResendTimer();
     } catch (error) {
-      setError(error.response?.data?.error || 'Failed to resend OTP');
+      setError(error.response?.data?.error || "Failed to resend OTP");
     }
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     if (formData.password !== formData.retypePassword) {
       setError("Passwords do not match.");
       return;
     }
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/account/register/', formData);
+      const response = await axios.post(
+        "http://127.0.0.1:8000/account/register/",
+        formData
+      );
       console.log(response.data);
-      setOtpSent(true);  // Show OTP input
+      setOtpSent(true); // Show OTP input
       setRegistrationEmail(formData.email); // used formData.email instead of email.
       alert("Registration initiated. Please check your email for OTP.");
     } catch (error) {
-      setError(error.response?.data?.error || 'Something went wrong during registration.');
+      setError(
+        error.response?.data?.error ||
+          "Something went wrong during registration."
+      );
     }
   };
-
 
   const handleVerifyOtp = async () => {
     try {
-      const response = await axios.post('http://127.0.0.1:8000/account/verify_otp/', { email: registrationEmail, otp: otp }); // used registrationEmail
+      const response = await axios.post(
+        "http://127.0.0.1:8000/account/verify_otp/",
+        { email: registrationEmail, otp: otp }
+      ); // used registrationEmail
       console.log(response.data);
       alert("Email verified successfully!");
-      navigate("/");  // Navigate to homepage
+      navigate("/"); // Navigate to homepage
     } catch (error) {
-      setError(error.response?.data?.error || 'Failed to verify OTP.');
+      setError(error.response?.data?.error || "Failed to verify OTP.");
     }
   };
-
+  // const [showDetails, setShowDetails] = useState(false);
+  // const toggleDetails = () => setShowDetails(!showDetails);
 
   return (
     <div className="flex h-screen raleway bg-amber-50 font-raleway">
       <div className="w-[60%] h-full">
-        <img src={firstIMG} alt="Travel" className="object-cover h-full w-full" />
+        <img
+          src={firstIMG}
+          alt="Travel"
+          className="object-cover h-full w-full"
+        />
       </div>
 
-      <div className="w-[40%] flex items-center justify-center">
+      <div className="w-[40%] flex items-center justify-center relative">
+        {/* Logo and Home Link */}
+        <div className="absolute top-6 right-8 text-right">
+          <Link to="/">
+            <h1 className="text-2xl font-extrabold tracking-wide font-serif text-[#0B3D20]">
+              <span className="text-black">Trail</span>
+              <span className="text-[#295b42]">Himalaya</span>
+            </h1>
+          </Link>
+          <Link
+            to="/"
+            className="text-sm text-gray-600 hover:text-black transition duration-200 mt-1 inline-block"
+          >
+            Go to Homepage &gt;
+          </Link>
+        </div>
+
         <div className="bg-amber-50 px-8 pt-6 pb-8 mb-4">
-          <div className="text-6xl font-bold mb-6 text-center">Sign Up</div>
+          <div className="text-6xl font-bold mb-2 text-center">Sign Up</div>
+          <p className="text-[#295b42] text-mm text-center mb-6 italic">
+            One step closer to the mountains.
+          </p>
+
           <br />
 
           {!otpSent ? (
             <form onSubmit={handleSubmit}>
               <div className="flex mb-4 space-x-4">
                 <div className="w-1/2">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="firstName">
-                    First Name
+                  <label
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                    htmlFor="firstName"
+                  >
+                    First Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -134,8 +169,11 @@ const NewSignUpPage = () => {
                   />
                 </div>
                 <div className="w-1/2">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="lastName">
-                    Last Name
+                  <label
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                    htmlFor="lastName"
+                  >
+                    Last Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -152,8 +190,11 @@ const NewSignUpPage = () => {
 
               <div className="flex mb-4 space-x-4">
                 <div className="w-1/2">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
-                    Username
+                  <label
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                    htmlFor="username"
+                  >
+                    Username <span className="text-red-500">*</span>
                   </label>
                   <input
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -168,8 +209,11 @@ const NewSignUpPage = () => {
                 </div>
 
                 <div className="w-1/2">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-                    Email
+                  <label
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                    htmlFor="email"
+                  >
+                    Email <span className="text-red-500">*</span>
                   </label>
                   <input
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -186,8 +230,11 @@ const NewSignUpPage = () => {
 
               <div className="flex mb-6 space-x-4">
                 <div className="w-1/2">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-                    Password
+                  <label
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                    htmlFor="password"
+                  >
+                    Password <span className="text-red-500">*</span>
                   </label>
                   <input
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
@@ -201,8 +248,11 @@ const NewSignUpPage = () => {
                   />
                 </div>
                 <div className="w-1/2">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="retypePassword">
-                    Re-type Password
+                  <label
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                    htmlFor="retypePassword"
+                  >
+                    Re-type Password <span className="text-red-500">*</span>
                   </label>
                   <input
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
@@ -220,20 +270,46 @@ const NewSignUpPage = () => {
               {error && <p className="text-red-500 text-xs italic">{error}</p>}
               <div className="flex items-center justify-between">
                 <button
-                  className="bg-black hover:bg-white hover:text-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  className="bg-black hover:bg-[#295b42] hover:text-white text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   type="submit"
                 >
                   Sign Up
                 </button>
-                <Link to="/LoginPage" className="inline-block align-baseline font-bold text-sm text-black hover:text-blue-800">
+                <Link
+                  to="/LoginPage"
+                  className="inline-block align-baseline font-bold text-sm text-black hover:text-[#295b42]"
+                >
                   Already have an account?
                 </Link>
               </div>
+              {/* <p className="text-sm text-gray-600 mt-6 text-center">
+                Unlock your adventure toolkit.{" "}
+                <button
+                  onClick={toggleDetails}
+                  className="text-[#295b42] hover:underline font-medium"
+                >
+                  {showDetails ? "Show less" : "Read more"}
+                </button>
+              </p>
+
+              {showDetails && (
+                <ul className="mt-4 text-sm text-gray-700 space-y-2 list-disc px-6">
+                  <li>Create and share your own travel blogs</li>
+                  <li>Generate personalized trekking itineraries</li>
+                  <li>Join travel community channels</li>
+                  <li>Review and rate destinations</li>
+                  <li>Access real-time weather and safety alerts</li>
+                  <li>Connect with other explorers worldwide</li>
+                </ul>
+              )} */}
             </form>
           ) : (
             <div>
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="otp">
+                <label
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                  htmlFor="otp"
+                >
                   OTP Code
                 </label>
                 <input
@@ -260,15 +336,14 @@ const NewSignUpPage = () => {
               </div>
 
               <button
-                  className="mt-4 text-blue-500 hover:text-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                  onClick={handleResendOtp}
-                  disabled={resendDisabled}
-                >
-                  {resendDisabled
-                    ? `Resend OTP in ${resendSeconds}s`
-                    : "Resend OTP"}
-                </button>
-
+                className="mt-4 text-blue-500 hover:text-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={handleResendOtp}
+                disabled={resendDisabled}
+              >
+                {resendDisabled
+                  ? `Resend OTP in ${resendSeconds}s`
+                  : "Resend OTP"}
+              </button>
             </div>
           )}
         </div>

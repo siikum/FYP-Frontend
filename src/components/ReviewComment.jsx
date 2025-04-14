@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axiosInstance from "../api/axiosConfig";
 import { Star } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const ReviewComment = ({ destination, onReviewSubmitted }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -9,6 +10,8 @@ const ReviewComment = ({ destination, onReviewSubmitted }) => {
   const [comments, setComments] = useState([]);
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const isLoggedIn = !!localStorage.getItem("authToken");
   const REVIEWS_PER_PAGE = 5;
@@ -97,30 +100,30 @@ const ReviewComment = ({ destination, onReviewSubmitted }) => {
             isFocused ? "border-blue-400 border-2" : ""
           }`}
         >
-          {/* ⭐ Stars */}
-          <div className="flex gap-x-1 mb-3 cursor-pointer">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <Star
-                key={star}
-                size={22}
-                fill={star <= rating ? "#facc15" : "none"}
-                stroke="#facc15"
-                onClick={() => setRating(star)}
-              />
-            ))}
-          </div>
-
-          <textarea
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            onChange={(e) => setReview(e.target.value)}
-            value={review}
-            className="w-full h-[100px] outline-none rounded-lg p-3"
-            placeholder={
-              isLoggedIn ? "Write your review..." : "Login to post a review"
-            }
-            disabled={!isLoggedIn}
-          />
+          {!isLoggedIn ? (
+            <div
+              className="w-full h-[100px] bg-white text-gray-400 border border-gray-300 rounded-lg p-3 cursor-pointer hover:bg-gray-50 transition"
+              onClick={() =>
+                navigate("/LoginPage", { state: { from: location.pathname } })
+              }
+            >
+              <span>
+                <span className="text-[#295b42] font-medium underline">
+                  Login
+                </span>{" "}
+                to post a review.
+              </span>
+            </div>
+          ) : (
+            <textarea
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              onChange={(e) => setReview(e.target.value)}
+              value={review}
+              className="w-full h-[100px] outline-none rounded-lg p-3 border border-gray-300"
+              placeholder="Write your review..."
+            />
+          )}
 
           <div className="flex justify-end mt-4">
             <button
