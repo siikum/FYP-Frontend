@@ -4,6 +4,8 @@ import Navbar from "../../components/Navbar";
 import { motion } from "framer-motion";
 import { Typewriter } from "react-simple-typewriter";
 import Footer from "../../components/Footer";
+import Swal from "sweetalert2";
+
 
 const BlogList = () => {
   const navigate = useNavigate();
@@ -44,26 +46,55 @@ const BlogList = () => {
     setDropdownOpen(dropdownOpen === index ? null : index);
   };
 
-  const handleDelete = async (id) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8000/blog/blogposts/${id}/delete/`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Token ${localStorage.getItem("authToken")}`,
-          },
-        }
-      );
 
-      if (response.ok) {
-        setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.id !== id));
-        console.log("Blog deleted successfully");
-      } else {
-        console.error("Failed to delete the blog");
+  const handleDelete = async (id) => {
+    const confirmResult = await Swal.fire({
+      title: "Are you sure?",
+      text: "This blog post will be permanently deleted!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#B91C1C",
+      cancelButtonColor: "#0B3D20",
+      confirmButtonText: "Yes, delete it!",
+    });
+  
+    if (confirmResult.isConfirmed) {
+      try {
+        const response = await fetch(
+          `http://localhost:8000/blog/blogposts/${id}/delete/`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Token ${localStorage.getItem("authToken")}`,
+            },
+          }
+        );
+  
+        if (response.ok) {
+          setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.id !== id));
+          Swal.fire({
+            icon: "success",
+            title: "Deleted!",
+            text: "Your blog post has been removed.",
+            confirmButtonColor: "#0B3D20",
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Failed!",
+            text: "Could not delete the blog post.",
+            confirmButtonColor: "#B91C1C",
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops!",
+          text: "Something went wrong while deleting the blog.",
+          confirmButtonColor: "#B91C1C",
+        });
+        console.error("Error deleting blog:", error);
       }
-    } catch (error) {
-      console.error("Error deleting blog:", error);
     }
   };
 

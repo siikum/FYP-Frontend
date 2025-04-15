@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import firstIMG from "../assets/images/login-image.jpg";
+import Swal from "sweetalert2";
+
 
 const NewSignUpPage = () => {
   const navigate = useNavigate();
@@ -62,53 +64,96 @@ const NewSignUpPage = () => {
       const response = await axios.post(
         "http://127.0.0.1:8000/account/resend_otp/",
         { email: registrationEmail }
-      ); // used registrationEmail
+      );
       console.log(response.data);
-      alert("New OTP sent to your email.");
+      Swal.fire({
+        icon: "success",
+        title: "OTP Resent",
+        text: "A new OTP has been sent to your email address.",
+        confirmButtonColor: "#0B3D20",
+      });
       startResendTimer();
     } catch (error) {
-      setError(error.response?.data?.error || "Failed to resend OTP");
+      const errorMessage = error.response?.data?.error || "Failed to resend OTP";
+      setError(errorMessage);
+      Swal.fire({
+        icon: "error",
+        title: "Resend Failed",
+        text: errorMessage,
+        confirmButtonColor: "#B91C1C",
+      });
     }
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     if (formData.password !== formData.retypePassword) {
-      setError("Passwords do not match.");
+      const errorMessage = "Passwords do not match.";
+      setError(errorMessage);
+      Swal.fire({
+        icon: "warning",
+        title: "Password Mismatch",
+        text: errorMessage,
+        confirmButtonColor: "#B91C1C",
+      });
       return;
     }
-
+  
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/account/register/",
         formData
       );
       console.log(response.data);
-      setOtpSent(true); // Show OTP input
-      setRegistrationEmail(formData.email); // used formData.email instead of email.
-      alert("Registration initiated. Please check your email for OTP.");
+      setOtpSent(true);
+      setRegistrationEmail(formData.email);
+      Swal.fire({
+        icon: "info",
+        title: "OTP Sent!",
+        text: "We've sent a verification code to your email. Please check your inbox.",
+        confirmButtonColor: "#0B3D20",
+      });
     } catch (error) {
-      setError(
-        error.response?.data?.error ||
-          "Something went wrong during registration."
-      );
+      const errorMessage =
+        error.response?.data?.error || "Something went wrong during registration.";
+      setError(errorMessage);
+      Swal.fire({
+        icon: "error",
+        title: "Registration Failed",
+        text: errorMessage,
+        confirmButtonColor: "#B91C1C",
+      });
     }
   };
+  
 
   const handleVerifyOtp = async () => {
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/account/verify_otp/",
         { email: registrationEmail, otp: otp }
-      ); // used registrationEmail
+      );
       console.log(response.data);
-      alert("Email verified successfully!");
-      navigate("/LoginPage"); // Navigate to homepage
+      Swal.fire({
+        icon: "success",
+        title: "Verified!",
+        text: "Your email has been successfully verified. You can now log in!",
+        confirmButtonColor: "#0B3D20",
+      }).then(() => navigate("/LoginPage"));
     } catch (error) {
-      setError(error.response?.data?.error || "Failed to verify OTP.");
+      const errorMessage = error.response?.data?.error || "Failed to verify OTP.";
+      setError(errorMessage); // still update state for inline message
+      Swal.fire({
+        icon: "error",
+        title: "Verification Failed",
+        text: errorMessage,
+        confirmButtonColor: "#B91C1C",
+      });
     }
   };
+  
   // const [showDetails, setShowDetails] = useState(false);
   // const toggleDetails = () => setShowDetails(!showDetails);
 

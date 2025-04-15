@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import axios from "axios";
 import { Typewriter } from "react-simple-typewriter";
+import Swal from "sweetalert2";
+
 
 const CreateBlog = () => {
   const navigate = useNavigate();
@@ -19,21 +21,28 @@ const CreateBlog = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!title || !description || !file) {
-      setError("All fields are required");
+      const errorMessage = "All fields are required";
+      setError(errorMessage);
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Info",
+        text: errorMessage,
+        confirmButtonColor: "#B91C1C",
+      });
       return;
     }
-
+  
     try {
       setLoading(true);
       setError("");
-
+  
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
       formData.append("image", file);
-
+  
       const response = await axios.post(
         "http://127.0.0.1:8000/blog/blogposts/create/",
         formData,
@@ -44,17 +53,30 @@ const CreateBlog = () => {
           },
         }
       );
-
+  
       if (response.status === 201) {
-        navigate("/blog");
+        Swal.fire({
+          icon: "success",
+          title: "Blog Posted!",
+          text: "Your journey has been shared successfully. 🎉",
+          confirmButtonColor: "#0B3D20",
+        }).then(() => navigate("/blog")); // Navigate after confirmation
       }
     } catch (err) {
       console.log(err);
-      setError("Failed to create blog. Make sure you are logged in.");
+      const errorMessage = "Failed to create blog. Make sure you are logged in.";
+      setError(errorMessage);
+      Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: errorMessage,
+        confirmButtonColor: "#B91C1C",
+      });
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="flex flex-col min-h-screen font-serif bg-[#f3f8f6] py-[100px]">

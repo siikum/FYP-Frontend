@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import Swal from "sweetalert2";
+
 
 
 const ContactUs = () => {
@@ -21,7 +23,7 @@ const [formData, setFormData] = useState({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const res = await fetch("http://127.0.0.1:8000/account/contact/", {
         method: "POST",
@@ -31,25 +33,42 @@ const [formData, setFormData] = useState({
         },
         body: JSON.stringify(formData),
       });
-
+  
       const data = await res.json();
-
+  
       if (res.ok) {
-        setResponseMsg(data.message);
         setFormData({
-          firstName: "",
-          lastName: "",
+          first_name: "",
+          last_name: "",
           email: "",
           phone: "",
           message: "",
         });
+  
+        Swal.fire({
+          icon: "success",
+          title: "Message Sent!",
+          text: "Thank you for contacting us. We’ll get back to you soon.",
+          confirmButtonColor: "#0B3D20",
+        });
       } else {
-        setResponseMsg("Something went wrong. Please try again.");
+        Swal.fire({
+          icon: "error",
+          title: "Submission Failed",
+          text: data?.message || "Something went wrong. Please try again.",
+          confirmButtonColor: "#B91C1C",
+        });
       }
     } catch (err) {
-      setResponseMsg("Server error.");
+      Swal.fire({
+        icon: "error",
+        title: "Server Error",
+        text: "Please check your connection or try again later.",
+        confirmButtonColor: "#B91C1C",
+      });
     }
   };
+  
 
   return (
     <section className="w-full bg-[#f3f8f6] text-[#0B3D20] py-24 px-4">

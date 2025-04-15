@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
+import Swal from "sweetalert2";
+
 
 const API = "http://localhost:8000";
 
@@ -77,12 +79,51 @@ export default function ChannelMessage() {
   };
 
   const handleDelete = async (msgId) => {
-    if (!window.confirm("Delete this message?")) return;
-    await fetch(`${API}/account/messages/${msgId}/delete/`, {
-      method: "DELETE",
-      headers: { Authorization: `Token ${token}` },
+    const confirmResult = await Swal.fire({
+      title: "Delete this message?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#B91C1C",
+      cancelButtonColor: "#0B3D20",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
     });
-    fetchMessages();
+  
+    if (confirmResult.isConfirmed) {
+      try {
+        const response = await fetch(`${API}/account/messages/${msgId}/delete/`, {
+          method: "DELETE",
+          headers: { Authorization: `Token ${token}` },
+        });
+  
+        if (response.ok) {
+          await fetchMessages();
+          Swal.fire({
+            icon: "success",
+            title: "Deleted!",
+            text: "The message has been removed.",
+            confirmButtonColor: "#0B3D20",
+            timer: 1500,
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Failed",
+            text: "Could not delete the message.",
+            confirmButtonColor: "#B91C1C",
+          });
+        }
+      } catch (error) {
+        console.error("Error deleting message:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops!",
+          text: "Something went wrong while deleting the message.",
+          confirmButtonColor: "#B91C1C",
+        });
+      }
+    }
   };
 
   return (

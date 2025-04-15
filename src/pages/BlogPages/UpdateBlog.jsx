@@ -4,6 +4,8 @@ import Navbar from "../../components/Navbar";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { Typewriter } from "react-simple-typewriter";
+import Swal from "sweetalert2";
+
 
 const UpdateBlog = () => {
   const { id } = useParams();
@@ -36,14 +38,15 @@ const UpdateBlog = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+    setError("");
+  
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
     if (file && typeof file !== "string") {
       formData.append("image", file);
     }
-
+  
     try {
       const response = await fetch(
         `http://localhost:8000/blog/blogposts/${id}/update/`,
@@ -55,19 +58,39 @@ const UpdateBlog = () => {
           body: formData,
         }
       );
-
+  
       if (response.ok) {
-        navigate(`/blog/${id}`);
+        Swal.fire({
+          icon: "success",
+          title: "Blog Updated!",
+          text: "Your story has been refreshed successfully. ✨",
+          confirmButtonColor: "#0B3D20",
+        }).then(() => navigate(`/blog/${id}`));
       } else {
         const errorData = await response.json();
-        setError(errorData.detail || "Failed to update blog");
+        const errorMessage = errorData.detail || "Failed to update blog";
+        setError(errorMessage);
+        Swal.fire({
+          icon: "error",
+          title: "Update Failed",
+          text: errorMessage,
+          confirmButtonColor: "#B91C1C",
+        });
       }
     } catch (err) {
-      setError("Failed to update blog");
+      const errorMessage = "Failed to update blog";
+      setError(errorMessage);
+      Swal.fire({
+        icon: "error",
+        title: "Something Went Wrong",
+        text: errorMessage,
+        confirmButtonColor: "#B91C1C",
+      });
     }
-
+  
     setLoading(false);
   };
+  
 
   return (
     <div className="flex flex-col min-h-screen font-serif bg-[#f3f8f6] py-[100px]">

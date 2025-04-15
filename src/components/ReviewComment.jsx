@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axiosInstance from "../api/axiosConfig";
 import { Star } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const ReviewComment = ({ destination, onReviewSubmitted }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -53,10 +54,14 @@ const ReviewComment = ({ destination, onReviewSubmitted }) => {
           },
         }
       );
-
-      console.log("Posted review:", response.data);
       setReview("");
       setRating(0);
+      Swal.fire({
+        icon: "success",
+        title: "Review Posted!",
+        text: "Thanks for sharing your thoughts with us.",
+        confirmButtonColor: "#0B3D20",
+      });
 
       setComments((prev) => [
         {
@@ -71,7 +76,12 @@ const ReviewComment = ({ destination, onReviewSubmitted }) => {
       onReviewSubmitted?.();
     } catch (err) {
       console.error("Error posting review:", err);
-      setError("Failed to post comment. Please try again.");
+      Swal.fire({
+        icon: "error",
+        title: "Failed to Post",
+        text: "Something went wrong while posting your review.",
+        confirmButtonColor: "#B91C1C",
+      });
     }
   };
 

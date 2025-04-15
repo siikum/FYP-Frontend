@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { motion } from "framer-motion";
 import Footer from "../../components/Footer";
+import Swal from "sweetalert2";
+
 
 export default function ChannelList() {
   const navigate = useNavigate();
@@ -125,11 +127,21 @@ export default function ChannelList() {
                           }
                         );
                         if (res.ok) {
-                          alert("✅ Join request sent!");
-                          window.location.reload();
+                          Swal.fire({
+                            icon: "success",
+                            title: "Join Request Sent",
+                            text: "Your request has been sent to the admin.",
+                            confirmButtonColor: "#0B3D20",
+                          }).then(() => window.location.reload());
                         } else {
-                          alert("❌ Failed to send request.");
+                          Swal.fire({
+                            icon: "error",
+                            title: "Request Failed",
+                            text: "Unable to send join request. Please try again.",
+                            confirmButtonColor: "#B91C1C",
+                          });
                         }
+                        
                       }}
                       className="mt-2 bg-[#0B3D20] hover:bg-[#295b42] text-white font-semibold px-5 py-2 rounded-full"
                     >

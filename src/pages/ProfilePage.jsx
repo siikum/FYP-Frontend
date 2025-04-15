@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import Swal from "sweetalert2";
+
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
@@ -86,23 +88,51 @@ const ProfilePage = () => {
   const handleFileSelected = async (e) => {
     const file = e.target.files?.[0];
     if (!file || !file.type.startsWith("image/")) return;
+  
     const formData = new FormData();
     formData.append("profile_picture", file);
-    await updateProfile(formData, true);
-    e.target.value = null;
+  
+    try {
+      await updateProfile(formData, true);
+  
+      Swal.fire({
+        icon: "success",
+        title: "Profile Updated!",
+        text: "Your new profile picture looks great!",
+        confirmButtonColor: "#0B3D20",
+      });
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text: "Couldn't update your profile picture.",
+        confirmButtonColor: "#B91C1C",
+      });
+    }
+  
+    e.target.value = null; // Reset input
   };
+  
 
   const handleSaveBio = async () => {
-    await updateProfile({ bio: editedBio });
+    try {
+      await updateProfile({ bio: editedBio });
+      Swal.fire({
+        icon: "success",
+        title: "Bio Saved",
+        text: "Your bio has been updated.",
+        confirmButtonColor: "#0B3D20",
+      });
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Failed to Save Bio",
+        text: "Something went wrong while updating your bio.",
+        confirmButtonColor: "#B91C1C",
+      });
+    }
   };
-
-  if (loading) return <div className="text-center py-32">Loading...</div>;
-  if (!user)
-    return (
-      <div className="text-center py-32 text-red-500">
-        {error || "User not found"}
-      </div>
-    );
+  
 
   return (
     <>
@@ -126,10 +156,11 @@ const ProfilePage = () => {
           >
             <img
               src={
-                user.profile_picture
+                user?.profile_picture
                   ? `${API_BASE_URL}${user.profile_picture}`
                   : "/path/to/default-avatar.png"
               }
+              
               className="w-36 h-36 rounded-full object-cover border-4 border-[#0B3D20] shadow"
               alt="Profile"
             />
@@ -138,7 +169,7 @@ const ProfilePage = () => {
             </div>
           </div>
           <h2 className="text-2xl font-bold text-[#0B3D20] mt-4">
-            {user.username}
+          {user?.username}
           </h2>
           <hr className="my-4 border-t border-gray-300 w-full" />
           <div className="space-y-2 w-full text-left text-base">
@@ -158,11 +189,11 @@ const ProfilePage = () => {
         {/* Right */}
         <div className="flex flex-col gap-6 justify-center">
           <p className="text-sm text-gray-700">
-            <span className="font-semibold">Full Name:</span> {user.first_name}{" "}
-            {user.last_name}
+            <span className="font-semibold">Full Name:</span> {user?.first_name}{" "}
+            {user?.last_name}
           </p>
           <p className="text-sm text-gray-700">
-            <span className="font-semibold">Email:</span> {user.email}
+            <span className="font-semibold">Email:</span> {user?.email}
           </p>
           <div>
             <div className="flex items-center justify-between mb-1">
@@ -202,7 +233,7 @@ const ProfilePage = () => {
               </>
             ) : (
               <p className="text-sm mt-2 text-gray-700 min-h-[4em] whitespace-pre-wrap">
-                {user.bio || (
+                {user?.bio || (
                   <span className="italic text-gray-400">No bio yet.</span>
                 )}
               </p>

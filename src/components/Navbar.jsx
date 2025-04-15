@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
+import Swal from "sweetalert2";
+
 
 const Navbar = ({ isBlack = false }) => {
   const navigate = useNavigate();
@@ -63,12 +65,33 @@ const Navbar = ({ isBlack = false }) => {
     return () => window.removeEventListener("storage", checkLogin);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.clear();
-    window.dispatchEvent(new Event("storage"));
-    setShowProfileDropdown(false);
-    navigate("/LoginPage");
+  const handleLogout = async () => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You will be logged out of Trail Himalaya.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#B91C1C",
+      cancelButtonColor: "#0B3D20",
+      confirmButtonText: "Yes, logout",
+      cancelButtonText: "Stay",
+    });
+  
+    if (result.isConfirmed) {
+      localStorage.clear();
+      window.dispatchEvent(new Event("storage"));
+      setShowProfileDropdown(false);
+      navigate("/LoginPage");
+      Swal.fire({
+        icon: "success",
+        title: "Logged Out",
+        text: "You have been successfully logged out.",
+        confirmButtonColor: "#0B3D20",
+        timer: 2000,
+      });
+    }
   };
+  
 
   const toggleProfileDropdown = () => {
     setShowProfileDropdown((prev) => !prev);

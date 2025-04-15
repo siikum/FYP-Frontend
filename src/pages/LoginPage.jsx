@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate , useLocation } from "react-router-dom";
 import axios from "axios";
 import firstIMG from "../assets/images/login-image.jpg";
+import Swal from "sweetalert2";
+
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -32,12 +34,23 @@ const LoginPage = () => {
       localStorage.setItem("isLoggedIn", "true");
   
       const redirectPath = location.state?.from || "/";
-      navigate(redirectPath); 
+      navigate(redirectPath);
+  
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: `Welcome back, ${data.username}!`,
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
     } catch (error) {
       console.error("Login error:", error.response?.data);
       setError(error.response?.data?.error || "Invalid credentials");
     }
   };
+  
 
 
   return (
