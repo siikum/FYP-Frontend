@@ -12,7 +12,7 @@ const pins = [
   { id: 6, top: "72%", left: "80%", url: "/destination/mundhum-trail", name: "Khotang" },
   { id: 7, top: "55%", left: "77%", url: "/destination/shiva-dhara", name: "Shiva Dhara (Solukhumbu)" },
   { id: 8, top: "35%", left: "36%", url: "/destination/shey-phoksundo-lake", name: "Shey Phoksundo Lake" },
-  { id: 9, top: "25%", left: "9%", url: "/destination/api", name: "api himal base camp" },
+  { id: 9, top: "25%", left: "9%", url: "/destination/api-himal-base-camp", name: "api himal base camp" },
   { id: 10, top: "49%", left: "36%", url: "/destination/shey-phoksundo-lake", name: "limi valley" },
 
 ];

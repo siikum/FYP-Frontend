@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import "./chartSetup";
 
 import Home from "./pages/Home.jsx";
@@ -29,46 +34,64 @@ import ContactMessagesPage from "./pages/adminDashboard/ContactMessagesPage";
 import AdminLogin from "./pages/adminDashboard/AdminLogin";
 import AdminBlogsPage from "./pages/adminDashboard/AdminBlogsPage.jsx";
 import AdminSentimentReviews from "./pages/adminDashboard/AdminSentimentReviews.jsx";
+import { useEffect } from "react";
 
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0); // always scroll to top
+  }, [pathname]);
+
+  return null;
+};
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Public routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/parallax" element={<TrialPage />} />
-        <Route path="/Footer" element={<Footer />} />
-        <Route path="/destination/:slug" element={<IndividualDestination />} />
-        <Route path="/TripPlannerForm" element={<TripPlannerForm />} />
-        <Route path="/About" element={<About />} />
-        <Route path="/blog" element={<BlogList />} />
-        <Route path="/blog/:id" element={<IndividualBlog />} />
-        <Route path="/blog/add" element={<CreateBlog />} />
-        <Route path="/blog/:id/update" element={<UpdateBlog />} />
-        <Route path="/ProfilePage" element={<ProfilePage />} />
-        <Route path="/user/:username" element={<PublicProfile />} />
-        <Route path="/NewSignUpPage" element={<NewSignUpPage />} />
-        <Route path="/LoginPage" element={<LoginPage />} />
-        <Route path="/channels" element={<ChannelList />} />
-        <Route path="/channels/:id" element={<ChannelMessage />} />
-        <Route path="/MyChannels" element={<MyChannels />} />
+    <>
+      <Router>
+        <ScrollToTop />
+        <Routes>
+          {/* Public routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/parallax" element={<TrialPage />} />
+          <Route path="/Footer" element={<Footer />} />
+          <Route
+            path="/destination/:slug"
+            element={<IndividualDestination />}
+          />
+          <Route path="/TripPlannerForm" element={<TripPlannerForm />} />
+          <Route path="/About" element={<About />} />
+          <Route path="/blog" element={<BlogList />} />
+          <Route path="/blog/:id" element={<IndividualBlog />} />
+          <Route path="/blog/add" element={<CreateBlog />} />
+          <Route path="/blog/:id/update" element={<UpdateBlog />} />
+          <Route path="/ProfilePage" element={<ProfilePage />} />
+          <Route path="/user/:username" element={<PublicProfile />} />
+          <Route path="/NewSignUpPage" element={<NewSignUpPage />} />
+          <Route path="/LoginPage" element={<LoginPage />} />
+          <Route path="/channels" element={<ChannelList />} />
+          <Route path="/channels/:id" element={<ChannelMessage />} />
+          <Route path="/MyChannels" element={<MyChannels />} />
 
-
-        {/* ✅ Admin Panel with nested pages */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="dashboard" element={<DashboardHome />} />
-          <Route path="users" element={<UsersPage />} />
-          <Route path="destinations" element={<DestinationsPage />} />
-          <Route path="groupchats" element={<GroupChatsPage />} />
-          <Route path="joinrequests" element={<JoinRequestsPage />} />
-          <Route path="messages" element={<ContactMessagesPage />} />
-          <Route path="AdminBlogsPage" element={<AdminBlogsPage />} />
-          <Route path="AdminSentimentReviews" element={<AdminSentimentReviews />} />
-        </Route>
-      </Routes>
-    </Router>
+          {/* ✅ Admin Panel with nested pages */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="dashboard" element={<DashboardHome />} />
+            <Route path="users" element={<UsersPage />} />
+            <Route path="destinations" element={<DestinationsPage />} />
+            <Route path="groupchats" element={<GroupChatsPage />} />
+            <Route path="joinrequests" element={<JoinRequestsPage />} />
+            <Route path="messages" element={<ContactMessagesPage />} />
+            <Route path="AdminBlogsPage" element={<AdminBlogsPage />} />
+            <Route
+              path="AdminSentimentReviews"
+              element={<AdminSentimentReviews />}
+            />
+          </Route>
+        </Routes>
+      </Router>
+    </>
   );
 }
 

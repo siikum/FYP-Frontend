@@ -136,7 +136,7 @@ const TripPlannerForm = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-semibold mb-1 text-[#0B3D20]">
-                    Budget ($) <span className="text-red-500">*</span>
+                    Budget for entire trip ($) <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="number"
@@ -275,7 +275,7 @@ const TripPlannerForm = () => {
 
             {loading && (
               <p className="text-center mt-4 text-[#0B3D20]">
-                Generating itinerary...
+                Please Wait. Your Itinerary is being generated...
               </p>
             )}
 

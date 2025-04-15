@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
@@ -104,8 +105,9 @@ const ProfilePage = () => {
     );
 
   return (
-    <div className="min-h-screen bg-[#f3f8f6] pt-24 px-4 md:px-20">
-      <Navbar isBlack={true} />
+    <>
+    <Navbar isBlack={true} />
+    <div className="min-h-screen bg-[#f3f8f6] pt-[100px] px-4 md:px-20">
       <input
         type="file"
         ref={fileInputRef}
@@ -128,7 +130,7 @@ const ProfilePage = () => {
                   ? `${API_BASE_URL}${user.profile_picture}`
                   : "/path/to/default-avatar.png"
               }
-              className="w-32 h-32 rounded-full object-cover border-4 border-[#0B3D20] shadow"
+              className="w-36 h-36 rounded-full object-cover border-4 border-[#0B3D20] shadow"
               alt="Profile"
             />
             <div className="absolute inset-0 rounded-full bg-gray-300 bg-opacity-50 hidden group-hover:flex items-center justify-center text-xs text-[#0B3D20] font-medium">
@@ -155,18 +157,13 @@ const ProfilePage = () => {
 
         {/* Right */}
         <div className="flex flex-col gap-6 justify-center">
-          {/* Full Name */}
-          <p className="text-sm  text-gray-700">
+          <p className="text-sm text-gray-700">
             <span className="font-semibold">Full Name:</span> {user.first_name}{" "}
             {user.last_name}
           </p>
-
-          {/* Email */}
           <p className="text-sm text-gray-700">
             <span className="font-semibold">Email:</span> {user.email}
           </p>
-
-          {/* Bio */}
           <div>
             <div className="flex items-center justify-between mb-1">
               <h3 className="text-lg font-semibold text-[#0B3D20]">Bio</h3>
@@ -234,7 +231,10 @@ const ProfilePage = () => {
           </p>
         )}
       </div>
+      
     </div>
+    <Footer />
+    </>
   );
 };
 

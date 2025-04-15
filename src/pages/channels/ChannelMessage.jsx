@@ -172,8 +172,8 @@ export default function ChannelMessage() {
               className="hidden"
               id="fileInput"
             />
-            <label htmlFor="fileInput" className="bg-gray-200 px-3 py-2 rounded-md cursor-pointer">
-              📎
+            <label htmlFor="fileInput" className="bg-[#0B3D20] px-3 py-2 rounded-md cursor-pointer">
+            🔗
             </label>
             <button
               onClick={handleSend}

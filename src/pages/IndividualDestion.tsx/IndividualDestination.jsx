@@ -65,12 +65,6 @@ const IndividualDestination = () => {
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold bg-black/40 px-6 py-3 rounded-lg shadow">
               {destination.display_title}
             </h1>
-            <button
-              onClick={handleRedirect}
-              className="bg-[#0B3D20] hover:bg-[#18432f] transition text-white font-semibold py-2 px-6 rounded-md shadow"
-            >
-              Generate Itinerary
-            </button>
           </motion.div>
         </div>
 
@@ -78,7 +72,11 @@ const IndividualDestination = () => {
         <div className="px-[20%] flex w-full justify-between py-[70px] backdrop-blur-lg">
           <div className="flex flex-col gap-y-2 items-center">
             <div className="text-6xl font-bold flex items-center gap-x-2">
-              <Counter initialValue={0} finalValue={destination.altitude} duration={2} />
+              <Counter
+                initialValue={0}
+                finalValue={destination.altitude}
+                duration={2}
+              />
               <Mountain className="w-[50px] h-[50px]" />
             </div>
             <div className="text-2xl font-medium">Altitude</div>
@@ -94,7 +92,11 @@ const IndividualDestination = () => {
 
           <div className="flex flex-col gap-y-2 items-center">
             <div className="text-6xl font-bold flex items-center gap-x-2">
-              <Counter initialValue={0} finalValue={destination.duration} duration={2} />
+              <Counter
+                initialValue={0}
+                finalValue={destination.duration}
+                duration={2}
+              />
               <Timer className="w-[50px] h-[50px]" />
             </div>
             <div className="text-2xl font-medium">Duration (Days)</div>
@@ -137,7 +139,9 @@ const IndividualDestination = () => {
         </motion.div>
 
         {/* FORECAST */}
-        <DailyForecast destination={destination?.location.replace(/\s+/g, "")} />
+        <DailyForecast
+          destination={destination?.location.replace(/\s+/g, "")}
+        />
 
         {/* SENTIMENT CHART */}
         <DestinationSentiment destination={destination?.name} key={chartKey} />

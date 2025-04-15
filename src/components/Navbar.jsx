@@ -32,19 +32,19 @@ const Navbar = ({ isBlack = false }) => {
       const token = localStorage.getItem("authToken");
       const loggedIn = !!token;
       setIsLoggedIn(loggedIn);
-  
+
       if (!loggedIn) {
         setProfilePicUrl(null);
         return;
       }
-  
+
       try {
         const response = await fetch("http://127.0.0.1:8000/account/profile/", {
           headers: {
             Authorization: `Token ${token}`,
           },
         });
-  
+
         if (response.ok) {
           const data = await response.json();
           // Replace 'profile_picture' with the actual field from your backend
@@ -57,12 +57,11 @@ const Navbar = ({ isBlack = false }) => {
         setProfilePicUrl(null);
       }
     };
-  
+
     checkLogin();
     window.addEventListener("storage", checkLogin);
     return () => window.removeEventListener("storage", checkLogin);
   }, []);
-  
 
   const handleLogout = () => {
     localStorage.clear();
@@ -147,11 +146,10 @@ const Navbar = ({ isBlack = false }) => {
               >
                 {profilePicUrl ? (
                   <img
-                  src={profilePicUrl}
-                  alt="User profile"
-                  className="w-full h-full object-cover rounded-full"
-                />
-                  
+                    src={profilePicUrl}
+                    alt="User profile"
+                    className="w-full h-full object-cover rounded-full"
+                  />
                 ) : (
                   <FaUserCircle
                     className={`w-full h-full ${

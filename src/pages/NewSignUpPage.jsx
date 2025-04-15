@@ -104,7 +104,7 @@ const NewSignUpPage = () => {
       ); // used registrationEmail
       console.log(response.data);
       alert("Email verified successfully!");
-      navigate("/"); // Navigate to homepage
+      navigate("/LoginPage"); // Navigate to homepage
     } catch (error) {
       setError(error.response?.data?.error || "Failed to verify OTP.");
     }
