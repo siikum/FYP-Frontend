@@ -6,35 +6,71 @@ const baseUrl = "http://127.0.0.1:8000/blog";
 
 const CommentsSection = ({ postId }) => {
   const [newComment, setNewComment] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [comments, setComments] = useState([]);
-  const [dropdownOpen, setDropdownOpen] = useState(null);
-  const [editingCommentId, setEditingCommentId] = useState(null); // Track which comment is being edited
-  const [editedContent, setEditedContent] = useState(""); // Store edited content for the comment
+  const [dropdownOpen, setDropdownOpen] = useState({
+    comment: null,
+    reply: null,
+  });
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editingReplyId, setEditingReplyId] = useState(null);
+  const [editedContent, setEditedContent] = useState("");
+  const [editedReplyContent, setEditedReplyContent] = useState("");
+  const [replyingToCommentId, setReplyingToCommentId] = useState(null);
+  const [replyContent, setReplyContent] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const loggedInUsername = localStorage
+    .getItem("username")
+    ?.replace(/"/g, "")
+    .trim();
 
   const fetchComments = async () => {
     try {
       const response = await axios.get(`${baseUrl}/comments/post/${postId}/`, {
         headers: {
-          Authorization: `Token ${localStorage.getItem("authToken")}`
+          Authorization: `Token ${localStorage.getItem("authToken")}`,
         },
       });
-      setComments(response.data);
+
+      const commentsWithReplies = await Promise.all(
+        response.data.map(async (comment) => {
+          try {
+            const repliesRes = await axios.get(
+              `${baseUrl}/replies/comment/${comment.id}/`
+            );
+            return {
+              ...comment,
+              replies: repliesRes.data,
+            };
+          } catch (error) {
+            console.error("Error fetching replies:", error);
+            return {
+              ...comment,
+              replies: [],
+            };
+          }
+        })
+      );
+
+      setComments(commentsWithReplies);
     } catch (error) {
       console.error("Error fetching comments:", error);
     }
   };
 
-  const handleAddComment = async (newComment) => {
+  const handleAddComment = async (newCommentData) => {
     try {
-      const response = await axios.post(`${baseUrl}/comments/create/`, newComment, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Token ${localStorage.getItem("authToken")}`
-        },
-      });
+      const response = await axios.post(
+        `${baseUrl}/comments/create/`,
+        newCommentData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
       if (response.status === 201 || response.status === 200) {
         fetchComments();
       }
@@ -52,37 +88,106 @@ const CommentsSection = ({ postId }) => {
     try {
       const response = await axios.put(
         `${baseUrl}/comments/${commentId}/update/`,
-        { content: editedContent },  // This sends the updated content
+        { content: editedContent },
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Token ${localStorage.getItem("authToken")}`
+            Authorization: `Token ${localStorage.getItem("authToken")}`,
           },
         }
       );
       if (response.status === 200) {
-        fetchComments();  // Fetch updated comments list
-        setEditingCommentId(null);  // Stop editing mode
-        setEditedContent("");  // Clear the editing content
+        fetchComments();
+        setEditingCommentId(null);
+        setEditedContent("");
       }
     } catch (error) {
-      console.error("Error updating comment:", error.response.data);
+      console.error("Error updating comment:", error.response?.data);
       setError("Failed to update comment.");
     }
-};
-
+  };
 
   const handleDeleteComment = async (commentId) => {
     try {
       await axios.delete(`${baseUrl}/comments/${commentId}/delete/`, {
         headers: {
-          Authorization: `Token ${localStorage.getItem("authToken")}`
+          Authorization: `Token ${localStorage.getItem("authToken")}`,
         },
       });
       fetchComments();
     } catch (error) {
       console.error("Error deleting comment:", error);
       alert("Failed to delete comment.");
+    }
+  };
+
+  const handlePostReply = async (parentCommentId) => {
+    if (!replyContent.trim()) {
+      setError("Reply cannot be empty");
+      return;
+    }
+    try {
+      await axios.post(
+        `${baseUrl}/replies/create/`,
+        {
+          comment: parentCommentId,
+          content: replyContent,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
+
+      setReplyingToCommentId(null);
+      setReplyContent("");
+      fetchComments();
+    } catch (error) {
+      console.error("Error posting reply:", error);
+      setError("Failed to post reply.");
+    }
+  };
+
+  const handleUpdateReply = async (replyId) => {
+    if (!editedReplyContent.trim()) {
+      setError("Reply cannot be empty");
+      return;
+    }
+    try {
+      const response = await axios.put(
+        `${baseUrl}/replies/${replyId}/update/`,
+        { content: editedReplyContent },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        fetchComments();
+        setEditingReplyId(null);
+        setEditedReplyContent("");
+      }
+    } catch (error) {
+      console.error("Error updating reply:", error);
+      setError("Failed to update reply.");
+    }
+  };
+
+  const handleDeleteReply = async (replyId) => {
+    try {
+      await axios.delete(`${baseUrl}/replies/${replyId}/delete/`, {
+        headers: {
+          Authorization: `Token ${localStorage.getItem("authToken")}`,
+        },
+      });
+      fetchComments();
+    } catch (error) {
+      console.error("Error deleting reply:", error);
+      alert("Failed to delete reply.");
     }
   };
 
@@ -102,15 +207,19 @@ const CommentsSection = ({ postId }) => {
       await handleAddComment(data);
       setNewComment("");
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setError("Failed to create comment. Make sure you are logged in.");
     } finally {
       setLoading(false);
     }
   };
 
-  const toggleDropdown = (index) => {
-    setDropdownOpen(dropdownOpen === index ? null : index);
+  const toggleDropdown = (type, id) => {
+    setDropdownOpen((prev) => ({
+      comment:
+        type === "comment" ? (prev.comment === id ? null : id) : prev.comment,
+      reply: type === "reply" ? (prev.reply === id ? null : id) : prev.reply,
+    }));
   };
 
   useEffect(() => {
@@ -124,10 +233,8 @@ const CommentsSection = ({ postId }) => {
       <div className="font-medium text-2xl">Comments</div>
 
       {/* Create new comment */}
-      <div className={`rounded-2xl p-6 bg-white border border-gray-300 text-lg ${isFocused ? "border-2" : ""}`}>
+      <div className="rounded-2xl p-6 bg-white border border-gray-300 text-lg">
         <textarea
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
           className="w-full h-[100px] outline-none border border-gray-300 rounded-lg p-3"
           placeholder="Write your comment..."
           value={newComment}
@@ -148,67 +255,218 @@ const CommentsSection = ({ postId }) => {
       {/* Comments */}
       <div className="flex flex-col gap-y-6">
         {comments.length > 0 ? (
-          comments.map((value, index) => (
-            <div key={index} className="flex items-start gap-x-6">
-              <div className="w-[60px] h-[60px] overflow-hidden rounded-full">
-                <img src={pfp} className="w-full h-full object-cover rounded-full" alt="User Profile" />
-              </div>
-              <div className="flex flex-col gap-y-2">
-                <div className="flex items-center gap-x-4 relative">
-                <div className="font-medium text-lg">{value.author_username}</div>
-                <div className="text-gray-500 text-sm">{new Date(value.created_at).toDateString()}</div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleDropdown(index);
+          comments.map((comment, index) => (
+            <div key={index} className="flex flex-col gap-y-2">
+              <div className="flex items-start gap-x-6">
+                <div className="w-[50px] h-[50px] overflow-hidden rounded-full">
+                  <img
+                    src={comment.author_profile_picture || pfp}
+                    className="w-full h-full object-cover rounded-full"
+                    alt="User Profile"
+                    onError={(e) => {
+                      e.target.src = pfp;
                     }}
-                    className="relative px-2 py-1 text-black"
-                  >
-                    &#8230;
-                    {dropdownOpen === index && (
-                      <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-lg shadow-md z-10">
-                        <ul>
-                          <li
-                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                            onClick={() => {
-                              setEditingCommentId(value.id);
-                              setEditedContent(value.content); // Pre-fill the content for editing
-                            }}
-                          >
-                            Update
-                          </li>
-                          <li
-                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                            onClick={() => handleDeleteComment(value.id)}
-                          >
-                            Delete
-                          </li>
-                        </ul>
+                  />
+                </div>
+                <div className="flex flex-col gap-y-2 flex-1">
+                  <div className="flex items-center gap-x-4 relative">
+                    <div className="font-medium text-lg">
+                      {comment.author_username}
+                    </div>
+                    <div className="text-gray-500 text-sm">
+                      {new Date(comment.created_at).toDateString()}
+                    </div>
+                    {comment.author_username === loggedInUsername && (
+                      <div className="relative">
+                        <button
+                          onClick={() => toggleDropdown("comment", comment.id)}
+                          className="text-black text-xl px-2"
+                        >
+                          &#8230;
+                        </button>
+                        {dropdownOpen.comment === comment.id && (
+                          <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-lg shadow-md z-10">
+                            <ul>
+                              <li
+                                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                onClick={() => {
+                                  setEditingCommentId(comment.id);
+                                  setEditedContent(comment.content);
+                                }}
+                              >
+                                Update
+                              </li>
+                              <li
+                                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                onClick={() => handleDeleteComment(comment.id)}
+                              >
+                                Delete
+                              </li>
+                            </ul>
+                          </div>
+                        )}
                       </div>
                     )}
-                  </button>
-                </div>
-
-                {/* Editable comment UI */}
-                {editingCommentId === value.id ? (
-                  <div>
-                    <textarea
-                      className="w-full h-[100px] outline-none border border-gray-300 rounded-lg p-3"
-                      value={editedContent}
-                      onChange={(e) => setEditedContent(e.target.value)}
-                    />
-                    <div className="flex justify-end mt-4">
-                      <button
-                        onClick={() => handleUpdateComment(value.id)}
-                        className="bg-[#0B3D20] rounded-4xl py-2 px-6 text-white"
-                      >
-                        Update Comment
-                      </button>
-                    </div>
                   </div>
-                ) : (
-                  <div className="text-base">{value.content}</div>
-                )}
+
+                  {editingCommentId === comment.id ? (
+                    <>
+                      <textarea
+                        className="w-full h-[100px] outline-none border border-gray-300 rounded-lg p-3"
+                        value={editedContent}
+                        onChange={(e) => setEditedContent(e.target.value)}
+                      />
+                      <div className="flex justify-end mt-2">
+                        <button
+                          onClick={() => handleUpdateComment(comment.id)}
+                          className="bg-[#0B3D20] rounded-4xl py-2 px-6 text-white"
+                        >
+                          Update Comment
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-base">{comment.content}</div>
+                  )}
+
+                  {/* Reply Button */}
+                  <div className="flex gap-x-4 items-center text-sm text-gray-600 mt-2">
+                    <button
+                      className="hover:underline"
+                      onClick={() => setReplyingToCommentId(comment.id)}
+                    >
+                      Reply
+                    </button>
+                  </div>
+
+                  {/* Reply Textarea */}
+                  {replyingToCommentId === comment.id && (
+                    <div className="mt-4 ml-6">
+                      <textarea
+                        className="w-full h-[80px] outline-none border border-gray-300 rounded-lg p-3"
+                        placeholder="Write a reply..."
+                        value={replyContent}
+                        onChange={(e) => setReplyContent(e.target.value)}
+                      />
+                      <div className="flex justify-end mt-2">
+                        <button
+                          onClick={() => handlePostReply(comment.id)}
+                          className="bg-[#0B3D20] rounded-4xl py-2 px-6 text-white"
+                        >
+                          Post Reply
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Display Replies */}
+                  {comment.replies.length > 0 && (
+                    <div className="mt-4 ml-8 flex flex-col gap-y-6 relative border-l-2 border-gray-300 pl-6">
+                      {comment.replies.map((reply) => (
+                        <div key={reply.id} className="flex gap-x-3 relative">
+                          {/* Reply Profile Pic */}
+                          <div className="w-[40px] h-[40px] overflow-hidden rounded-full">
+                            <img
+                              src={reply.author_profile_picture || pfp}
+                              className="w-full h-full object-cover rounded-full"
+                              alt="Reply Profile"
+                              onError={(e) => {
+                                e.target.src = pfp;
+                              }}
+                            />
+                          </div>
+
+                          {/* Reply Text Content */}
+                          <div className="flex flex-col flex-1">
+                            <div className="flex items-center gap-x-2 relative">
+                              <div className="text-sm font-semibold flex items-center gap-1">
+                                {reply.author_username}
+                              </div>
+                              <div className="text-gray-400 text-xs">
+                                {new Date(reply.created_at).toDateString()}
+                              </div>
+
+                              {/* 3-Dot Menu for Reply */}
+                              {reply.author_username === loggedInUsername && (
+                                <div className="relative">
+                                  <button
+                                    onClick={() =>
+                                      toggleDropdown("reply", reply.id)
+                                    }
+                                    className="text-black text-xl px-2"
+                                  >
+                                    &#8230;
+                                  </button>
+                                  {dropdownOpen.reply === reply.id && (
+                                    <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-lg shadow-md z-10">
+                                      <ul>
+                                        <li
+                                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                          onClick={() => {
+                                            setEditingReplyId(reply.id);
+                                            setEditedReplyContent(
+                                              reply.content
+                                            );
+                                            setDropdownOpen({
+                                              comment: null,
+                                              reply: null,
+                                            }); // CLOSE dropdown after clicking Update
+                                          }}
+                                        >
+                                          Update
+                                        </li>
+                                        <li
+                                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                          onClick={() => {
+                                            handleDeleteReply(reply.id);
+                                            setDropdownOpen({
+                                              comment: null,
+                                              reply: null,
+                                            }); // CLOSE dropdown after clicking Delete
+                                          }}
+                                        >
+                                          Delete
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Reply Content / Edit Textarea */}
+                            {editingReplyId === reply.id ? (
+                              <>
+                                <textarea
+                                  className="w-full h-[80px] outline-none border border-gray-300 rounded-lg p-2 mt-2"
+                                  value={editedReplyContent}
+                                  onChange={(e) =>
+                                    setEditedReplyContent(e.target.value)
+                                  }
+                                />
+                                <div className="flex justify-end mt-2">
+                                  <button
+                                    onClick={() => handleUpdateReply(reply.id)}
+                                    className="bg-[#0B3D20] rounded-4xl py-1 px-4 text-white"
+                                  >
+                                    Update Reply
+                                  </button>
+                                </div>
+                              </>
+                            ) : (
+                              <div className="text-gray-700 mt-1">
+                                {reply.content}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Little curve (pseudo-like visual for rounded arrow look) */}
+                          <div className="absolute -left-[14px] top-4 w-4 h-4 border-t-2 border-l-2 border-gray-300 rounded-tl-md"></div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           ))

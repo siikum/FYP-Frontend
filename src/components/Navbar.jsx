@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import Swal from "sweetalert2";
 
-
 const Navbar = ({ isBlack = false }) => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -76,7 +75,7 @@ const Navbar = ({ isBlack = false }) => {
       confirmButtonText: "Yes, logout",
       cancelButtonText: "Stay",
     });
-  
+
     if (result.isConfirmed) {
       localStorage.clear();
       window.dispatchEvent(new Event("storage"));
@@ -91,7 +90,6 @@ const Navbar = ({ isBlack = false }) => {
       });
     }
   };
-  
 
   const toggleProfileDropdown = () => {
     setShowProfileDropdown((prev) => !prev);
@@ -167,18 +165,14 @@ const Navbar = ({ isBlack = false }) => {
                 aria-haspopup="true"
                 aria-expanded={showProfileDropdown}
               >
-                {profilePicUrl ? (
+                {profilePicUrl && !profilePicUrl.includes("null") ? (
                   <img
                     src={profilePicUrl}
                     alt="User profile"
                     className="w-full h-full object-cover rounded-full"
                   />
                 ) : (
-                  <FaUserCircle
-                    className={`w-full h-full ${
-                      isBlack ? "text-gray-600" : "text-gray-200"
-                    }`}
-                  />
+                  <FaUserCircle className="w-full h-full text-black hover:bg-[#295b42] bg-white" />
                 )}
               </button>
               {showProfileDropdown && (

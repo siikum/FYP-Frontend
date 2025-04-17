@@ -6,7 +6,6 @@ import { Typewriter } from "react-simple-typewriter";
 import Footer from "../../components/Footer";
 import Swal from "sweetalert2";
 
-
 const BlogList = () => {
   const navigate = useNavigate();
   const [blogs, setBlogs] = useState([]);
@@ -46,7 +45,6 @@ const BlogList = () => {
     setDropdownOpen(dropdownOpen === index ? null : index);
   };
 
-
   const handleDelete = async (id) => {
     const confirmResult = await Swal.fire({
       title: "Are you sure?",
@@ -57,7 +55,7 @@ const BlogList = () => {
       cancelButtonColor: "#0B3D20",
       confirmButtonText: "Yes, delete it!",
     });
-  
+
     if (confirmResult.isConfirmed) {
       try {
         const response = await fetch(
@@ -69,7 +67,7 @@ const BlogList = () => {
             },
           }
         );
-  
+
         if (response.ok) {
           setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.id !== id));
           Swal.fire({
@@ -159,6 +157,7 @@ const BlogList = () => {
                         />
                       </div>
 
+                      {/* Author and 3-dot */}
                       <div className="w-full font-serif font-medium flex items-center gap-x-4">
                         <div
                           className="text-base text-gray-500 italic hover:underline cursor-pointer"
@@ -184,9 +183,7 @@ const BlogList = () => {
                                 <ul>
                                   <li
                                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                                    onClick={() =>
-                                      navigate(`/blog/${blog.id}/update`)
-                                    }
+                                    onClick={() => navigate(`/blog/${blog.id}/update`)}
                                   >
                                     Update
                                   </li>
@@ -206,13 +203,24 @@ const BlogList = () => {
                         )}
                       </div>
 
-                      <div className="text-3xl font-serif font-bold">
-                        {blog.title}
+                      {/* Blog Title + Created Date + Comment Count */}
+                      <div className="flex flex-col gap-1">
+                        <div className="text-3xl font-serif font-bold">
+                          {blog.title}
+                        </div>
+                        <div className="flex items-center gap-x-4 text-black text-sm mt-1 underline">
+                          <div>
+                            {blog.created_at &&
+                              new Date(blog.created_at).toDateString()}
+                          </div>
+                          <div>• {blog.comment_count} Comments</div>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="text-base font-serif w-full line-clamp-4">
-                      {blog.description}
+                      {/* Blog Description */}
+                      <div className="text-base font-serif w-full line-clamp-4">
+                        {blog.description}
+                      </div>
                     </div>
 
                     <hr className="mt-10" />

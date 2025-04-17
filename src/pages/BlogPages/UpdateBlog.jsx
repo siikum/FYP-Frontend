@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import { Typewriter } from "react-simple-typewriter";
 import Swal from "sweetalert2";
 
-
 const UpdateBlog = () => {
   const { id } = useParams();
   const [title, setTitle] = useState("");
@@ -20,7 +19,6 @@ const UpdateBlog = () => {
     const fetchBlogData = async () => {
       try {
         const response = await fetch(`http://localhost:8000/blog/blogposts/${id}/`);
-
         const data = await response.json();
         if (data) {
           setTitle(data.title);
@@ -39,14 +37,14 @@ const UpdateBlog = () => {
     e.preventDefault();
     setLoading(true);
     setError("");
-  
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
     if (file && typeof file !== "string") {
       formData.append("image", file);
     }
-  
+
     try {
       const response = await fetch(
         `http://localhost:8000/blog/blogposts/${id}/update/`,
@@ -58,7 +56,7 @@ const UpdateBlog = () => {
           body: formData,
         }
       );
-  
+
       if (response.ok) {
         Swal.fire({
           icon: "success",
@@ -87,10 +85,13 @@ const UpdateBlog = () => {
         confirmButtonColor: "#B91C1C",
       });
     }
-  
+
     setLoading(false);
   };
-  
+
+  const handleCancel = () => {
+    navigate(`/blog/${id}`);
+  };
 
   return (
     <div className="flex flex-col min-h-screen font-serif bg-[#f3f8f6] py-[100px]">
@@ -181,13 +182,22 @@ const UpdateBlog = () => {
                 />
               </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="text-lg font-medium w-full px-6 py-3 rounded-md text-white bg-[#0B3D20] hover:bg-green-900"
-              >
-                {loading ? "Updating..." : "Update Blog"}
-              </button>
+              <div className="flex gap-4">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="text-lg font-medium w-full px-6 py-3 rounded-md text-white bg-[#0B3D20] hover:bg-green-900"
+                >
+                  {loading ? "Updating..." : "Update Blog"}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="text-lg font-medium w-full px-6 py-3 rounded-md text-white bg-red-600 hover:bg-red-800"
+                >
+                  Cancel
+                </button>
+              </div>
             </form>
           </div>
         </div>

@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { useNavigate, useLocation } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const TripPlannerForm = () => {
   const [formData, setFormData] = useState({
@@ -38,6 +39,33 @@ const TripPlannerForm = () => {
     setError("");
     setLoading(true);
     setItinerary(null);
+
+    const startDate = new Date(formData.start_date);
+    const endDate = new Date(formData.end_date);
+
+    // Validation 1: Start date must not be after End date
+    if (startDate > endDate) {
+      setLoading(false);
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Dates!",
+        text: "Travel Date (From) cannot be after Travel Date (To).",
+        confirmButtonColor: "#B91C1C",
+      });
+      return;
+    }
+
+    // Validation 2: Start date and End date must not be the same
+    if (startDate.toDateString() === endDate.toDateString()) {
+      setLoading(false);
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Dates!",
+        text: "Travel Date (From) and Travel Date (To) cannot be the same. Trip must be at least 1 day!",
+        confirmButtonColor: "#B91C1C",
+      });
+      return;
+    }
 
     try {
       const response = await axios.post(
@@ -111,6 +139,7 @@ const TripPlannerForm = () => {
                   <input
                     type="date"
                     name="start_date"
+                    min={new Date().toISOString().split("T")[0]}
                     value={formData.start_date}
                     onChange={handleChange}
                     required
@@ -125,6 +154,7 @@ const TripPlannerForm = () => {
                   <input
                     type="date"
                     name="end_date"
+                    min={new Date().toISOString().split("T")[0]} // ✅ prevents past dates
                     value={formData.end_date}
                     onChange={handleChange}
                     required
@@ -136,7 +166,8 @@ const TripPlannerForm = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-semibold mb-1 text-[#0B3D20]">
-                    Budget for entire trip ($) <span className="text-red-500">*</span>
+                    Budget for entire trip ($){" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="number"
@@ -244,7 +275,7 @@ const TripPlannerForm = () => {
               {/* Button & Login Prompt */}
               <div className="flex flex-col items-center gap-2">
                 {!isLoggedIn && (
-                  <p className="text-sm text-gray-600">
+                  <p className="text-center text-md text-red-600 font-semibold  p-3 rounded-md mb-4">
                     Please{" "}
                     <span
                       className="text-green-800 underline cursor-pointer"
