@@ -11,6 +11,7 @@ import Footer from "./components/Footer.jsx";
 import TrialPage from "./pages/trial/TrialPage..jsx";
 import IndividualDestination from "./pages/IndividualDestion.tsx/IndividualDestination.jsx";
 import SavedDestinations from "./pages/SavedDestinations.jsx";
+import RecommendedHotels from "./pages/RecommendHotels.jsx";
 import TripPlannerForm from "./pages/TripPlannerForm.jsx";
 import SavedItineraries from "./pages/SavedItineraries.jsx";
 import About from "./pages/About.jsx";
@@ -65,6 +66,7 @@ function App() {
           <Route path="/SavedDestinations" element={<SavedDestinations />} />
           <Route path="/TripPlannerForm" element={<TripPlannerForm />} />
           <Route path="/SavedItineraries" element={<SavedItineraries />} />
+          <Route path="/recommended-hotels/:destinationName" element={<RecommendedHotels />} />
           <Route path="/About" element={<About />} />
           <Route path="/blog" element={<BlogList />} />
           <Route path="/blog/:id" element={<IndividualBlog />} />

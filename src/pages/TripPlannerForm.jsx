@@ -97,11 +97,11 @@ const TripPlannerForm = () => {
       });
       return;
     }
-  
+
     try {
       const token = localStorage.getItem("authToken");
       const userId = localStorage.getItem("userId"); // ⚠️ Make sure you have userId stored after login
-  
+
       if (!userId) {
         Swal.fire({
           icon: "error",
@@ -111,7 +111,7 @@ const TripPlannerForm = () => {
         });
         return;
       }
-  
+
       const payload = {
         user_id: userId,
         destination: formData.destination,
@@ -125,13 +125,13 @@ const TripPlannerForm = () => {
         meal_pref: formData.meal_pref,
         plan_details: itinerary,
       };
-  
+
       await axios.post("http://127.0.0.1:8000/itinerary/save/", payload, {
         headers: {
           Authorization: `Token ${token}`,
         },
       });
-  
+
       Swal.fire({
         icon: "success",
         title: "Itinerary Saved!",
@@ -140,7 +140,6 @@ const TripPlannerForm = () => {
       }).then(() => {
         navigate("/SavedItineraries");
       });
-  
     } catch (error) {
       console.error("Failed to save itinerary:", error);
       Swal.fire({
@@ -151,7 +150,7 @@ const TripPlannerForm = () => {
       });
     }
   };
-  
+
   return (
     <div className="w-full">
       <Navbar />
@@ -381,13 +380,25 @@ const TripPlannerForm = () => {
                   <ReactMarkdown>{itinerary}</ReactMarkdown>
                 </div>
 
-                {/* Save Itinerary Button */}
-                <button
-                  onClick={handleSaveItinerary}
-                  className="mt-4 bg-[#0B3D20] text-white py-2 px-6 rounded-md hover:bg-[#295b42] font-semibold"
-                >
-                  Save Itinerary
-                </button>
+                <div className="mt-6 flex flex-col md:flex-row gap-4 items-center">
+                  {/* Save Itinerary Button */}
+                  <button
+                    onClick={handleSaveItinerary}
+                    className="bg-[#0B3D20] text-white py-2 px-6 rounded-md hover:bg-[#295b42] font-semibold w-full md:w-auto"
+                  >
+                    Save Itinerary
+                  </button>
+
+                  {/* Recommend Best Hotels Link */}
+                  <button
+                    onClick={() =>
+                      navigate(`/recommended-hotels/${formData.destination}`)
+                    }
+                    className="text-[#0B3D20] underline font-semibold text-md hover:text-[#295b42] transition"
+                  >
+                    Recommend me best hotels
+                  </button>
+                </div>
               </div>
             )}
 
