@@ -88,6 +88,70 @@ const TripPlannerForm = () => {
     }
   };
 
+  const handleSaveItinerary = async () => {
+    if (!isLoggedIn) {
+      Swal.fire({
+        icon: "warning",
+        title: "Please login first!",
+        confirmButtonColor: "#B91C1C",
+      });
+      return;
+    }
+  
+    try {
+      const token = localStorage.getItem("authToken");
+      const userId = localStorage.getItem("userId"); // ⚠️ Make sure you have userId stored after login
+  
+      if (!userId) {
+        Swal.fire({
+          icon: "error",
+          title: "User ID missing!",
+          text: "Please re-login.",
+          confirmButtonColor: "#B91C1C",
+        });
+        return;
+      }
+  
+      const payload = {
+        user_id: userId,
+        destination: formData.destination,
+        start_date: formData.start_date,
+        end_date: formData.end_date,
+        num_travelers: formData.num_travelers,
+        budget: formData.budget,
+        interests: formData.interests,
+        accommodation_type: formData.accommodation_type,
+        fitness_level: formData.fitness_level,
+        meal_pref: formData.meal_pref,
+        plan_details: itinerary,
+      };
+  
+      await axios.post("http://127.0.0.1:8000/itinerary/save/", payload, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+  
+      Swal.fire({
+        icon: "success",
+        title: "Itinerary Saved!",
+        text: "Your itinerary has been saved successfully.",
+        confirmButtonColor: "#0B3D20",
+      }).then(() => {
+        navigate("/SavedItineraries");
+      });
+  
+    } catch (error) {
+      console.error("Failed to save itinerary:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Failed to Save!",
+        text: "Something went wrong. Try again.",
+        confirmButtonColor: "#B91C1C",
+      });
+    }
+  };
+  
   return (
     <div className="w-full">
       <Navbar />
@@ -316,7 +380,14 @@ const TripPlannerForm = () => {
                 <div className="p-4 border rounded-md bg-gray-50 max-h-[300px] overflow-y-auto">
                   <ReactMarkdown>{itinerary}</ReactMarkdown>
                 </div>
-                <ItineraryDownload itinerary={itinerary} />
+
+                {/* Save Itinerary Button */}
+                <button
+                  onClick={handleSaveItinerary}
+                  className="mt-4 bg-[#0B3D20] text-white py-2 px-6 rounded-md hover:bg-[#295b42] font-semibold"
+                >
+                  Save Itinerary
+                </button>
               </div>
             )}
 

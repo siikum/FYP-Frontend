@@ -31,6 +31,7 @@ const LoginPage = () => {
   
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("username", data.username);
+      localStorage.setItem("userId", data.user_id);
       localStorage.setItem("isLoggedIn", "true");
   
       const redirectPath = location.state?.from || "/";
@@ -46,9 +47,34 @@ const LoginPage = () => {
         timerProgressBar: true,
       });
     } catch (error) {
-      console.error("Login error:", error.response?.data);
-      setError(error.response?.data?.error || "Invalid credentials");
+      if (error.response) {
+        console.error("Login error (response):", error.response.data);
+        Swal.fire({
+          icon: "error",
+          title: "Login Failed",
+          text: error.response.data?.error || "Invalid credentials. Please try again.",
+          confirmButtonColor: "#B91C1C",
+        });
+      } else if (error.request) {
+        console.error("Login error (no response):", error.request);
+        Swal.fire({
+          icon: "error",
+          title: "Network Error",
+          text: "No response from server. Please try again.",
+          confirmButtonColor: "#B91C1C",
+        });
+      } else {
+        console.error("Login error (general):", error.message);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Something went wrong. Please try again.",
+          confirmButtonColor: "#B91C1C",
+        });
+      }
     }
+    
+    
   };
   
 
@@ -125,7 +151,7 @@ const LoginPage = () => {
                 required
               />
             </div>
-            {error && <p className="text-red-500 text-xs italic">{error}</p>}
+            {/* {error && <p className="text-red-500 text-xs italic">{error}</p>} */}
             <div className="flex items-center justify-between gap-x-5">
               <button
                 className="bg-black hover:bg-[#295b42] hover:text-white text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
