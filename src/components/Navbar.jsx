@@ -190,10 +190,19 @@ const Navbar = ({ isBlack = false }) => {
                     My Channels
                   </button>
                   <button
+                    onClick={() =>
+                      handleDropdownLinkClick("/SavedDestinations")
+                    }
+                    className="flex w-full text-left items-center px-4 py-2 text-sm text-black hover:bg-gray-100"
+                  >
+                    My Destinations
+                  </button>
+
+                  <button
                     onClick={() => handleDropdownLinkClick("/SavedItineraries")}
                     className="flex w-full text-left items-center px-4 py-2 text-sm text-black hover:bg-gray-100"
                   >
-                    Saved Itineraries 
+                    My Trip Plans
                   </button>
                   <button
                     onClick={handleLogout}

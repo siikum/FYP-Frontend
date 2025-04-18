@@ -11,12 +11,14 @@ const PROFILE_API_URL = `${API_BASE_URL}/account/profile/`;
 const BLOGS_API_URL = `${API_BASE_URL}/blog/blogposts/`;
 const MY_CHANNELS_API_URL = `${API_BASE_URL}/account/groupchats/my-channels/`;
 const ITINERARY_API_URL = `${API_BASE_URL}/itinerary/list/`;
+const SAVED_DESTINATIONS_API_URL = `${API_BASE_URL}/account/saved-destinations/`;
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const [blogs, setBlogs] = useState([]);
   const [channelsJoined, setChannelsJoined] = useState(0);
   const [savedItineraries, setSavedItineraries] = useState([]);
+  const [savedDestinations, setSavedDestinations] = useState([]);
   const [editedBio, setEditedBio] = useState("");
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [selectedTab, setSelectedTab] = useState("blog");
@@ -34,35 +36,40 @@ const ProfilePage = () => {
       if (!token) return navigate("/login");
 
       try {
-        const [profileRes, blogsRes, channelsRes, itinerariesRes] =
-          await Promise.all([
-            fetch(PROFILE_API_URL, {
-              headers: { Authorization: `Token ${token}` },
-            }),
-            fetch(BLOGS_API_URL),
-            fetch(MY_CHANNELS_API_URL, {
-              headers: { Authorization: `Token ${token}` },
-            }),
-            axios.get(ITINERARY_API_URL, {
-              headers: { Authorization: `Token ${token}` },
-            }),
-          ]);
+        const [
+          profileRes,
+          blogsRes,
+          channelsRes,
+          itinerariesRes,
+          destinationsRes,
+        ] = await Promise.all([
+          axios.get(PROFILE_API_URL, {
+            headers: { Authorization: `Token ${token}` },
+          }),
+          axios.get(BLOGS_API_URL),
+          axios.get(MY_CHANNELS_API_URL, {
+            headers: { Authorization: `Token ${token}` },
+          }),
+          axios.get(ITINERARY_API_URL, {
+            headers: { Authorization: `Token ${token}` },
+          }),
+          axios.get(SAVED_DESTINATIONS_API_URL, {
+            headers: { Authorization: `Token ${token}` },
+          }),
+        ]);
 
-        if (!profileRes.ok) throw new Error("Profile fetch failed");
-        const profileData = await profileRes.json();
-        setUser(profileData);
-        setEditedBio(profileData.bio || "");
+        setUser(profileRes.data);
+        setEditedBio(profileRes.data.bio || "");
 
-        const allBlogs = await blogsRes.json();
-        const userBlogs = allBlogs.filter(
-          (b) => b.author?.toLowerCase() === profileData.username?.toLowerCase()
+        const userBlogs = blogsRes.data.filter(
+          (b) =>
+            b.author?.toLowerCase() === profileRes.data.username?.toLowerCase()
         );
         setBlogs(userBlogs);
 
-        const userChannels = await channelsRes.json();
-        setChannelsJoined(userChannels.length);
-
-        setSavedItineraries(itinerariesRes.data);
+        setChannelsJoined(channelsRes.data.length || 0);
+        setSavedItineraries(itinerariesRes.data || []);
+        setSavedDestinations(destinationsRes.data || []);
       } catch (err) {
         console.error(err);
         setError("Failed to load profile");
@@ -80,14 +87,9 @@ const ProfilePage = () => {
     if (!isFormData) headers["Content-Type"] = "application/json";
 
     try {
-      const res = await fetch(PROFILE_API_URL, {
-        method: "PATCH",
-        headers,
-        body: isFormData ? payload : JSON.stringify(payload),
-      });
-      const updated = await res.json();
-      setUser(updated);
-      setEditedBio(updated.bio || "");
+      const res = await axios.patch(PROFILE_API_URL, payload, { headers });
+      setUser(res.data);
+      setEditedBio(res.data.bio || "");
       setIsEditingBio(false);
     } catch (err) {
       setError("Update failed.");
@@ -209,7 +211,7 @@ const ProfilePage = () => {
                 {!isEditingBio && (
                   <button
                     onClick={() => setIsEditingBio(true)}
-                    className="text-[#0B3D20] hover:text-[#0B3D20]"
+                    className="text-[#0B3D20]"
                   >
                     ✎
                   </button>
@@ -264,6 +266,16 @@ const ProfilePage = () => {
               Blogs Posted
             </button>
             <button
+              onClick={() => setSelectedTab("saved")}
+              className={`pb-2 font-semibold ${
+                selectedTab === "saved"
+                  ? "text-[#0B3D20] border-b-4 border-[#0B3D20]"
+                  : "text-gray-500"
+              } transition`}
+            >
+              Saved Destinations
+            </button>
+            <button
               onClick={() => setSelectedTab("itinerary")}
               className={`pb-2 font-semibold ${
                 selectedTab === "itinerary"
@@ -276,7 +288,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Content based on tab */}
+        {/* Tab Contents */}
         <div className="max-w-4xl mx-auto">
           {selectedTab === "blog" && (
             <>
@@ -299,6 +311,43 @@ const ProfilePage = () => {
                 </p>
               )}
             </>
+          )}
+
+          {selectedTab === "saved" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {savedDestinations.length > 0 ? (
+                savedDestinations.map((dest) => (
+                  <div
+                    key={dest.id}
+                    onClick={() => navigate(`/destinations/${dest.slug}`)}
+                    className="cursor-pointer bg-white rounded-lg shadow hover:shadow-md transition flex flex-col overflow-hidden min-h-[300px] group"
+                  >
+                    {/* Image with Zoom Effect */}
+                    <div className="overflow-hidden">
+                      <img
+                        src={`${API_BASE_URL}${dest.cover_image}`}
+                        alt={dest.name}
+                        className="w-full h-48 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                      />
+                    </div>
+
+                    {/* Destination Info */}
+                    <div className="flex flex-col justify-between flex-grow p-5">
+                      <div>
+                        <h4 className="text-xl font-bold text-[#0B3D20] mb-2">
+                          {dest.name}
+                        </h4>
+                        <p className="text-gray-600">{dest.location}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500 italic">
+                  You haven't saved any destinations yet.
+                </p>
+              )}
+            </div>
           )}
 
           {selectedTab === "itinerary" && (

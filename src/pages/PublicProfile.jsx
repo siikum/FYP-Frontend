@@ -5,35 +5,43 @@ import Navbar from "../components/Navbar";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 const PUBLIC_PROFILE_URL = `${API_BASE_URL}/account/profile`;
 const BLOGS_API_URL = `${API_BASE_URL}/blog/blogposts/`;
+const SAVED_DESTINATIONS_API_URL = `${API_BASE_URL}/account/public-saved-destinations/`;
 
 const PublicProfile = () => {
   const { username } = useParams();
   const [user, setUser] = useState(null);
   const [blogs, setBlogs] = useState([]);
+  const [savedDestinations, setSavedDestinations] = useState([]);
+  const [selectedTab, setSelectedTab] = useState("blog");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchProfileData = async () => {
       try {
-        const res = await fetch(`${PUBLIC_PROFILE_URL}/${username}/`);
-        if (!res.ok) throw new Error("Failed to fetch profile");
-        const data = await res.json();
-        setUser(data);
+        const profileRes = await fetch(`${PUBLIC_PROFILE_URL}/${username}/`);
+        if (!profileRes.ok) throw new Error("Failed to fetch profile");
+        const userData = await profileRes.json();
+        setUser(userData);
 
-        const blogRes = await fetch(BLOGS_API_URL);
-        const blogData = await blogRes.json();
-        const userBlogs = blogData.filter(
-          (b) => b.author?.toLowerCase() === data.username?.toLowerCase()
+        const blogsRes = await fetch(BLOGS_API_URL);
+        const blogsData = await blogsRes.json();
+        const userBlogs = blogsData.filter(
+          (b) => b.author?.toLowerCase() === userData.username?.toLowerCase()
         );
         setBlogs(userBlogs);
+
+        const destinationsRes = await fetch(`${SAVED_DESTINATIONS_API_URL}${username}/`);
+        const destinationsData = await destinationsRes.json();
+        setSavedDestinations(destinationsData);
+
       } catch (err) {
         console.error(err);
         setError("User not found");
       }
     };
 
-    fetchProfile();
+    fetchProfileData();
   }, [username]);
 
   if (error) return <div className="text-center pt-32 text-red-500">{error}</div>;
@@ -44,8 +52,9 @@ const PublicProfile = () => {
       <Navbar isBlack={true} />
 
       <main className="flex-grow pt-24 px-4 md:px-20">
+        {/* Profile Header */}
         <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-10 bg-white shadow-md rounded-2xl p-10">
-          {/* Left - Profile Pic + Stats */}
+          {/* Left - Profile Pic */}
           <div className="flex flex-col items-center md:items-start text-center md:text-left">
             <img
               src={
@@ -56,9 +65,7 @@ const PublicProfile = () => {
               className="w-32 h-32 rounded-full object-cover border-4 border-[#0B3D20] shadow"
               alt="Profile"
             />
-            <h2 className="text-2xl font-bold text-[#0B3D20] mt-4">
-              {user.username}
-            </h2>
+            <h2 className="text-2xl font-bold text-[#0B3D20] mt-4">{user.username}</h2>
             <hr className="my-4 border-t border-gray-300 w-full" />
             <div className="space-y-2 w-full text-left text-base">
               <p className="font-semibold text-[#0B3D20] text-lg">
@@ -68,7 +75,7 @@ const PublicProfile = () => {
             </div>
           </div>
 
-          {/* Right - Info & Bio */}
+          {/* Right - Info */}
           <div className="flex flex-col gap-6 justify-center">
             <p className="text-sm text-gray-700">
               <span className="font-semibold">Full Name:</span>{" "}
@@ -88,28 +95,82 @@ const PublicProfile = () => {
           </div>
         </div>
 
-        {/* Blogs */}
-        <div className="max-w-4xl mx-auto mt-10">
-          <h3 className="text-2xl font-bold mb-6 text-[#0B3D20]">
-            Blogs by {user.username}
-          </h3>
-          {blogs.length > 0 ? (
-            blogs.map((blog) => (
-              <div
-                key={blog.id}
-                onClick={() => navigate(`/blog/${blog.id}`)}
-                className="cursor-pointer mb-6 bg-white p-5 rounded-lg shadow hover:shadow-md transition"
-              >
-                <h4 className="text-xl font-semibold mb-2">{blog.title}</h4>
-                <p className="text-gray-600 line-clamp-3">{blog.description}</p>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500 italic">No blogs yet.</p>
+        {/* Tabs */}
+        <div className="flex justify-center mt-12 mb-8">
+          <div className="flex space-x-8 border-b border-gray-300 max-w-[400px] w-full justify-center">
+            <button
+              onClick={() => setSelectedTab("blog")}
+              className={`pb-2 font-semibold ${
+                selectedTab === "blog"
+                  ? "text-[#0B3D20] border-b-4 border-[#0B3D20]"
+                  : "text-gray-500"
+              } transition`}
+            >
+              Blogs Posted
+            </button>
+            <button
+              onClick={() => setSelectedTab("saved")}
+              className={`pb-2 font-semibold ${
+                selectedTab === "saved"
+                  ? "text-[#0B3D20] border-b-4 border-[#0B3D20]"
+                  : "text-gray-500"
+              } transition`}
+            >
+              Saved Destinations
+            </button>
+          </div>
+        </div>
+
+        {/* Content based on selected tab */}
+        <div className="max-w-4xl mx-auto">
+          {selectedTab === "blog" && (
+            <>
+              {blogs.length > 0 ? (
+                blogs.map((blog) => (
+                  <div
+                    key={blog.id}
+                    onClick={() => navigate(`/blog/${blog.id}`)}
+                    className="cursor-pointer mb-6 bg-white p-5 rounded-lg shadow hover:shadow-md transition"
+                  >
+                    <h4 className="text-xl font-semibold mb-2">{blog.title}</h4>
+                    <p className="text-gray-600 line-clamp-3">{blog.description}</p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500 italic">No blogs yet.</p>
+              )}
+            </>
+          )}
+
+          {selectedTab === "saved" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {savedDestinations.length > 0 ? (
+                savedDestinations.map((dest) => (
+                  <div
+                    key={dest.id}
+                    onClick={() => navigate(`/destinations/${dest.slug}`)}
+                    className="cursor-pointer bg-white rounded-lg shadow hover:shadow-md transition overflow-hidden min-h-[300px] group"
+                  >
+                    <div className="overflow-hidden">
+                      <img
+                        src={`${API_BASE_URL}${dest.cover_image}`}
+                        alt={dest.name}
+                        className="w-full h-48 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="flex flex-col justify-between flex-grow p-5">
+                      <h4 className="text-xl font-bold text-[#0B3D20] mb-2">{dest.name}</h4>
+                      <p className="text-gray-600">{dest.location}</p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500 italic">No saved destinations yet.</p>
+              )}
+            </div>
           )}
         </div>
       </main>
-
     </div>
   );
 };

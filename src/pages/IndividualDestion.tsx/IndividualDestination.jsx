@@ -10,6 +10,7 @@ import DestinationSentiment from "../../components/DestinationSentiment";
 import ReviewComment from "../../components/ReviewComment";
 import Footer from "../../components/Footer";
 import TopDestinations from "../../components/TopDestinations";
+import Swal from "sweetalert2";
 
 const IndividualDestination = () => {
   const { slug } = useParams();
@@ -22,6 +23,7 @@ const IndividualDestination = () => {
     axios
       .get(`http://127.0.0.1:8000/account/destinations/${slug}/`)
       .then((res) => {
+        console.log("Destination response:", res.data);  // ADD THIS
         setDestination(res.data);
       })
       .catch((err) => {
@@ -29,6 +31,7 @@ const IndividualDestination = () => {
         console.error(err);
       });
   }, [slug]);
+  
 
   const handleRedirect = () => {
     navigate("/TripPlannerForm");
@@ -41,6 +44,45 @@ const IndividualDestination = () => {
   if (error)
     return <div className="text-center py-10 text-red-500">{error}</div>;
   if (!destination) return <div className="text-center py-10">Loading...</div>;
+
+  const handleSaveDestination = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        navigate("/LoginPage");
+        return;
+      }
+  
+      await axios.post(
+        "http://127.0.0.1:8000/account/save-destination/",
+        { destination_id: destination.destination_id }, // ✅ Fix here!
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
+  
+      Swal.fire({
+        icon: "success",
+        title: "Saved!",
+        text: "Destination has been saved successfully.",
+        confirmButtonColor: "#0B3D20",
+      });
+  
+    } catch (err) {
+      console.error("Save Destination Error:", err.response?.data || err.message);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to save destination.",
+        confirmButtonColor: "#B91C1C",
+      });
+    }
+  };
+  
+  
 
   return (
     <div className="flex flex-col min-h-screen bg-[#f3f8f6]">
@@ -65,6 +107,14 @@ const IndividualDestination = () => {
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold bg-black/40 px-6 py-3 rounded-lg shadow">
               {destination.display_title}
             </h1>
+
+            {/* Save Button Properly Positioned */}
+            <button
+              onClick={handleSaveDestination}
+              className="mt-4 bg-[#0B3D20] hover:bg-[#295b42] text-white font-semibold px-6 py-2 rounded-lg shadow transition"
+            >
+              Save Destination
+            </button>
           </motion.div>
         </div>
 

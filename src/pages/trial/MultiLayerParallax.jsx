@@ -48,15 +48,6 @@ export default function MultiLayerParallax() {
         }}
       />
 
-      {/* Bottom Left Quote */}
-      <div className="absolute mb-65 left-5 bottom-10 z-30 text-white text-left font-serif space-y-2">
-        <p className="text-sm md:text-lg opacity-80">Trail Himalaya Presents</p>
-        <p className="text-lg md:text-2xl font-semibold italic text-[#FCD34D] drop-shadow-lg">
-          Heaven is Myth, Nepal is Real...
-        </p>
-        <p className="text-md md:text-xl font-medium">Explore the real Nepal</p>
-      </div>
-
       {/* Top Right Quote */}
       {/* <div className="absolute top-35 left-4 text-[#FCD34D] font-serif font-semibold text-sm md:text-lg italic opacity-90 z-30 text-right">
         "Let the silence of the peaks tell your story."
