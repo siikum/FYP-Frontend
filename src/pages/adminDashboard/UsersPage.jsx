@@ -7,13 +7,26 @@ const UsersPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const getAuthToken = () => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      console.error("No admin token found. Redirecting to login...");
+      window.location.href = "/LoginPage"; // or wherever your admin login page is
+    }
+    return token;
+  };
+
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/admin_dashboard/users/", {
-        headers: {
-          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`
-        },
-      });
+      const token = getAuthToken();
+      const res = await axios.get(
+        "http://localhost:8000/admin_dashboard/users/",
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
       setUsers(res.data);
     } catch (err) {
       console.error(err);
@@ -25,12 +38,13 @@ const UsersPage = () => {
 
   const toggleActivation = async (userId, currentStatus) => {
     try {
+      const token = getAuthToken();
       await axios.patch(
         `http://localhost:8000/admin_dashboard/users/${userId}/toggle/`,
         { is_active: !currentStatus },
         {
           headers: {
-            Authorization: `Token ${localStorage.getItem("adminAuthToken")}`
+            Authorization: `Token ${token}`,
           },
         }
       );

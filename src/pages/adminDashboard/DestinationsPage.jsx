@@ -27,11 +27,14 @@ const DestinationsPage = () => {
 
   const fetchDestinations = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/admin_dashboard/destinations/", {
-        headers: {
-          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`
-        },
-      });
+      const res = await axios.get(
+        "http://localhost:8000/admin_dashboard/destinations/",
+        {
+          headers: {
+            Authorization: `Token ${localStorage.getItem("authToken")}`, // ✅ FIXED
+          },
+        }
+      );
       setDestinations(res.data);
     } catch (err) {
       console.error(err);
@@ -70,7 +73,7 @@ const DestinationsPage = () => {
 
       await axios[method](url, data, {
         headers: {
-          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`,          
+          Authorization: `Token ${localStorage.getItem("authToken")}`, // ✅ FIXED
           "Content-Type": "multipart/form-data",
         },
       });
@@ -118,13 +121,18 @@ const DestinationsPage = () => {
   };
 
   const handleDelete = async (destination_id) => {
-    if (!window.confirm("Are you sure you want to delete this destination?")) return;
+    if (!window.confirm("Are you sure you want to delete this destination?"))
+      return;
     try {
-      await axios.delete(`http://localhost:8000/admin_dashboard/destinations/${destination_id}/`, {
-        headers: {
-          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`
-        },
-      });
+      await axios.delete(
+        `http://localhost:8000/admin_dashboard/destinations/${destination_id}/`,
+        {
+          headers: {
+            Authorization: `Token ${localStorage.getItem("authToken")}`, // ✅ FIXED
+          },
+        }
+      );
+
       fetchDestinations();
     } catch (err) {
       console.error(err);
@@ -148,41 +156,126 @@ const DestinationsPage = () => {
         className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white p-6 rounded-lg shadow mb-8"
         encType="multipart/form-data"
       >
-        <input name="name" placeholder="Name" value={formData.name} onChange={handleInputChange} className="p-2 border rounded" required />
-        <input name="display_title" placeholder="Display Title" value={formData.display_title} onChange={handleInputChange} className="p-2 border rounded" required />
-        <textarea name="description" placeholder="Description" value={formData.description} onChange={handleInputChange} className="p-2 border rounded col-span-2" />
-        <input name="altitude" placeholder="Altitude" value={formData.altitude} onChange={handleInputChange} type="number" className="p-2 border rounded" />
-        <input name="duration" placeholder="Duration" value={formData.duration} onChange={handleInputChange} type="number" className="p-2 border rounded" />
-        <select name="grade" value={formData.grade} onChange={handleInputChange} className="p-2 border rounded">
+        <input
+          name="name"
+          placeholder="Name"
+          value={formData.name}
+          onChange={handleInputChange}
+          className="p-2 border rounded"
+          required
+        />
+        <input
+          name="display_title"
+          placeholder="Display Title"
+          value={formData.display_title}
+          onChange={handleInputChange}
+          className="p-2 border rounded"
+          required
+        />
+        <textarea
+          name="description"
+          placeholder="Description"
+          value={formData.description}
+          onChange={handleInputChange}
+          className="p-2 border rounded col-span-2"
+        />
+        <input
+          name="altitude"
+          placeholder="Altitude"
+          value={formData.altitude}
+          onChange={handleInputChange}
+          type="number"
+          className="p-2 border rounded"
+        />
+        <input
+          name="duration"
+          placeholder="Duration"
+          value={formData.duration}
+          onChange={handleInputChange}
+          type="number"
+          className="p-2 border rounded"
+        />
+        <select
+          name="grade"
+          value={formData.grade}
+          onChange={handleInputChange}
+          className="p-2 border rounded"
+        >
           <option value="Easy">Easy</option>
           <option value="Moderate">Moderate</option>
           <option value="Challenging">Hard</option>
         </select>
-        <input name="location" placeholder="Location" value={formData.location} onChange={handleInputChange} className="p-2 border rounded" />
-        <textarea name="about" placeholder="About" value={formData.about} onChange={handleInputChange} className="p-2 border rounded col-span-2" />
+        <input
+          name="location"
+          placeholder="Location"
+          value={formData.location}
+          onChange={handleInputChange}
+          className="p-2 border rounded"
+        />
+        <textarea
+          name="about"
+          placeholder="About"
+          value={formData.about}
+          onChange={handleInputChange}
+          className="p-2 border rounded col-span-2"
+        />
 
         {/* Image Uploads */}
         <div className="col-span-2">
-          <label className="block text-sm font-medium mb-1 text-gray-700">About Image 1:</label>
-          <input type="file" name="about_image_1" accept="image/*" onChange={handleImageChange} />
+          <label className="block text-sm font-medium mb-1 text-gray-700">
+            About Image 1:
+          </label>
+          <input
+            type="file"
+            name="about_image_1"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
         </div>
         <div className="col-span-2">
-          <label className="block text-sm font-medium mb-1 text-gray-700">About Image 2:</label>
-          <input type="file" name="about_image_2" accept="image/*" onChange={handleImageChange} />
+          <label className="block text-sm font-medium mb-1 text-gray-700">
+            About Image 2:
+          </label>
+          <input
+            type="file"
+            name="about_image_2"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
         </div>
         <div className="col-span-2">
-          <label className="block text-sm font-medium mb-1 text-gray-700">Cover Image:</label>
-          <input type="file" name="cover_image" accept="image/*" onChange={handleImageChange} />
+          <label className="block text-sm font-medium mb-1 text-gray-700">
+            Cover Image:
+          </label>
+          <input
+            type="file"
+            name="cover_image"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
         </div>
 
-        <input name="slug" placeholder="Slug (optional)" value={formData.slug} onChange={handleInputChange} className="p-2 border rounded col-span-2" />
+        <input
+          name="slug"
+          placeholder="Slug (optional)"
+          value={formData.slug}
+          onChange={handleInputChange}
+          className="p-2 border rounded col-span-2"
+        />
 
         <div className="flex items-center gap-4 sm:col-span-2">
-          <button type="submit" className="bg-[#0B3D20] text-white py-2 px-4 rounded hover:bg-[#12492b]">
+          <button
+            type="submit"
+            className="bg-[#0B3D20] text-white py-2 px-4 rounded hover:bg-[#12492b]"
+          >
             {selectedDestination ? "Update" : "Add"} Destination
           </button>
           {selectedDestination && (
-            <button type="button" onClick={() => setSelectedDestination(null)} className="text-sm text-gray-600 underline">
+            <button
+              type="button"
+              onClick={() => setSelectedDestination(null)}
+              className="text-sm text-gray-600 underline"
+            >
               Cancel Edit
             </button>
           )}
@@ -216,8 +309,18 @@ const DestinationsPage = () => {
                   <td className="px-6 py-3">{dest.duration}</td>
                   <td className="px-6 py-3">{dest.location}</td>
                   <td className="px-6 py-3 flex gap-3">
-                    <button onClick={() => handleEdit(dest)} className="text-blue-600 hover:underline text-sm">Edit</button>
-                    <button onClick={() => handleDelete(dest.destination_id)} className="text-red-600 hover:underline text-sm">Delete</button>
+                    <button
+                      onClick={() => handleEdit(dest)}
+                      className="text-blue-600 hover:underline text-sm"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(dest.destination_id)}
+                      className="text-red-600 hover:underline text-sm"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}

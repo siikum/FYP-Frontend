@@ -1,156 +1,178 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Bar } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
+import { useNavigate } from "react-router-dom";
+import { Line, Bar } from "react-chartjs-2";
+import { Chart, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, Filler } from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+Chart.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, Filler);
 
-const AdminDashboardHome = () => {
-  const [summary, setSummary] = useState({
-    users: 0,
-    destinations: 0,
-    blogs: 0,
-    messages: 0,
-  });
-  const [sentimentData, setSentimentData] = useState([]);
-  const [recentReviews, setRecentReviews] = useState([]);
+const DashboardHome = () => {
+  const navigate = useNavigate();
+  const [totals, setTotals] = useState({ users: 0, blogs: 0, channels: 0, sentiments: 0 });
+  const [topDestinations, setTopDestinations] = useState([]);
+  const [recentActivities, setRecentActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    fetchSummary();
-    fetchSentiments();
-    fetchRecentReviews();
-  }, []);
-
-  const fetchSummary = async () => {
-    const token = localStorage.getItem("authToken");
+  const fetchDashboardData = async (token) => {
     try {
-      const [usersRes, destRes, blogRes, msgRes] = await Promise.all([
+      const [usersRes, blogsRes, channelsRes, sentimentsRes] = await Promise.all([
         axios.get("http://localhost:8000/admin_dashboard/users/", { headers: { Authorization: `Token ${token}` } }),
-        axios.get("http://localhost:8000/admin_dashboard/destinations/", { headers: { Authorization: `Token ${token}` } }),
         axios.get("http://localhost:8000/admin_dashboard/blogs/", { headers: { Authorization: `Token ${token}` } }),
-        axios.get("http://localhost:8000/admin_dashboard/contacts/", { headers: { Authorization: `Token ${token}` } }),
+        axios.get("http://localhost:8000/admin_dashboard/groupchats/", { headers: { Authorization: `Token ${token}` } }),
+        axios.get("http://localhost:8000/admin_dashboard/sentiments/", { headers: { Authorization: `Token ${token}` } }),
       ]);
 
-      setSummary({
+      setTotals({
         users: usersRes.data.length,
-        destinations: destRes.data.length,
-        blogs: blogRes.data.length,
-        messages: msgRes.data.length,
+        blogs: blogsRes.data.length,
+        channels: channelsRes.data.length,
+        sentiments: sentimentsRes.data.length,
       });
+
+      const destinationCounts = {};
+      sentimentsRes.data.forEach((s) => {
+        const dest = s.destination_name || "Unknown";
+        destinationCounts[dest] = (destinationCounts[dest] || 0) + 1;
+      });
+      const sorted = Object.entries(destinationCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+      setTopDestinations(sorted);
+
+      const activities = blogsRes.data.slice(-5).reverse();
+      setRecentActivities(activities);
     } catch (err) {
-      console.error("Summary fetch error", err);
+      console.error("Dashboard fetch failed", err);
+      setError("Failed to load dashboard data.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const fetchSentiments = async () => {
-    try {
-      const res = await axios.get("http://localhost:8000/admin_dashboard/sentiments/", {
-        headers: {
-          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`
-        },
-      });
-      setSentimentData(res.data);
-    } catch (err) {
-      console.error("Sentiment fetch failed", err);
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      console.error("No valid token. Redirecting...");
+      navigate("/LoginPage");
+    } else {
+      fetchDashboardData(token);
     }
-  };
+  }, [navigate]);
 
-  const fetchRecentReviews = async () => {
-    try {
-      const res = await axios.get("http://localhost:8000/admin_dashboard/sentiments/", {
-        headers: {
-          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`
-        },
-      });
-      setRecentReviews(res.data.slice(0, 5));
-    } catch (err) {
-      console.error("Review fetch failed", err);
-    }
-  };
-
-  const chartData = {
-    labels: sentimentData.map((s) => s.destination_name),
+  const lineChartData = {
+    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     datasets: [
       {
-        label: "Positive",
-        backgroundColor: "#16a34a",
-        data: sentimentData.map((s) => s.positive_score ?? 0),
+        label: "New Users",
+        data: [5, 8, 6, 10, 7, 9, 11],
+        borderColor: "#0B3D20",
+        backgroundColor: "#0B3D20",
+        tension: 0.4,
       },
       {
-        label: "Neutral",
-        backgroundColor: "#facc15",
-        data: sentimentData.map((s) => s.neutral_score ?? 0),
+        label: "New Blogs",
+        data: [2, 4, 3, 5, 2, 4, 5],
+        borderColor: "#f59e0b",
+        backgroundColor: "#f59e0b",
+        tension: 0.4,
       },
+    ],
+  };
+
+  const barChartData = {
+    labels: topDestinations.map(([name]) => name),
+    datasets: [
       {
-        label: "Negative",
-        backgroundColor: "#dc2626",
-        data: sentimentData.map((s) => s.negative_score ?? 0),
+        label: "Sentiment Reviews",
+        data: topDestinations.map(([, count]) => count),
+        backgroundColor: "#0B3D20",
+      },
+    ],
+  };
+
+  const areaChartData = {
+    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    datasets: [
+      {
+        label: "Active Users",
+        data: [50, 55, 53, 60, 57, 65, 70],
+        fill: true,
+        backgroundColor: "rgba(11,61,32,0.2)",
+        borderColor: "#0B3D20",
+        tension: 0.4,
+      },
+    ],
+  };
+
+  const blogsPerDayData = {
+    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    datasets: [
+      {
+        label: "Blogs Created",
+        data: [2, 3, 1, 4, 2, 3, 5],
+        backgroundColor: "#3b82f6",
       },
     ],
   };
 
   return (
-    <div className="space-y-8">
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded shadow p-6">
-          <h2 className="text-sm text-gray-600">Total Users</h2>
-          <p className="text-2xl font-bold text-[#0B3D20]">{summary.users}</p>
-        </div>
-        <div className="bg-white rounded shadow p-6">
-          <h2 className="text-sm text-gray-600">Destinations</h2>
-          <p className="text-2xl font-bold text-[#0B3D20]">{summary.destinations}</p>
-        </div>
-        <div className="bg-white rounded shadow p-6">
-          <h2 className="text-sm text-gray-600">Blogs</h2>
-          <p className="text-2xl font-bold text-[#0B3D20]">{summary.blogs}</p>
-        </div>
-        <div className="bg-white rounded shadow p-6">
-          <h2 className="text-sm text-gray-600">Messages</h2>
-          <p className="text-2xl font-bold text-[#0B3D20]">{summary.messages}</p>
-        </div>
-      </div>
+    <div className="p-4">
+      <h1 className="text-2xl font-bold text-[#0B3D20] mb-6">Admin Dashboard</h1>
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p className="text-red-600">{error}</p>
+      ) : (
+        <>
+          {/* Top Stats Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="bg-blue-100 p-6 rounded-lg shadow text-center">
+              <h2 className="text-xl font-semibold">Users</h2>
+              <p className="text-2xl font-bold">{totals.users}</p>
+            </div>
+            <div className="bg-blue-100 p-6 rounded-lg shadow text-center">
+              <h2 className="text-xl font-semibold">Blogs</h2>
+              <p className="text-2xl font-bold">{totals.blogs}</p>
+            </div>
+            <div className="bg-blue-100 p-6 rounded-lg shadow text-center">
+              <h2 className="text-xl font-semibold">Channels</h2>
+              <p className="text-2xl font-bold">{totals.channels}</p>
+            </div>
+            <div className="bg-blue-100 p-6 rounded-lg shadow text-center">
+              <h2 className="text-xl font-semibold">Reviews</h2>
+              <p className="text-2xl font-bold">{totals.sentiments}</p>
+            </div>
+          </div>
 
-      {/* Chart Section */}
-      <div className="bg-white p-6 rounded shadow">
-        <h2 className="text-lg font-semibold text-[#0B3D20] mb-4">Sentiment Overview (Recent 5)</h2>
-        <Bar data={chartData} height={70} />
-      </div>
+          {/* Charts Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+            <div className="bg-white p-4 rounded-lg shadow">
+              <h2 className="text-lg font-semibold mb-2">New Users vs New Blogs</h2>
+              <Line data={lineChartData} />
+            </div>
 
-      {/* Recent Reviews */}
-      <div className="bg-white p-6 rounded shadow">
-        <h2 className="text-lg font-semibold text-[#0B3D20] mb-4">Recent Reviews</h2>
-        <table className="min-w-full text-sm">
-          <thead className="bg-[#0B3D20] text-white">
-            <tr>
-              <th className="px-4 py-2">ID</th>
-              <th className="px-4 py-2">Destination</th>
-              <th className="px-4 py-2">User</th>
-              <th className="px-4 py-2">Review</th>
-            </tr>
-          </thead>
-          <tbody>
-            {recentReviews.map((r) => (
-              <tr key={r.sentiment_id} className="border-b">
-                <td className="px-4 py-2">{r.sentiment_id}</td>
-                <td className="px-4 py-2">{r.destination_name}</td>
-                <td className="px-4 py-2">{r.user}</td>
-                <td className="px-4 py-2">{r.review}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            <div className="bg-white p-4 rounded-lg shadow">
+              <h2 className="text-lg font-semibold mb-2">Top Destinations by Reviews</h2>
+              <Bar data={barChartData} />
+            </div>
+
+            <div className="bg-white p-4 rounded-lg shadow">
+              <h2 className="text-lg font-semibold mb-2">Active Users Trend</h2>
+              <Line data={areaChartData} />
+            </div>
+
+            <div className="bg-white p-4 rounded-lg shadow">
+              <h2 className="text-lg font-semibold mb-2">Blogs Created by Day</h2>
+              <Bar data={blogsPerDayData} />
+            </div>
+          </div>
+
+          
+        </>
+      )}
     </div>
   );
 };
 
-export default AdminDashboardHome;
+export default DashboardHome;

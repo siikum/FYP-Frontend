@@ -36,7 +36,7 @@ const Sidebar = () => {
         onClick={() => {
           localStorage.removeItem("authToken");
           localStorage.removeItem("adminLoginTime");
-          window.location.href = "/admin/login";
+          window.location.href = "/LoginPage";
         }}
         className="w-full text-left px-4 py-2 mt-6 text-red-500 hover:bg-red-100 rounded"
       >

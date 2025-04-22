@@ -34,7 +34,6 @@ import DestinationsPage from "./pages/adminDashboard/DestinationsPage";
 import GroupChatsPage from "./pages/adminDashboard/GroupChatsPage";
 import JoinRequestsPage from "./pages/adminDashboard/JoinRequestsPage";
 import ContactMessagesPage from "./pages/adminDashboard/ContactMessagesPage";
-import AdminLogin from "./pages/adminDashboard/AdminLogin";
 import AdminBlogsPage from "./pages/adminDashboard/AdminBlogsPage.jsx";
 import AdminSentimentReviews from "./pages/adminDashboard/AdminSentimentReviews.jsx";
 import { useEffect } from "react";
@@ -82,7 +81,6 @@ function App() {
 
           {/* ✅ Admin Panel with nested pages */}
           <Route path="/admin" element={<AdminLayout />}>
-            <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="dashboard" element={<DashboardHome />} />
             <Route path="users" element={<UsersPage />} />
             <Route path="destinations" element={<DestinationsPage />} />

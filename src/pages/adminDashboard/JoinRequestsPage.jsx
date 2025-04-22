@@ -10,7 +10,7 @@ const JoinRequestsPage = () => {
     try {
       const res = await axios.get("http://localhost:8000/admin_dashboard/join-requests/", {
         headers: {
-          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`,
+          Authorization: `Token ${localStorage.getItem("authToken")}`
         },
       });
       setRequests(res.data);
@@ -25,7 +25,7 @@ const JoinRequestsPage = () => {
     try {
       await axios.post(url, {}, {
         headers: {
-          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`,
+          Authorization: `Token ${localStorage.getItem("authToken")}`
         },
       });
       fetchJoinRequests();

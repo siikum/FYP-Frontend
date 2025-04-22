@@ -12,11 +12,14 @@ const AdminBlogsPage = () => {
 
   const fetchBlogs = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/admin_dashboard/blogs/", {
-        headers: {
-          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`
-        },
-      });
+      const res = await axios.get(
+        "http://localhost:8000/admin_dashboard/blogs/",
+        {
+          headers: {
+            Authorization: `Token ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
       setBlogs(res.data);
     } catch (err) {
       console.error(err);
@@ -48,7 +51,8 @@ const AdminBlogsPage = () => {
     try {
       await axios[method](url, data, {
         headers: {
-          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`,
+          Authorization: `Token ${localStorage.getItem("authToken")}`
+,
           "Content-Type": "multipart/form-data",
         },
       });
@@ -62,7 +66,11 @@ const AdminBlogsPage = () => {
 
   const handleEdit = (blog) => {
     setEditingId(blog.id);
-    setFormData({ title: blog.title, description: blog.description, image: null });
+    setFormData({
+      title: blog.title,
+      description: blog.description,
+      image: null,
+    });
   };
 
   const handleDelete = async (id) => {
@@ -70,7 +78,8 @@ const AdminBlogsPage = () => {
     try {
       await axios.delete(`http://localhost:8000/admin_dashboard/blogs/${id}/`, {
         headers: {
-          Authorization: `Token ${localStorage.getItem("authToken")}`,
+          Authorization: `Token ${localStorage.getItem("authToken")}`
+,
         },
       });
       fetchBlogs();
@@ -87,7 +96,10 @@ const AdminBlogsPage = () => {
     <div>
       <h1 className="text-2xl font-bold text-[#0B3D20] mb-6">Manage Blogs</h1>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-6 rounded shadow mb-10">
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-6 rounded shadow mb-10"
+      >
         <input
           name="title"
           value={formData.title}
@@ -150,10 +162,22 @@ const AdminBlogsPage = () => {
               <tr key={blog.id} className="border-b">
                 <td className="px-6 py-2">{blog.title}</td>
                 <td className="px-6 py-2">{blog.author}</td>
-                <td className="px-6 py-2">{new Date(blog.created_at).toLocaleDateString()}</td>
+                <td className="px-6 py-2">
+                  {new Date(blog.created_at).toLocaleDateString()}
+                </td>
                 <td className="px-6 py-2 flex gap-3">
-                  <button onClick={() => handleEdit(blog)} className="text-blue-600 hover:underline text-sm">Edit</button>
-                  <button onClick={() => handleDelete(blog.id)} className="text-red-600 hover:underline text-sm">Delete</button>
+                  <button
+                    onClick={() => handleEdit(blog)}
+                    className="text-blue-600 hover:underline text-sm"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(blog.id)}
+                    className="text-red-600 hover:underline text-sm"
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}

@@ -11,7 +11,7 @@ const AdminSentimentReviews = () => {
         `http://localhost:8000/admin_dashboard/sentiments/?destination=${filter}`,
         {
           headers: {
-            Authorization: `Token ${localStorage.getItem("adminAuthToken")}`,
+            Authorization: `Token ${localStorage.getItem("authToken")}`
           },
         }
       );
@@ -28,7 +28,7 @@ const AdminSentimentReviews = () => {
         `http://localhost:8000/admin_dashboard/sentiments/${id}/`,
         {
           headers: {
-            Authorization: `Token ${localStorage.getItem("adminAuthToken")}`,
+            Authorization: `Token ${localStorage.getItem("authToken")}`
           },
         }
       );
@@ -48,7 +48,7 @@ const AdminSentimentReviews = () => {
         "http://localhost:8000/admin_dashboard/sentiments/export-pdf/",
         {
           headers: {
-            Authorization: `Token ${localStorage.getItem("adminAuthToken")}`,
+            Authorization: `Token ${localStorage.getItem("authToken")}`
           },
         }
       );
@@ -74,7 +74,7 @@ const AdminSentimentReviews = () => {
         "http://localhost:8000/admin_dashboard/sentiments/export-csv/",
         {
           headers: {
-            Authorization: `Token ${localStorage.getItem("adminAuthToken")}`,
+            Authorization: `Token ${localStorage.getItem("authToken")}`
           },
         }
       );

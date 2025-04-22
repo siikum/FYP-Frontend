@@ -16,7 +16,7 @@ const GroupChatsPage = () => {
       "http://localhost:8000/admin_dashboard/groupchats/",
       {
         headers: {
-          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`
+          Authorization: `Token ${localStorage.getItem("authToken")}`
         },
       }
     );
@@ -28,7 +28,7 @@ const GroupChatsPage = () => {
       "http://localhost:8000/admin_dashboard/users/",
       {
         headers: {
-          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`
+          Authorization: `Token ${localStorage.getItem("authToken")}`
         },
       }
     );
@@ -64,10 +64,11 @@ const GroupChatsPage = () => {
 
     await axios[method](url, data, {
       headers: {
-        Authorization: `Token ${localStorage.getItem("adminAuthToken")}`,
+        Authorization: `Token ${localStorage.getItem("authToken")}`, // ✅ fixed
         "Content-Type": "multipart/form-data",
       },
     });
+    
 
     setFormData({ group_name: "", group_image: null, members: [] });
     setEditingGroup(null);
@@ -89,7 +90,7 @@ const GroupChatsPage = () => {
       `http://localhost:8000/admin_dashboard/groupchats/${id}/`,
       {
         headers: {
-          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`
+          Authorization: `Token ${localStorage.getItem("authToken")}`
         },
       }
     );

@@ -10,7 +10,7 @@ const ContactMessagesPage = () => {
     try {
       const res = await axios.get("http://localhost:8000/admin_dashboard/contacts/", {
         headers: {
-          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`
+          Authorization: `Token ${localStorage.getItem("authToken")}`
         },
       });
       setMessages(res.data);
@@ -27,7 +27,7 @@ const ContactMessagesPage = () => {
     try {
       await axios.delete(`http://localhost:8000/admin_dashboard/contacts/${id}/`, {
         headers: {
-          Authorization: `Token ${localStorage.getItem("adminAuthToken")}`
+          Authorization: `Token ${localStorage.getItem("authToken")}`
         },
       });
       fetchMessages();

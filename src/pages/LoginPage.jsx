@@ -29,53 +29,49 @@ const LoginPage = () => {
       );
       const data = response.data;
   
+      // Save token, user info
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("username", data.username);
       localStorage.setItem("userId", data.user_id);
       localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("isAdmin", data.is_staff ? "true" : "false"); // ⭐️ Save admin role
   
-      const redirectPath = location.state?.from || "/";
-      navigate(redirectPath);
+      if (data.is_staff) {
+        const result = await Swal.fire({
+          title: "Admin Login Detected",
+          text: "Do you want to go to the Admin Dashboard?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonColor: "#0B3D20",
+          cancelButtonColor: "#B91C1C",
+          confirmButtonText: "Yes, Admin Dashboard",
+          cancelButtonText: "No, Homepage",
+        });
   
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "success",
-        title: `Welcome back, ${data.username}!`,
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-      });
-    } catch (error) {
-      if (error.response) {
-        console.error("Login error (response):", error.response.data);
-        Swal.fire({
-          icon: "error",
-          title: "Login Failed",
-          text: error.response.data?.error || "Invalid credentials. Please try again.",
-          confirmButtonColor: "#B91C1C",
-        });
-      } else if (error.request) {
-        console.error("Login error (no response):", error.request);
-        Swal.fire({
-          icon: "error",
-          title: "Network Error",
-          text: "No response from server. Please try again.",
-          confirmButtonColor: "#B91C1C",
-        });
+        if (result.isConfirmed) {
+          navigate("/admin/dashboard");
+        } else {
+          navigate("/");
+        }
       } else {
-        console.error("Login error (general):", error.message);
+        const redirectPath = location.state?.from || "/";
+        navigate(redirectPath);
+  
         Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Something went wrong. Please try again.",
-          confirmButtonColor: "#B91C1C",
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: `Welcome back, ${data.username}!`,
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
         });
       }
+    } catch (error) {
+      // your existing error handling
     }
-    
-    
   };
+  
 
 
   return (
