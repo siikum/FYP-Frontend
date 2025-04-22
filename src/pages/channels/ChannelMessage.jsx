@@ -3,8 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Swal from "sweetalert2";
 
-
 const API = "http://localhost:8000";
+
+const backgroundImage = "/images/message_backgrounds/bg5.jpg";
 
 export default function ChannelMessage() {
   const { id: channelId } = useParams();
@@ -21,13 +22,19 @@ export default function ChannelMessage() {
 
   const fetchMessages = async () => {
     try {
-      const res = await fetch(`${API}/account/groupchats/${channelId}/messages/`, {
-        headers: { Authorization: `Token ${token}` },
-      });
+      const res = await fetch(
+        `${API}/account/groupchats/${channelId}/messages/`,
+        {
+          headers: { Authorization: `Token ${token}` },
+        }
+      );
       if (res.ok) {
         const data = await res.json();
         setMessages(data);
-        scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+        setTimeout(
+          () => scrollRef.current?.scrollIntoView({ behavior: "smooth" }),
+          100
+        );
       } else {
         console.error("Failed to fetch messages");
       }
@@ -60,16 +67,26 @@ export default function ChannelMessage() {
     formData.append("content", newMessage);
     if (file) {
       formData.append("attachment", file);
-      formData.append("message_type", file.type.startsWith("image") ? "image" : file.type.startsWith("video") ? "video" : "file");
+      formData.append(
+        "message_type",
+        file.type.startsWith("image")
+          ? "image"
+          : file.type.startsWith("video")
+          ? "video"
+          : "file"
+      );
     } else {
       formData.append("message_type", "text");
     }
 
-    const res = await fetch(`${API}/account/groupchats/${channelId}/messages/send/`, {
-      method: "POST",
-      headers: { Authorization: `Token ${token}` },
-      body: formData,
-    });
+    const res = await fetch(
+      `${API}/account/groupchats/${channelId}/messages/send/`,
+      {
+        method: "POST",
+        headers: { Authorization: `Token ${token}` },
+        body: formData,
+      }
+    );
 
     if (res.ok) {
       setNewMessage("");
@@ -89,90 +106,158 @@ export default function ChannelMessage() {
       confirmButtonText: "Yes, delete it!",
       cancelButtonText: "Cancel",
     });
-  
+
     if (confirmResult.isConfirmed) {
       try {
-        const response = await fetch(`${API}/account/messages/${msgId}/delete/`, {
-          method: "DELETE",
-          headers: { Authorization: `Token ${token}` },
-        });
-  
+        const response = await fetch(
+          `${API}/account/messages/${msgId}/delete/`,
+          {
+            method: "DELETE",
+            headers: { Authorization: `Token ${token}` },
+          }
+        );
         if (response.ok) {
           await fetchMessages();
-          Swal.fire({
-            icon: "success",
-            title: "Deleted!",
-            text: "The message has been removed.",
-            confirmButtonColor: "#0B3D20",
-            timer: 1500,
-          });
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Failed",
-            text: "Could not delete the message.",
-            confirmButtonColor: "#B91C1C",
-          });
+          Swal.fire("Deleted!", "The message has been removed.", "success");
         }
       } catch (error) {
         console.error("Error deleting message:", error);
-        Swal.fire({
-          icon: "error",
-          title: "Oops!",
-          text: "Something went wrong while deleting the message.",
-          confirmButtonColor: "#B91C1C",
-        });
+      }
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  const handleLeaveChannel = async () => {
+    const confirmResult = await Swal.fire({
+      title: "Leave this channel?",
+      text: "Are you sure you want to leave this channel?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#B91C1C",
+      cancelButtonColor: "#0B3D20",
+      confirmButtonText: "Yes, leave",
+      cancelButtonText: "Cancel",
+    });
+
+    if (confirmResult.isConfirmed) {
+      try {
+        const res = await fetch(
+          `${API}/account/groupchats/${channelId}/leave/`,
+          {
+            method: "POST",
+            headers: { Authorization: `Token ${token}` },
+          }
+        );
+
+        if (res.ok) {
+          Swal.fire({
+            title: "Left!",
+            text: "You have left the channel.",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: false,
+          });
+          navigate("/channels");
+        } else {
+          Swal.fire("Error", "Failed to leave the channel.", "error");
+        }
+      } catch (err) {
+        console.error("Error leaving channel:", err);
+        Swal.fire("Error", "Something went wrong.", "error");
       }
     }
   };
 
   return (
-    <div className="flex flex-col min-h-screen w-screen bg-[#f3f8f6] font-serif">
+    <div className="flex flex-col min-h-screen w-screen font-sans overflow-hidden">
       <Navbar isBlack={true} />
-      <div className="flex flex-1 px-4 pt-20">
+      <div className="flex flex-1 pt-20">
         {/* Sidebar */}
-        <aside className="w-[25%] hidden md:block bg-white rounded-md p-6 shadow overflow-y-auto">
-          <h2 className="text-xl font-bold text-[#0B3D20] mb-4">My Channels</h2>
-          <ul className="space-y-3">
+        <aside className="w-[20%] bg-[#f3f8f6] p-4 shadow-md h-[calc(100vh-5rem)] sticky top-20 overflow-y-auto">
+          <h2 className="text-3xl font-bold text-[#0B3D20] mb-10">
+            My Channels
+          </h2>
+          <ul className="space-y-4">
             {myChannels.map((ch) => (
               <li
                 key={ch.group_id}
                 onClick={() => navigate(`/channels/${ch.group_id}`)}
-                className={`cursor-pointer text-sm ${ch.group_id == channelId ? "text-[#0B3D20] font-semibold" : "text-gray-600"}`}
+                className={`cursor-pointer text-[18px] hover:underline ${
+                  ch.group_id == channelId
+                    ? "text-[#0B3D20] font-semibold"
+                    : "text-gray-600"
+                }`}
               >
-                # {ch.group_name}
+                {ch.group_name}
               </li>
             ))}
           </ul>
         </aside>
 
-        {/* Chat Area */}
-        <div className="flex-1 bg-white rounded-md p-6 shadow flex flex-col sticky max-h-full">
-          <div className="border-b pb-4 mb-4">
-            <h1 className="text-2xl font-bold text-[#0B3D20]">Channel #{channelId}</h1>
+        {/* Chat Section */}
+        <div className="flex flex-col flex-1 h-[calc(100vh-5rem)]">
+          {/* Header */}
+          <div className="bg-[#f3f8f6] p-4 border-b sticky top-20 z-10 flex justify-between items-center">
+            <h1 className="text-3xl font-bold text-[#0B3D20]">
+              Channel #{channelId}
+            </h1>
+            <button
+              onClick={handleLeaveChannel}
+              className=" text-red-600 text-sm px-4 py-2 hover:text-red-800"
+            >
+              Leave Channel
+            </button>
           </div>
 
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto space-y-4 pr-2">
+          {/* Messages - Only This Should Scroll */}
+          <div
+            className="flex-1 overflow-y-auto p-6 space-y-4 relative"
+            style={{
+              backgroundImage: `linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0.6)), url(${backgroundImage})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+          >
             {messages.length === 0 ? (
-              <div className="text-center text-gray-400 text-sm mt-10">No messages yet.</div>
+              <div className="text-center text-[#0B3D20]">No messages yet.</div>
             ) : (
               messages.map((msg) => {
                 const isSender = msg.sender_username === currentUsername;
                 return (
                   <div
                     key={msg.message_id}
-                    className={`relative p-3 rounded-md max-w-full break-words ${
-                      isSender ? "ml-auto bg-[#d0f0c0] text-[#0B3D20]" : "mr-auto bg-[#f1f5f9] text-[#1f2937]"
+                    className={`relative p-4 rounded-lg max-w-lg break-words ${
+                      isSender
+                        ? "ml-auto bg-[#d9fdd3] text-[#0B3D20]"
+                        : "mr-auto bg-[#ffffff] text-gray-800"
                     }`}
                   >
-                    {!isSender && <p className="text-xs font-semibold mb-1">{msg.sender_username}</p>}
+                    {!isSender && (
+                      <p className="text-xs font-bold mb-1">
+                        {msg.sender_username}
+                      </p>
+                    )}
                     {msg.message_type === "text" && <p>{msg.content}</p>}
                     {msg.message_type === "image" && msg.attachment_url && (
-                      <img src={`${API}${msg.attachment_url}`} alt="uploaded" className="rounded-md max-h-72 mt-2" />
+                      <img
+                        src={`${API}${msg.attachment_url}`}
+                        alt="uploaded"
+                        className="rounded-md max-h-72 mt-2"
+                      />
                     )}
                     {msg.message_type === "video" && msg.attachment_url && (
-                      <video src={`${API}${msg.attachment_url}`} controls className="mt-2 max-h-72 rounded-md" />
+                      <video
+                        src={`${API}${msg.attachment_url}`}
+                        controls
+                        className="mt-2 max-h-72 rounded-md"
+                      />
                     )}
                     {msg.message_type === "file" && msg.attachment_url && (
                       <a
@@ -184,11 +269,19 @@ export default function ChannelMessage() {
                         Download File
                       </a>
                     )}
-                    <p className="text-[10px] text-gray-500 mt-1">{new Date(msg.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
+                    <p className="text-[10px] text-gray-400 mt-1">
+                      {new Date(msg.timestamp).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
                     {isSender && (
-                      <div className="absolute top-2 right-2 space-x-2 text-xs text-gray-500">
-                        <button onClick={() => handleDelete(msg.message_id)} className="hover:underline">Delete</button>
-                      </div>
+                      <button
+                        onClick={() => handleDelete(msg.message_id)}
+                        className="absolute top-2 right-2 text-sm text-gray-500 hover:text-red-600"
+                      >
+                        Delete
+                      </button>
                     )}
                   </div>
                 );
@@ -197,31 +290,65 @@ export default function ChannelMessage() {
             <div ref={scrollRef}></div>
           </div>
 
-          {/* Input */}
-          <div className="pt-4 border-t flex gap-2 items-center sticky bottom-0 bg-white mt-4">
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type your message..."
-              className="flex-1 px-4 py-3 border rounded-md focus:ring-2 focus:ring-[#0B3D20]"
-            />
-            <input
-              type="file"
-              accept="image/*,video/*,.pdf,.doc,.docx,.zip,.rar"
-              onChange={(e) => setFile(e.target.files[0])}
-              className="hidden"
-              id="fileInput"
-            />
-            <label htmlFor="fileInput" className="bg-[#0B3D20] px-3 py-2 rounded-md cursor-pointer">
-            🔗
-            </label>
-            <button
-              onClick={handleSend}
-              className="bg-[#0B3D20] text-white px-6 py-3 rounded-md hover:bg-[#295b42]"
-            >
-              Send
-            </button>
+          {/* Input Section */}
+          <div className="bg-white p-4 border-t sticky bottom-0 flex flex-col gap-2">
+            {file && (
+              <div className="flex items-center gap-2">
+                {file.type.startsWith("image") ? (
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt="preview"
+                    className="h-20 rounded"
+                  />
+                ) : file.type.startsWith("video") ? (
+                  <video
+                    src={URL.createObjectURL(file)}
+                    controls
+                    className="h-20 rounded"
+                  />
+                ) : (
+                  <p className="text-sm text-gray-500">
+                    Selected file: {file.name}
+                  </p>
+                )}
+                <button
+                  onClick={() => setFile(null)}
+                  className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                >
+                  ✖
+                </button>
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Type your message..."
+                className="flex-1 px-4 py-3 border rounded-md focus:ring-2 focus:ring-[#0B3D20]"
+              />
+              <input
+                type="file"
+                accept="image/*,video/*,.pdf,.doc,.docx,.zip,.rar"
+                onChange={(e) => setFile(e.target.files[0])}
+                className="hidden"
+                id="fileInput"
+              />
+              <label
+                htmlFor="fileInput"
+                className="flex items-center justify-center bg-[#0B3D20] p-3 rounded-md cursor-pointer"
+              >
+                🔗
+              </label>
+              <button
+                onClick={handleSend}
+                className="bg-[#0B3D20] text-white px-6 py-3 rounded-md hover:bg-[#295b42]"
+              >
+                Send
+              </button>
+            </div>
           </div>
         </div>
       </div>

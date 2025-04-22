@@ -59,7 +59,7 @@ const Home = () => {
       {/* Featured Blogs */}
       <div className="px-20 py-12 bg-[#f3f8f6] font-serif">
         <h2 className="text-4xl font-bold text-[#0B3D20] mb-10">
-          Featured Blogs
+          Our Stories
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">

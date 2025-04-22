@@ -37,7 +37,6 @@ const RecommendedHotels = () => {
         const lat = geocodeResult.geometry.coordinates[1];
         const lon = geocodeResult.geometry.coordinates[0];
 
-        // Step 2: Fetch hotels/guesthouses using Geoapify Places API
         const placesResponse = await axios.get(
           `https://api.geoapify.com/v2/places`,
           {

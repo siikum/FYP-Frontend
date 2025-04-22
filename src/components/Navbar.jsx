@@ -176,40 +176,44 @@ const Navbar = ({ isBlack = false }) => {
                 )}
               </button>
               {showProfileDropdown && (
-                <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50">
-                  <button
-                    onClick={() => handleDropdownLinkClick("/ProfilePage")}
-                    className="flex w-full text-left items-center px-4 py-2 text-sm text-black hover:bg-gray-100"
-                  >
+                <div className="origin-top-right absolute right-0 mt-2 w-52 rounded-lg shadow-lg bg-white/80 backdrop-blur-md z-50 animate-fadeIn">
+                <div className="py-2">
+                    <button
+                      onClick={() => handleDropdownLinkClick("/ProfilePage")}
+                      className="flex items-center w-full px-4 py-2 text-[16px] text-black hover:bg-[#e6f1ec]"
+                    >
                     User Profile
-                  </button>
-                  <button
-                    onClick={() => handleDropdownLinkClick("/MyChannels")}
-                    className="flex w-full text-left items-center px-4 py-2 text-sm text-black hover:bg-gray-100"
-                  >
+                    </button>
+                    <button
+                      onClick={() => handleDropdownLinkClick("/MyChannels")}
+                      className="flex items-center w-full px-4 py-2 text-[16px] text-black hover:bg-[#e6f1ec]"
+                    >
                     My Channels
-                  </button>
-                  <button
-                    onClick={() =>
-                      handleDropdownLinkClick("/SavedDestinations")
-                    }
-                    className="flex w-full text-left items-center px-4 py-2 text-sm text-black hover:bg-gray-100"
-                  >
-                    My Destinations
-                  </button>
-
-                  <button
-                    onClick={() => handleDropdownLinkClick("/SavedItineraries")}
-                    className="flex w-full text-left items-center px-4 py-2 text-sm text-black hover:bg-gray-100"
-                  >
-                    My Trip Plans
-                  </button>
-                  <button
-                    onClick={handleLogout}
-                    className="flex w-full text-left items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-                  >
-                    Logout
-                  </button>
+                    </button>
+                    <button
+                      onClick={() =>
+                        handleDropdownLinkClick("/SavedDestinations")
+                      }
+                      className="flex items-center w-full px-4 py-2 text-[16px] text-black hover:bg-[#e6f1ec]"
+                    >
+                       My Destinations
+                    </button>
+                    <button
+                      onClick={() =>
+                        handleDropdownLinkClick("/SavedItineraries")
+                      }
+                      className="flex items-center w-full px-4 py-2 text-[16px] text-black hover:bg-[#e6f1ec]"
+                    >
+                     My Trip Plans
+                    </button>
+                    <div className="border-t border-gray-300 my-2"></div>
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center w-full px-4 py-2 text-[16px] text-red-600 hover:bg-[#e6f1ec]"
+                    >
+                     Logout
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
