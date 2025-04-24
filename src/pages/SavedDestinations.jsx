@@ -107,12 +107,12 @@ const SavedDestinations = () => {
                 <img
                   src={`${API_BASE_URL}${item.cover_image}`}
                   alt={item.name}
-                  onClick={() => navigate(`/destinations/${item.slug}`)}
+                  onClick={() => navigate(`/destination/${item.slug}`)}
                   className="rounded-t-md w-full h-60 object-cover"
                 />
 
                 <div
-                  onClick={() => navigate(`/destinations/${item.slug}`)}
+                  onClick={() => navigate(`/destination/${item.slug}`)}
                   className="p-5"
                 >
                   <h2 className="text-xl font-bold text-[#0B3D20] mb-1">

@@ -148,7 +148,7 @@ const PublicProfile = () => {
                 savedDestinations.map((dest) => (
                   <div
                     key={dest.id}
-                    onClick={() => navigate(`/destinations/${dest.slug}`)}
+                    onClick={() => navigate(`/destination/${dest.slug}`)}
                     className="cursor-pointer bg-white rounded-lg shadow hover:shadow-md transition overflow-hidden min-h-[300px] group"
                   >
                     <div className="overflow-hidden">

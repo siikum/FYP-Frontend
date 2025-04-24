@@ -6,7 +6,6 @@ import axios from "axios";
 import { Typewriter } from "react-simple-typewriter";
 import Swal from "sweetalert2";
 
-
 const CreateBlog = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -21,7 +20,7 @@ const CreateBlog = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!title || !description || !file) {
       const errorMessage = "All fields are required";
       setError(errorMessage);
@@ -33,16 +32,16 @@ const CreateBlog = () => {
       });
       return;
     }
-  
+
     try {
       setLoading(true);
       setError("");
-  
+
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
       formData.append("image", file);
-  
+
       const response = await axios.post(
         "http://127.0.0.1:8000/blog/blogposts/create/",
         formData,
@@ -53,7 +52,7 @@ const CreateBlog = () => {
           },
         }
       );
-  
+
       if (response.status === 201) {
         Swal.fire({
           icon: "success",
@@ -64,7 +63,8 @@ const CreateBlog = () => {
       }
     } catch (err) {
       console.log(err);
-      const errorMessage = "Failed to create blog. Make sure you are logged in.";
+      const errorMessage =
+        "Failed to create blog. Make sure you are logged in.";
       setError(errorMessage);
       Swal.fire({
         icon: "error",
@@ -76,7 +76,6 @@ const CreateBlog = () => {
       setLoading(false);
     }
   };
-  
 
   return (
     <div className="flex flex-col min-h-screen font-serif bg-[#f3f8f6] py-[100px]">
@@ -94,7 +93,9 @@ const CreateBlog = () => {
           <div className="text-9xl font-serif font-bold break-words">Blogs</div>
           <div className="mt-4 mr-30 text-mm italic text-black w-[70%] self-end text-end">
             <Typewriter
-              words={["“Every journey begins with a story. Start yours today.”"]}
+              words={[
+                "“Every journey begins with a story. Start yours today.”",
+              ]}
               loop={false}
               cursor
               cursorStyle="_"

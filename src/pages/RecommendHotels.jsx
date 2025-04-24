@@ -16,59 +16,20 @@ const RecommendedHotels = () => {
         setLoading(true);
         setError(null);
 
-        const geoapifyApiKey = "00d5018e7913439aade1f3b68348cb99"; // 🛑 Only Geoapify now
-
-        // Step 1: Geocode destination name into lat/lon
-        const geocodeResponse = await axios.get(
-          `https://api.geoapify.com/v1/geocode/search`,
-          {
-            params: {
-              text: destinationName, // 👈 direct destination name
-              apiKey: geoapifyApiKey,
-            },
-          }
+        const response = await axios.get(
+          `http://localhost:8000/itinerary/hotels/${encodeURIComponent(destinationName)}/`
         );
 
-        const geocodeResult = geocodeResponse.data.features[0];
-        if (!geocodeResult) {
-          throw new Error("No location found for this destination.");
-        }
+        // Filter and limit to top 9 by rating (excluding 'N/A')
+        const sortedHotels = response.data.hotels
+          .filter(h => h.rating !== "N/A")
+          .sort((a, b) => b.rating - a.rating)
+          .slice(0, 9);
 
-        const lat = geocodeResult.geometry.coordinates[1];
-        const lon = geocodeResult.geometry.coordinates[0];
-
-        const placesResponse = await axios.get(
-          `https://api.geoapify.com/v2/places`,
-          {
-            params: {
-              categories:
-                "accommodation.hotel,accommodation.guest_house,accommodation.hostel,accommodation.hut",
-              filter: `circle:${lon},${lat},10000`,
-              limit: 9,
-              apiKey: geoapifyApiKey,
-            },
-          }
-        );
-
-        const places = placesResponse.data.features;
-
-        const formattedHotels = places.map((place) => ({
-          name: place.properties.name || "Unnamed Lodge",
-          category: place.properties.categories?.[0] || "Accommodation",
-          lat: place.geometry.coordinates[1],
-          lon: place.geometry.coordinates[0],
-          address:
-            place.properties.address_line1 ||
-            place.properties.formatted ||
-            "Address Not Available",
-        }));
-
-        setHotels(formattedHotels);
+        setHotels(sortedHotels);
       } catch (err) {
-        console.error("Failed to fetch places:", err);
-        setError(
-          "Failed to load accommodation options. Please try again later."
-        );
+        console.error("Failed to fetch hotels:", err);
+        setError("Failed to load accommodation options. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -76,6 +37,11 @@ const RecommendedHotels = () => {
 
     fetchHotels();
   }, [destinationName]);
+
+  const getHotelImage = (index) => {
+    const imgIndex = (index % 6) + 1; // rotate images 1-6
+    return `/images/hotels/hotel${imgIndex}.jpg`;
+  };
 
   return (
     <div className="w-full">
@@ -109,7 +75,7 @@ const RecommendedHotels = () => {
                 className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300"
               >
                 <img
-                  src={`/images/hotels/hotel${idx + 1}.jpg`}
+                  src={getHotelImage(idx)}
                   alt={hotel.name}
                   className="w-full h-48 object-cover"
                 />
@@ -117,7 +83,7 @@ const RecommendedHotels = () => {
                   <h3 className="text-xl font-semibold text-[#0B3D20] mb-2">
                     {hotel.name}
                   </h3>
-                  <p className="text-gray-600 mb-1">{hotel.category}</p>
+                  <p className="text-gray-600 mb-1">Rating: {hotel.rating}</p>
                   <p className="text-gray-600 text-sm">{hotel.address}</p>
                   <a
                     href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(

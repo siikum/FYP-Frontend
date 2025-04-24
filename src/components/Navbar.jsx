@@ -10,31 +10,29 @@ const Navbar = ({ isBlack = false }) => {
   const profileRef = useRef(null);
   const [profilePicUrl, setProfilePicUrl] = useState(null);
 
-  useEffect(() => {
-    const checkLogin = () => {
-      const token = localStorage.getItem("authToken");
-      const loggedIn = !!token;
-      setIsLoggedIn(loggedIn);
+  // useEffect(() => {
+  //   const checkLogin = () => {
+  //     const token = localStorage.getItem("authToken");
+  //     const loggedIn = !!token;
+  //     setIsLoggedIn(loggedIn);
 
-      if (!loggedIn) {
-        setProfilePicUrl(null); // Reset if logged out
-      }
-    };
+  //     if (!loggedIn) {
+  //       setProfilePicUrl(null); // Reset if logged out
+  //     }
+  //   };
 
-    checkLogin();
-    window.addEventListener("storage", checkLogin);
-    return () => {
-      window.removeEventListener("storage", checkLogin);
-    };
-  }, []);
+  //   checkLogin();
+  //   window.addEventListener("storage", checkLogin);
+  //   return () => {
+  //     window.removeEventListener("storage", checkLogin);
+  //   };
+  // }, []);
 
   useEffect(() => {
     const checkLogin = async () => {
       const token = localStorage.getItem("authToken");
-      const loggedIn = !!token;
-      setIsLoggedIn(loggedIn);
-
-      if (!loggedIn) {
+      if (!token) {
+        setIsLoggedIn(false);
         setProfilePicUrl(null);
         return;
       }
@@ -48,49 +46,64 @@ const Navbar = ({ isBlack = false }) => {
 
         if (response.ok) {
           const data = await response.json();
-          // Replace 'profile_picture' with the actual field from your backend
           setProfilePicUrl(`http://localhost:8000${data.profile_picture}`);
+          setIsLoggedIn(true);
         } else {
+          // Token is invalid, clear session
+          localStorage.clear();
+          setIsLoggedIn(false);
           setProfilePicUrl(null);
         }
       } catch (err) {
         console.error("Failed to fetch profile info:", err);
+        localStorage.clear();
+        setIsLoggedIn(false);
         setProfilePicUrl(null);
       }
     };
 
     checkLogin();
-    window.addEventListener("storage", checkLogin);
-    return () => window.removeEventListener("storage", checkLogin);
   }, []);
 
+  // const handleLogout = async () => {
+  //   const result = await Swal.fire({
+  //     title: "Are you sure?",
+  //     text: "You will be logged out of Trail Himalaya.",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#B91C1C",
+  //     cancelButtonColor: "#0B3D20",
+  //     confirmButtonText: "Yes, logout",
+  //     cancelButtonText: "Stay",
+  //   });
+
+  //   if (result.isConfirmed) {
+  //     localStorage.clear();
+  //     window.dispatchEvent(new Event("storage"));
+  //     setShowProfileDropdown(false);
+  //     navigate("/LoginPage");
+  //     Swal.fire({
+  //       icon: "success",
+  //       title: "Logged Out",
+  //       text: "You have been successfully logged out.",
+  //       confirmButtonColor: "#0B3D20",
+  //       timer: 2000,
+  //     });
+  //   }
+  // };
   const handleLogout = async () => {
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "You will be logged out of Trail Himalaya.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#B91C1C",
-      cancelButtonColor: "#0B3D20",
-      confirmButtonText: "Yes, logout",
-      cancelButtonText: "Stay",
+    localStorage.clear(); // Clears all local storage data
+    window.dispatchEvent(new Event("storage")); // Notify other tabs
+    setShowProfileDropdown(false);
+    navigate("/LoginPage");
+    Swal.fire({
+      icon: "success",
+      title: "Logged Out",
+      text: "You have been successfully logged out.",
+      confirmButtonColor: "#0B3D20",
+      timer: 2000,
     });
-
-    if (result.isConfirmed) {
-      localStorage.clear();
-      window.dispatchEvent(new Event("storage"));
-      setShowProfileDropdown(false);
-      navigate("/LoginPage");
-      Swal.fire({
-        icon: "success",
-        title: "Logged Out",
-        text: "You have been successfully logged out.",
-        confirmButtonColor: "#0B3D20",
-        timer: 2000,
-      });
-    }
   };
-
   const toggleProfileDropdown = () => {
     setShowProfileDropdown((prev) => !prev);
   };
@@ -177,18 +190,18 @@ const Navbar = ({ isBlack = false }) => {
               </button>
               {showProfileDropdown && (
                 <div className="origin-top-right absolute right-0 mt-2 w-52 rounded-lg shadow-lg bg-white/80 backdrop-blur-md z-50 animate-fadeIn">
-                <div className="py-2">
+                  <div className="py-2">
                     <button
                       onClick={() => handleDropdownLinkClick("/ProfilePage")}
                       className="flex items-center w-full px-4 py-2 text-[16px] text-black hover:bg-[#e6f1ec]"
                     >
-                    User Profile
+                      User Profile
                     </button>
                     <button
                       onClick={() => handleDropdownLinkClick("/MyChannels")}
                       className="flex items-center w-full px-4 py-2 text-[16px] text-black hover:bg-[#e6f1ec]"
                     >
-                    My Channels
+                      My Channels
                     </button>
                     <button
                       onClick={() =>
@@ -196,7 +209,7 @@ const Navbar = ({ isBlack = false }) => {
                       }
                       className="flex items-center w-full px-4 py-2 text-[16px] text-black hover:bg-[#e6f1ec]"
                     >
-                       My Destinations
+                      My Destinations
                     </button>
                     <button
                       onClick={() =>
@@ -204,14 +217,14 @@ const Navbar = ({ isBlack = false }) => {
                       }
                       className="flex items-center w-full px-4 py-2 text-[16px] text-black hover:bg-[#e6f1ec]"
                     >
-                     My Trip Plans
+                      My Trip Plans
                     </button>
                     <div className="border-t border-gray-300 my-2"></div>
                     <button
                       onClick={handleLogout}
                       className="flex items-center w-full px-4 py-2 text-[16px] text-red-600 hover:bg-[#e6f1ec]"
                     >
-                     Logout
+                      Logout
                     </button>
                   </div>
                 </div>

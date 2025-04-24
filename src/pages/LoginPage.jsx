@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Link, useNavigate , useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import firstIMG from "../assets/images/login-image.jpg";
 import Swal from "sweetalert2";
-
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -21,21 +20,24 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-  
+
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/account/login/",
         formData
       );
       const data = response.data;
-  
-      // Save token, user info
+
+      // Clear any previous session data
+      localStorage.clear();
+
+      // Save new user's session data
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("username", data.username);
       localStorage.setItem("userId", data.user_id);
       localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("isAdmin", data.is_staff ? "true" : "false"); // ⭐️ Save admin role
-  
+      localStorage.setItem("isAdmin", data.is_staff ? "true" : "false");
+
       if (data.is_staff) {
         const result = await Swal.fire({
           title: "Admin Login Detected",
@@ -47,7 +49,7 @@ const LoginPage = () => {
           confirmButtonText: "Yes, Admin Dashboard",
           cancelButtonText: "No, Homepage",
         });
-  
+
         if (result.isConfirmed) {
           navigate("/admin/dashboard");
         } else {
@@ -56,7 +58,7 @@ const LoginPage = () => {
       } else {
         const redirectPath = location.state?.from || "/";
         navigate(redirectPath);
-  
+
         Swal.fire({
           toast: true,
           position: "top-end",
@@ -68,11 +70,22 @@ const LoginPage = () => {
         });
       }
     } catch (error) {
-      // your existing error handling
+      console.error("Login error:", error);
+
+      if (error.response?.status === 403 || error.response?.status === 400) {
+        setError("Invalid username or password.");
+      } else {
+        setError("Something went wrong. Please try again later.");
+      }
+
+      Swal.fire({
+        icon: "error",
+        title: "Login Failed",
+        text: error.response?.data?.error || "Invalid credentials",
+        confirmButtonColor: "#B91C1C",
+      });
     }
   };
-  
-
 
   return (
     <div className="flex h-screen raleway bg-amber-50 font-raleway">
@@ -104,8 +117,8 @@ const LoginPage = () => {
         </div>
 
         <div className="bg-amber-50 px-8 pt-6 pb-8 mb-4">
-        <div className="text-6xl font-bold mb-2 text-center">Login</div>
-        <p className="text-[#295b42] text-mm text-center mb-6 italic">
+          <div className="text-6xl font-bold mb-2 text-center">Login</div>
+          <p className="text-[#295b42] text-mm text-center mb-6 italic">
             Your trail awaits.
           </p>
           <br />

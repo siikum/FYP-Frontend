@@ -4,7 +4,6 @@ import axios from "axios";
 import firstIMG from "../assets/images/login-image.jpg";
 import Swal from "sweetalert2";
 
-
 const NewSignUpPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -20,7 +19,8 @@ const NewSignUpPage = () => {
   const [otp, setOtp] = useState("");
   const [resendDisabled, setResendDisabled] = useState(true);
   const [resendSeconds, setResendSeconds] = useState(60);
-  const [registrationEmail, setRegistrationEmail] = useState(""); // Keep track of email used for registration.
+  const [registrationEmail, setRegistrationEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -74,7 +74,8 @@ const NewSignUpPage = () => {
       });
       startResendTimer();
     } catch (error) {
-      const errorMessage = error.response?.data?.error || "Failed to resend OTP";
+      const errorMessage =
+        error.response?.data?.error || "Failed to resend OTP";
       setError(errorMessage);
       Swal.fire({
         icon: "error",
@@ -84,11 +85,12 @@ const NewSignUpPage = () => {
       });
     }
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setIsSubmitting(true); // disable button immediately
+
     if (formData.password !== formData.retypePassword) {
       const errorMessage = "Passwords do not match.";
       setError(errorMessage);
@@ -98,9 +100,10 @@ const NewSignUpPage = () => {
         text: errorMessage,
         confirmButtonColor: "#B91C1C",
       });
+      setIsSubmitting(false); // re-enable if error
       return;
     }
-  
+
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/account/register/",
@@ -117,7 +120,8 @@ const NewSignUpPage = () => {
       });
     } catch (error) {
       const errorMessage =
-        error.response?.data?.error || "Something went wrong during registration.";
+        error.response?.data?.error ||
+        "Something went wrong during registration.";
       setError(errorMessage);
       Swal.fire({
         icon: "error",
@@ -125,9 +129,10 @@ const NewSignUpPage = () => {
         text: errorMessage,
         confirmButtonColor: "#B91C1C",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
-  
 
   const handleVerifyOtp = async () => {
     try {
@@ -143,7 +148,8 @@ const NewSignUpPage = () => {
         confirmButtonColor: "#0B3D20",
       }).then(() => navigate("/LoginPage"));
     } catch (error) {
-      const errorMessage = error.response?.data?.error || "Failed to verify OTP.";
+      const errorMessage =
+        error.response?.data?.error || "Failed to verify OTP.";
       setError(errorMessage); // still update state for inline message
       Swal.fire({
         icon: "error",
@@ -153,7 +159,7 @@ const NewSignUpPage = () => {
       });
     }
   };
-  
+
   // const [showDetails, setShowDetails] = useState(false);
   // const toggleDetails = () => setShowDetails(!showDetails);
 
@@ -315,11 +321,13 @@ const NewSignUpPage = () => {
               {error && <p className="text-red-500 text-xs italic">{error}</p>}
               <div className="flex items-center justify-between">
                 <button
-                  className="bg-black hover:bg-[#295b42] hover:text-white text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  className="bg-black hover:bg-[#295b42] hover:text-white text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50 disabled:cursor-not-allowed"
                   type="submit"
+                  disabled={isSubmitting}
                 >
-                  Sign Up
+                  {isSubmitting ? "Processing..." : "Sign Up"}
                 </button>
+
                 <Link
                   to="/LoginPage"
                   className="inline-block align-baseline font-bold text-sm text-black hover:text-[#295b42]"

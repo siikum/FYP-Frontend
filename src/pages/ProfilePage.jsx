@@ -33,7 +33,7 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       const token = getAuthToken();
-      if (!token) return navigate("/login");
+      if (!token) return navigate("/LoginPage");
 
       try {
         const [
@@ -71,8 +71,7 @@ const ProfilePage = () => {
         setSavedItineraries(itinerariesRes.data || []);
         setSavedDestinations(destinationsRes.data || []);
       } catch (err) {
-        console.error(err);
-        setError("Failed to load profile");
+        setError("Failed to load profile", err);
       } finally {
         setLoading(false);
       }
@@ -92,7 +91,7 @@ const ProfilePage = () => {
       setEditedBio(res.data.bio || "");
       setIsEditingBio(false);
     } catch (err) {
-      setError("Update failed.");
+      setError("Update failed.", err);
     }
   };
 
@@ -319,7 +318,7 @@ const ProfilePage = () => {
                 savedDestinations.map((dest) => (
                   <div
                     key={dest.id}
-                    onClick={() => navigate(`/destinations/${dest.slug}`)}
+                    onClick={() => navigate(`/destination/${dest.slug}`)}
                     className="cursor-pointer bg-white rounded-lg shadow hover:shadow-md transition flex flex-col overflow-hidden min-h-[300px] group"
                   >
                     {/* Image with Zoom Effect */}
