@@ -44,11 +44,13 @@ const About = () => {
       </section>
 
       {/* Scroll Section */}
+      <section id="AboutUs">
       <AboutTrailHimalaya />
+      </section>
       <FeaturedCreators />
 
       {/* Safety Guidelines Section */}
-      <section className="w-full bg-[#e6f1ec] text-[#0B3D20] py-24">
+      <section id= 'SafetyGuidlines' className="w-full bg-[#e6f1ec] text-[#0B3D20] py-24">
         <div className="max-w-7xl mx-auto px-6">
           {/* Section Title */}
           <motion.h2
@@ -125,11 +127,12 @@ const About = () => {
         </div>
       </section>
 
-      <ContactUs />
-
+      <section id="contact">
+        <ContactUs />
+      </section>
       <section className="px-4 py-10 sm:px-10 lg:px-16 bg-[#f3f8f6]">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
-      <OfficeMap />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
+          <OfficeMap />
           <div>
             <h2 className="text-4xl md:text-4xl font-serif font-bold text-[#0B3D20] mb-4">
               Visit Our Office

@@ -25,6 +25,7 @@
     "react-markdown": "^10.1.0",
     "react-player": "^2.16.0",
     "react-router-dom": "^7.1.5",
+    "react-router-hash-link": "^2.4.3",
     "react-simple-typewriter": "^5.0.1",
     "sweetalert2": "^11.18.0"
   },
