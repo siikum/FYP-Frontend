@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import pfp from "../../assets/images/pf.jpg";
+import Swal from "sweetalert2";
 
 const baseUrl = "http://127.0.0.1:8000/blog";
 
@@ -238,8 +239,23 @@ const CommentsSection = ({ postId }) => {
           className="w-full h-[100px] outline-none border border-gray-300 rounded-lg p-3"
           placeholder="Write your comment..."
           value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
+          onChange={(e) => {
+            if (e.target.value.length <= 256) {
+              setNewComment(e.target.value);
+            } else {
+              Swal.fire({
+                icon: "warning",
+                title: "Character Limit Reached",
+                text: "You can only type up to 256 characters.",
+                confirmButtonColor: "#0B3D20",
+              });
+            }
+          }}
         />
+        <div className="text-right text-sm text-gray-400">
+          {newComment.length}/256
+        </div>
+
         {error && <div className="text-red-500 mt-2">{error}</div>}
         <div className="flex justify-end mt-4">
           <button
@@ -258,16 +274,21 @@ const CommentsSection = ({ postId }) => {
           comments.map((comment, index) => (
             <div key={index} className="flex flex-col gap-y-2">
               <div className="flex items-start gap-x-6">
-                <div className="w-[50px] h-[50px] overflow-hidden rounded-full">
-                  <img
-                    src={comment.author_profile_picture || pfp}
-                    className="w-full h-full object-cover rounded-full"
-                    alt="User Profile"
-                    onError={(e) => {
-                      e.target.src = pfp;
-                    }}
-                  />
+                <div className="w-[50px] h-[50px] overflow-hidden rounded-full bg-gray-200 flex items-center justify-center">
+                  {comment.author_profile_picture ? (
+                    <img
+                      src={comment.author_profile_picture}
+                      className="w-full h-full object-cover rounded-full"
+                      alt="User Profile"
+                      onError={(e) => {
+                        e.target.src = pfp;
+                      }}
+                    />
+                  ) : (
+                    <span className="text-gray-600 text-2xl">👤</span>
+                  )}
                 </div>
+
                 <div className="flex flex-col gap-y-2 flex-1">
                   <div className="flex items-center gap-x-4 relative">
                     <div className="font-medium text-lg">
@@ -326,7 +347,9 @@ const CommentsSection = ({ postId }) => {
                       </div>
                     </>
                   ) : (
-                    <div className="text-base">{comment.content}</div>
+                    <div className="text-base text-justify">
+                      {comment.content}
+                    </div>
                   )}
 
                   {/* Reply Button */}
@@ -454,7 +477,7 @@ const CommentsSection = ({ postId }) => {
                                 </div>
                               </>
                             ) : (
-                              <div className="text-gray-700 mt-1">
+                              <div className="text-gray-700 mt-1 text-jusutify">
                                 {reply.content}
                               </div>
                             )}

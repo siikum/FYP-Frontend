@@ -141,7 +141,7 @@ const About = () => {
             <p className="mt-5 font-semibold mb-2 text-[#0B3D20]">
               📍 Trail Himalaya HQ
               <br />
-              Putalisadak, Kathmandu 44600
+              Baluwatar, Kathmandu 44600
               <br />
               Nepal
             </p>

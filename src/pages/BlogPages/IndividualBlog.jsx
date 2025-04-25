@@ -124,7 +124,7 @@ const IndividualBlog = () => {
               className="hover:underline cursor-pointer"
               onClick={() => navigate(`/user/${blog.author}`)}
             >
-              by {blog.author}
+              By {blog.author}
             </div>
 
             {blog.author === loggedInUsername && (

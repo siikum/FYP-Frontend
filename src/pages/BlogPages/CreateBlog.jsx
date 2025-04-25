@@ -22,21 +22,38 @@ const CreateBlog = () => {
     e.preventDefault();
 
     if (!title || !description || !file) {
-      const errorMessage = "All fields are required";
-      setError(errorMessage);
       Swal.fire({
         icon: "warning",
-        title: "Missing Info",
-        text: errorMessage,
+        title: "Missing Fields",
+        text: "All fields are required.",
         confirmButtonColor: "#B91C1C",
       });
       return;
     }
 
+    const titleWordCount = title.trim().split(/\s+/).length;
+    if (titleWordCount > 15) {
+      Swal.fire({
+        icon: "warning",
+        title: "Title Too Long",
+        text: "Blog title should not exceed 15 words.",
+        confirmButtonColor: "#B91C1C",
+      });
+      return;
+    }
+
+    if (description.length < 60) {
+      Swal.fire({
+        icon: "warning",
+        title: "Description Too Short",
+        text: "Description must be at least 30 characters.",
+        confirmButtonColor: "#B91C1C",
+      });
+      return; 
+    }
+
     try {
       setLoading(true);
-      setError("");
-
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
@@ -59,22 +76,63 @@ const CreateBlog = () => {
           title: "Blog Posted!",
           text: "Your journey has been shared successfully. 🎉",
           confirmButtonColor: "#0B3D20",
-        }).then(() => navigate("/blog")); // Navigate after confirmation
+        }).then(() => navigate("/blog"));
       }
     } catch (err) {
       console.log(err);
-      const errorMessage =
-        "Failed to create blog. Make sure you are logged in.";
-      setError(errorMessage);
-      Swal.fire({
-        icon: "error",
-        title: "Oops!",
-        text: errorMessage,
-        confirmButtonColor: "#B91C1C",
-      });
+      if (err.response?.status === 401) {
+        Swal.fire({
+          icon: "error",
+          title: "Not Logged In",
+          text: "Please log in to create a blog.",
+          confirmButtonColor: "#B91C1C",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text:
+            err.response?.data?.error ||
+            "Something went wrong. Please try again later.",
+          confirmButtonColor: "#B91C1C",
+        });
+      }
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+
+    if (!selectedFile) return;
+
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+    const maxSizeMB = 5;
+
+    if (!allowedTypes.includes(selectedFile.type)) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid File Type",
+        text: "Please upload a JPEG or PNG image.",
+        confirmButtonColor: "#B91C1C",
+      });
+      setFile(null);
+      return;
+    }
+
+    if (selectedFile.size > maxSizeMB * 1024 * 1024) {
+      Swal.fire({
+        icon: "error",
+        title: "Image Too Large",
+        text: "Please upload an image smaller than 5MB.",
+        confirmButtonColor: "#B91C1C",
+      });
+      setFile(null);
+      return;
+    }
+
+    setFile(selectedFile);
   };
 
   return (
@@ -160,10 +218,11 @@ const CreateBlog = () => {
                 </label>
                 <input
                   type="file"
-                  onChange={(e) => setFile(e.target.files[0])}
+                  onChange={handleFileChange}
                   id="fileInput"
                   className="hidden"
                 />
+
                 <label
                   htmlFor="fileInput"
                   className="cursor-pointer border border-gray-400 p-3 rounded-md bg-white hover:bg-gray-100"

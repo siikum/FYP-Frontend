@@ -166,7 +166,7 @@ const BlogList = () => {
                             navigate(`/user/${blog.author}`);
                           }}
                         >
-                          by {blog.author}
+                          By {blog.author}
                         </div>
 
                         {blog.author === loggedInUsername && (
