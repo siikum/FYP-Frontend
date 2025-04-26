@@ -35,6 +35,12 @@ const pins = [
   { id: 12, lat: 27.8, lng: 86.5, url: "/destination/tsho-rolpa", name: "Tsho Rolpa Glacier Lake" },
   { id: 13, lat: 27.2, lng: 85.2, url: "/destination/bara", name: "Mainali Farm House" },
   { id: 14, lat: 29.0, lng: 83.8, url: "/destination/lomanthang", name: "Lomanthang" },
+  { id: 15, lat: 28.5, lng: 84.5, url: "/destination/meme-pokhari", name: "Meme Pokhari" },
+  { id: 16, lat: 28.504, lng: 84.224, url: "/destination/krapu", name: "Krapu Kori" },
+  { id: 17, lat: 28.687, lng: 84.016, url: "/destination/kajin-sara", name: "Kajin Sara" },
+  { id: 18, lat: 29.95, lng: 81.25, url: "/destination/saipal-base-camp", name: "Saipal Base Camp" },
+  { id: 19, lat: 28.5, lng: 81.45, url: "/destination/bardiya", name: "Bardiya National Park" },
+
 ];
 
 // Set default zoom on load

@@ -9,9 +9,8 @@ const Sidebar = () => {
     { to: "/admin/groupchats", label: "Group Chats" },
     { to: "/admin/joinrequests", label: "Join Requests" },
     { to: "/admin/messages", label: "Contact Messages" },
-    { to: "/admin/AdminBlogsPage", label: "Blog"},
+    { to: "/admin/AdminBlogsPage", label: "Blog" },
     { to: "/admin/AdminSentimentReviews", label: "Sentiment Reviews" },
-
   ];
 
   return (
@@ -32,16 +31,6 @@ const Sidebar = () => {
           </NavLink>
         ))}
       </nav>
-      <button
-        onClick={() => {
-          localStorage.removeItem("authToken");
-          localStorage.removeItem("adminLoginTime");
-          window.location.href = "/LoginPage";
-        }}
-        className="w-full text-left px-4 py-2 mt-6 text-red-500 hover:bg-red-100 rounded"
-      >
-        Logout
-      </button>
     </div>
   );
 };
