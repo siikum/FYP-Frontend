@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-import MapLanding from "../components/MapLanding";
+// import MapLanding from "../components/MapLanding";
+import MapTest from "../components/MapTestPage";
+
 import ItineraryDownload from "../components/ItineraryDownload";
 import ReactMarkdown from "react-markdown";
 import Footer from "../components/Footer";
@@ -154,7 +156,8 @@ const TripPlannerForm = () => {
   return (
     <div className="w-full">
       <Navbar />
-      <MapLanding />
+      {/* <MapLanding /> */}
+      <MapTest />
 
       <div className="bg-[#f3f8f6] py-20 px-6 md:px-20">
         <div className="max-w-8xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 bg-[#f3f8f6] p-10">

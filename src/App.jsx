@@ -26,6 +26,7 @@ import LoginPage from "./pages/LoginPage.jsx";
 import ChannelList from "./pages/channels/ChannelList.jsx";
 import ChannelMessage from "./pages/channels/ChannelMessage.jsx";
 import MyChannels from "./pages/channels/MyChannels.jsx";
+import MapTestPage from "./components/MapTestPage.jsx";
 
 import AdminLayout from "./pages/adminDashboard/AdminLayout";
 import DashboardHome from "./pages/adminDashboard/DashboardHome";
@@ -78,6 +79,7 @@ function App() {
           <Route path="/channels" element={<ChannelList />} />
           <Route path="/channels/:id" element={<ChannelMessage />} />
           <Route path="/MyChannels" element={<MyChannels />} />
+          <Route path="/MapTestPage" element={<MapTestPage />} />
 
           {/* ✅ Admin Panel with nested pages */}
           <Route path="/admin" element={<AdminLayout />}>

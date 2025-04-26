@@ -11,6 +11,12 @@ import sekonglake from "../assets/images/slider-destination/sekonglake.jpg";
 import dlp from "../assets/images/slider-destination/dlp.jpg";
 import kailashparbhat from "../assets/images/slider-destination/kailashparbhat.jpg";
 import mundhunmTrail from "../assets/images/slider-destination/mundhumTrail.jpg";
+import bara from "../assets/images/slider-destination/bara.png";
+import tshoRolpa from "../assets/images/slider-destination/tshoRolpa.jpg";
+import kbc from "../assets/images/slider-destination/kbc.jpg";
+import lomanthang from "../assets/images/slider-destination/lomanthang.jpg";
+
+
 
 const Slider = () => {
   const sliderRef = useRef();
@@ -46,15 +52,19 @@ const Slider = () => {
 
   const destinations = [
     { name: "Sekong Lake, Mustang", path: "sekong-lake", image: sekonglake },
+    { name: "Kanchenjunga  Base Camp, Taplejung", path: "kbc", image: kbc },
     { name: "Kailash Mansarovar, Humla", path: "kailash-overland", image: kailashparbhat },
     { name: "Limi Valley, Humla", path: "limi-valley", image: limiValley },
+    { name: "Mainali Farm House, Bara", path: "bara", image: bara },
     { name: "Mundhum Trail, Khotang", path: "mundhum-trail", image: mundhunmTrail },
+    { name: "Lo-manthang, Upper Mustang", path: "lomanthang", image: lomanthang },
     { name: "Daphne Lagna Pass, Rukum", path: "daphne-lagna-pass", image: dlp },
     { name: "Api Himal Base Camp, Darchula", path: "api-himal-base-camp", image: apiHimal },
     { name: "Shiva Dhara, Solukhumbu", path: "shiva-dhara", image: shivaDhara },
     { name: "Shey Phoksundo Lake, Dolpa", path: "shey-phoksundo-lake", image: sheyPhoksundo },
     { name: "Singla Mane, Rasuwa", path: "singla-mane", image: singlaMane },
     { name: "Tsum Valley, Gorkha", path: "tsum-valley", image: tsumValley },
+    { name: "Tsho Rolpa, Dolakha", path: "tsho-rolpa", image: tshoRolpa },
   ];
 
   return (
