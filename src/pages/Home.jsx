@@ -9,7 +9,6 @@ import MultiLayerParallax from "./trial/MultiLayerParallax";
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import firstIMG from "../assets/images/1.jpg";
 
 const Home = () => {
   const ref = useRef(null);

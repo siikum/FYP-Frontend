@@ -23,7 +23,7 @@ const IndividualDestination = () => {
     axios
       .get(`http://127.0.0.1:8000/account/destinations/${slug}/`)
       .then((res) => {
-        console.log("Destination response:", res.data);  // ADD THIS
+        console.log("Destination response:", res.data);  
         setDestination(res.data);
       })
       .catch((err) => {
@@ -55,7 +55,7 @@ const IndividualDestination = () => {
   
       await axios.post(
         "http://127.0.0.1:8000/account/save-destination/",
-        { destination_id: destination.destination_id }, // ✅ Fix here!
+        { destination_id: destination.destination_id }, 
         {
           headers: {
             "Content-Type": "application/json",

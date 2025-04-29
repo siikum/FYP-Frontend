@@ -49,10 +49,8 @@ const NewSignUpPage = () => {
     if (otpSent) {
       startResendTimer();
     }
-    // Cleanup on unmount
     return () => {
-      // Find any intervals and clear it
-      let intervalId = window.setInterval(() => {}, 9999); // Get a big interval id
+      let intervalId = window.setInterval(() => {}, 9999); 
       for (let i = 1; i < intervalId; i++) {
         window.clearInterval(i);
       }
