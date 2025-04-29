@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import BackgroundImage from "../assets/images/AboutImage1.jpg";
+import BackgroundImage from "../assets/images/AboutImage1.webp";
 import Navbar from "../components/Navbar";
 import AboutTrailHimalaya from "../components/AboutTrailHimalaya";
 import FeaturedCreators from "../components/FeaturedCreators";

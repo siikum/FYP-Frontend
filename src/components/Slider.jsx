@@ -1,25 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/slider.css";
-import singlaMane from "../assets/images/slider-destination/Singla-mane.jpg";
-import apiHimal from "../assets/images/slider-destination/api-himal.jpg";
-import shivaDhara from "../assets/images/slider-destination/shivadhara1.jpg";
-import tsumValley from "../assets/images/slider-destination/tsumvalley.jpg";
-import limiValley from "../assets/images/slider-destination/limi-valley.jpg";
-import sheyPhoksundo from "../assets/images/slider-destination/shey-phoksundo.jpg";
-import sekonglake from "../assets/images/slider-destination/sekonglake.jpg";
-import dlp from "../assets/images/slider-destination/dlp.jpg";
-import kailashparbhat from "../assets/images/slider-destination/kailashparbhat.jpg";
-import mundhunmTrail from "../assets/images/slider-destination/mundhumTrail.jpg";
-import bara from "../assets/images/slider-destination/bara.png";
-import tshoRolpa from "../assets/images/slider-destination/tshoRolpa.jpg";
-import kbc from "../assets/images/slider-destination/kbc.jpg";
-import lomanthang from "../assets/images/slider-destination/lomanthang.jpg";
-import meme from "../assets/images/slider-destination/meme.jpg";
-import krapu from "../assets/images/slider-destination/krapu.png";
-import kajinsara from "../assets/images/slider-destination/kajinsara.jpg";
-import saipal from "../assets/images/slider-destination/saipal.png";
-import bardiya from "../assets/images/slider-destination/bardiya.jpg";
+import singlaMane from "@/assets/images/slider-destination/Singla-mane.webp";
+import apiHimal from "@/assets/images/slider-destination/api-himal.webp";
+import shivaDhara from "@/assets/images/slider-destination/shivadhara1.webp";
+import tsumValley from "@/assets/images/slider-destination/tsumvalley.webp";
+import limiValley from "@/assets/images/slider-destination/limi-valley.webp";
+import sheyPhoksundo from "@/assets/images/slider-destination/shey-phoksundo.webp";
+import sekonglake from "@/assets/images/slider-destination/sekonglake.webp";
+import dlp from "@/assets/images/slider-destination/dlp.webp";
+import kailashparbhat from "@/assets/images/slider-destination/kailashparbhat.webp";
+import mundhumTrail from "@/assets/images/slider-destination/mundhumTrail.webp";
+import bara from "@/assets/images/slider-destination/bara.webp";
+import tshoRolpa from "@/assets/images/slider-destination/tshoRolpa.webp";
+import kbc from "@/assets/images/slider-destination/kbc.webp";
+import lomanthang from "@/assets/images/slider-destination/lomanthang.webp";
+import meme from "@/assets/images/slider-destination/meme.webp";
+import krapu from "@/assets/images/slider-destination/krapu.webp";
+import kajinsara from "@/assets/images/slider-destination/kajinsara.webp";
+import saipal from "@/assets/images/slider-destination/saipal.webp";
+import bardiya from "@/assets/images/slider-destination/bardiya.webp";
+
 
 
 const Slider = () => {
@@ -67,8 +68,9 @@ const Slider = () => {
     {
       name: "Mundhum Trail, Khotang",
       path: "mundhum-trail",
-      image: mundhunmTrail,
+      image: mundhumTrail,
     },
+    
     {
       name: "Lo-manthang, Upper Mustang",
       path: "lomanthang",

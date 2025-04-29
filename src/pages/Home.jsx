@@ -16,7 +16,6 @@ const Home = () => {
 
   const isInView = useInView(ref, { once: true });
 
-  const [currentImg, setCurrentIMG] = useState(firstIMG);
   const [blogs, setBlogs] = useState([]);
 
   useEffect(() => {

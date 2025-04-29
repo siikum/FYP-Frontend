@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import AboutTH from "../assets/images/AboutTH.jpg";
+import AboutTH from "../assets/images/AboutTH.webp";
 
 const AboutTrailHimalaya = () => {
   return (

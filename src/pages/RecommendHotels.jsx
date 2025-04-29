@@ -4,6 +4,16 @@ import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
+import hotel1 from "@/assets/images/hotels/hotel1.webp";
+import hotel2 from "@/assets/images/hotels/hotel2.webp";
+import hotel3 from "@/assets/images/hotels/hotel3.webp";
+import hotel4 from "@/assets/images/hotels/hotel4.webp";
+import hotel5 from "@/assets/images/hotels/hotel5.webp";
+import hotel6 from "@/assets/images/hotels/hotel6.webp";
+import hotel7 from "@/assets/images/hotels/hotel7.webp";
+import hotel8 from "@/assets/images/hotels/hotel8.webp";
+import hotel9 from "@/assets/images/hotels/hotel9.webp";
+
 const RecommendedHotels = () => {
   const { destinationName } = useParams();
   const [hotels, setHotels] = useState([]);
@@ -17,19 +27,23 @@ const RecommendedHotels = () => {
         setError(null);
 
         const response = await axios.get(
-          `http://localhost:8000/itinerary/hotels/${encodeURIComponent(destinationName)}/`
+          `http://localhost:8000/itinerary/hotels/${encodeURIComponent(
+            destinationName
+          )}/`
         );
 
         // Filter and limit to top 9 by rating (excluding 'N/A')
         const sortedHotels = response.data.hotels
-          .filter(h => h.rating !== "N/A")
+          .filter((h) => h.rating !== "N/A")
           .sort((a, b) => b.rating - a.rating)
           .slice(0, 9);
 
         setHotels(sortedHotels);
       } catch (err) {
         console.error("Failed to fetch hotels:", err);
-        setError("Failed to load accommodation options. Please try again later.");
+        setError(
+          "Failed to load accommodation options. Please try again later."
+        );
       } finally {
         setLoading(false);
       }
@@ -38,9 +52,20 @@ const RecommendedHotels = () => {
     fetchHotels();
   }, [destinationName]);
 
+  const hotelImages = [
+    hotel1,
+    hotel2,
+    hotel3,
+    hotel4,
+    hotel5,
+    hotel6,
+    hotel7,
+    hotel8,
+    hotel9,
+  ];
+
   const getHotelImage = (index) => {
-    const imgIndex = (index % 6) + 1; // rotate images 1-6
-    return `/images/hotels/hotel${imgIndex}.jpg`;
+    return hotelImages[index % hotelImages.length];
   };
 
   return (
@@ -79,6 +104,7 @@ const RecommendedHotels = () => {
                   alt={hotel.name}
                   className="w-full h-48 object-cover"
                 />
+
                 <div className="p-5">
                   <h3 className="text-xl font-semibold text-[#0B3D20] mb-2">
                     {hotel.name}
